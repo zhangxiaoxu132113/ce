@@ -3,6 +3,8 @@ package com.water.crawl.work;
 import com.squareup.okhttp.Response;
 import com.water.crawl.core.HttpCrawlClient;
 import com.water.crawl.model.Article;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.protocol.HTTP;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by mrwater on 2017/1/10.
@@ -20,8 +24,60 @@ public class FetchIBMTopic {
 
     public static void main(String[] args) {
         FetchIBMTopic fetchIBMTopic = new FetchIBMTopic();
-        fetchIBMTopic.fetchTopics();
+//        fetchIBMTopic.fetchTopics();
+        fetchIBMTopic.getAllCategoriesLinks();
+
     }
+
+    /**
+     * 获取IBM开发者社区下面的所有分类的连接
+     * @return
+     */
+    public List<String> getAllCategoriesLinks() {
+        List<String> allCategoriesLinks = new ArrayList<String>();
+        List<String> categories = getCategoriesWithTopic();
+        String categoryUrl = "http://www.ibm.com/developerworks/cn/views/%s/libraryview.jsp";
+        if (categories != null && categories.size() > 0) {
+            for (String category : categories) {
+                allCategoriesLinks.add(String.format(categoryUrl, category));
+            }
+        }
+        for (String str : allCategoriesLinks) {
+            System.out.println(str);
+        }
+        return allCategoriesLinks;
+    }
+
+    /**
+     * 获取IBM开发者社区下面的所有分类
+     * @return
+     */
+    public List<String> getCategoriesWithTopic() {
+        String url = "http://www.ibm.com/developerworks/cn/";
+        List<String> topicCategories = new ArrayList<String>();
+        HttpCrawlClient client = null;
+        try {
+            client = HttpCrawlClient.newInstance();
+            Response response = client.executePostRequest(url + "topics/");
+            if (response.isSuccessful()) {
+                String conent = response.body().string();
+                Document doc = Jsoup.parse(conent);
+                Elements elements = doc.select("a");
+                for (Element ele : elements) {
+                    String link = ele.attr("abs:href");
+                    if (StringUtils.isNotBlank(link) && link.startsWith(url) && link.length() > url.length()) {
+                        link = link.substring(url.length(), link.endsWith("/") ? link.lastIndexOf("/") : link.length());
+                        topicCategories.add(link);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return topicCategories;
+    }
+
 
     public void fetchTopics() {
         long startTime = System.currentTimeMillis();
@@ -42,8 +98,7 @@ public class FetchIBMTopic {
                 List<Article> articleList = new ArrayList<Article>();
                 if (articleLinks != null && articleLinks.size() > 0) {
                     for (String articlelink : articleLinks) {
-                        //抓取每一篇文章的内容
-                        Article article = fetchTopic(articlelink);
+                        Article article = fetchTopic(articlelink);//抓取每一篇文章的内容
                         articleList.add(article);
                     }
                 }
@@ -86,7 +141,7 @@ public class FetchIBMTopic {
 
     public Article getArticle(Document doc) {
         Article article = new Article();
-        Element titleEle = doc.select(".dw-article-ps-title").get(0); //获取文章的标题
+        Element titleEle = doc.select("#ibm-pagetitle-h1").get(0); //获取文章的标题
         Element createAtEle = doc.select("#dw-article-ps-date").get(0); //文章的发表的日期
         Element contentEle = doc.select(".ibm-columns").get(0);         //文章的内容
 //        contentEle.te
@@ -96,4 +151,9 @@ public class FetchIBMTopic {
         article.setContent(contentEle.html());
         return article;
     }
+
+//    public Element get(int i) {
+//
+//    }
+
 }
