@@ -25,8 +25,10 @@ public class FetchIBMTopic {
     public static void main(String[] args) {
         FetchIBMTopic fetchIBMTopic = new FetchIBMTopic();
 //        fetchIBMTopic.fetchTopics();
-        fetchIBMTopic.getAllCategoriesLinks();
 
+        for (String url : fetchIBMTopic.getAllCategoriesLinks()) {
+            fetchIBMTopic.fetchTopics(url);
+        }
     }
 
     /**
@@ -79,14 +81,13 @@ public class FetchIBMTopic {
     }
 
 
-    public void fetchTopics() {
+    public void fetchTopics(String url) {
         long startTime = System.currentTimeMillis();
         HttpCrawlClient client = null;
         try {
             client = HttpCrawlClient.newInstance();
             Map<String, String> params = new HashMap<String, String>();
             params.put("", "");
-            String url = "http://www.ibm.com/developerworks/cn/views/web/libraryview.jsp";
             Response response = client.executePostRequest(url);
             if (response.isSuccessful()) {
                 String content = response.body().string();
@@ -98,8 +99,8 @@ public class FetchIBMTopic {
                 List<Article> articleList = new ArrayList<Article>();
                 if (articleLinks != null && articleLinks.size() > 0) {
                     for (String articlelink : articleLinks) {
-                        Article article = fetchTopic(articlelink);//抓取每一篇文章的内容
-                        articleList.add(article);
+//                        Article article = fetchTopic(articlelink);//抓取每一篇文章的内容
+//                        articleList.add(article); todo
                     }
                 }
                 System.out.println(articleList.size());
