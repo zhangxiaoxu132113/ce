@@ -1,7 +1,7 @@
 package com.water.crawl.core;
 
 import com.squareup.okhttp.*;
-import com.water.crawl.model.Headers;
+import com.water.crawl.db.model.Headers;
 import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.util.List;

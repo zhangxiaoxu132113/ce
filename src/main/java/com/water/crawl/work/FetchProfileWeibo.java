@@ -2,15 +2,13 @@ package com.water.crawl.work;
 
 import com.water.crawl.core.HttpCrawlClient;
 import com.water.crawl.core.HttpCrawlResponse;
-import com.water.crawl.db.dao.statistics.WeiboMapper;
-import com.water.crawl.model.Headers;
-import com.water.crawl.model.Weibo;
+import com.water.crawl.db.model.Headers;
+import com.water.crawl.db.model.Weibo;
 import com.water.crawl.utils.Constants;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +28,6 @@ public class FetchProfileWeibo {
     public static String profileUrl2 = "http://weibo.com/p/aj/v6/mblog/mbloglist?ajwvr=6&domain=100505&is_search=0&visible=0&is_all=1&is_tag=0&profile_ftype=1&page="+pageNum+"&pagebar=0&pl_name=Pl_Official_MyProfileFeed__22&id=1005053191114182&script_uri=/u/3191114182&feed_type=0&pre_page="+pageNum+"&domain_op=100505&__rnd=";
     public static String profileUrl3 = "http://weibo.com/p/aj/v6/mblog/mbloglist?ajwvr=6&domain=100505&is_search=0&visible=0&is_all=1&is_tag=0&profile_ftype=1&page="+pageNum+"&pagebar=1&pl_name=Pl_Official_MyProfileFeed__22&id=1005053191114182&script_uri=/u/3191114182&feed_type=0&pre_page="+pageNum+"&domain_op=100505&__rnd=";
 
-    @Autowired
-    private WeiboMapper weiboMapper;
 
     public static void main(String[] args) {
         FetchProfileWeibo fetchProfileWeibo = new FetchProfileWeibo();

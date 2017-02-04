@@ -1,6 +1,6 @@
 package com.water.crawl.core;
 
-import com.water.crawl.model.Html;
+import com.water.crawl.db.model.Html;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;

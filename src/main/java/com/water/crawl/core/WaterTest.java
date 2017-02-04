@@ -1,11 +1,8 @@
 package com.water.crawl.core;
 
-import com.water.crawl.model.Html;
+import com.water.crawl.db.model.Html;
 import com.water.crawl.utils.Config;
-import com.water.crawl.utils.Constants;
-import com.water.crawl.utils.StringUtil;
 
-import java.net.MalformedURLException;
 import java.util.List;
 
 /**

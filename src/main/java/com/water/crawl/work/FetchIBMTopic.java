@@ -2,9 +2,8 @@ package com.water.crawl.work;
 
 import com.squareup.okhttp.Response;
 import com.water.crawl.core.HttpCrawlClient;
-import com.water.crawl.model.Article;
+import com.water.crawl.db.model.Article;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.protocol.HTTP;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,8 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by mrwater on 2017/1/10.

@@ -1,7 +1,7 @@
 package com.water.crawl.director;
 
 import com.water.crawl.handler.Handler;
-import com.water.crawl.model.CrawlingTask;
+import com.water.crawl.db.model.CrawlingTask;
 import com.water.crawl.utils.ObjectUtil;
 import org.apache.commons.lang3.StringUtils;
 
