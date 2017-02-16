@@ -25,5 +25,8 @@
         <module name="water-business-ce" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="water-business-ce" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

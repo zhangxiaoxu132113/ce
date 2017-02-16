@@ -5,8 +5,7 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="jedisPool" class="com.water.crawl.core.cache.ShardedJedisPoolFactory">
-        <property name="hostAndPorts" value="@redis.address@"/>
-        <!--<property name="hostAndPorts" value="127.0.0.1:6379"/>-->
+        <!--<property name="hostAndPorts" value="@redis.address@"/>-->
+        <property name="hostAndPorts" value="127.0.0.1:6379"/>
     </bean>
-
 </beans>

@@ -1,15 +1,21 @@
 package com.water.crawl.db.model;
 
+import com.xpush.serialization.protobuf.ProtoEntity;
+import com.xpush.serialization.protobuf.ProtoMember;
+
 import java.util.List;
 
 /**
  * Created by zhangmiaojie on 2016/12/2.
  * 爬虫任务
  */
-public class CrawlingTask {
+public class CrawlingTask extends ProtoEntity{
+    @ProtoMember(1)
     private String taskId;
 
-    private List<Object> datas;
+    private List<ProtoEntity> datas;
+
+    private long taskLen;
 
     public String getTaskId() {
         return taskId;
@@ -20,12 +26,20 @@ public class CrawlingTask {
         return this;
     }
 
-    public List<Object> getDatas() {
+    public List<ProtoEntity> getDatas() {
         return datas;
     }
 
-    public CrawlingTask setDatas(List<Object> datas) {
+    public CrawlingTask setDatas(List<ProtoEntity> datas) {
         this.datas = datas;
         return this;
+    }
+
+    public long getTaskLen() {
+        return taskLen;
+    }
+
+    public void setTaskLen(long taskLen) {
+        this.taskLen = taskLen;
     }
 }
