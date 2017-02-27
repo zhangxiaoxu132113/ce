@@ -524,6 +524,76 @@ public class ITArticleCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andDescryptUrlIsNull() {
+            addCriterion("descrypt_url is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescryptUrlIsNotNull() {
+            addCriterion("descrypt_url is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescryptUrlEqualTo(String value) {
+            addCriterion("descrypt_url =", value, "descryptUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescryptUrlNotEqualTo(String value) {
+            addCriterion("descrypt_url <>", value, "descryptUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescryptUrlGreaterThan(String value) {
+            addCriterion("descrypt_url >", value, "descryptUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescryptUrlGreaterThanOrEqualTo(String value) {
+            addCriterion("descrypt_url >=", value, "descryptUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescryptUrlLessThan(String value) {
+            addCriterion("descrypt_url <", value, "descryptUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescryptUrlLessThanOrEqualTo(String value) {
+            addCriterion("descrypt_url <=", value, "descryptUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescryptUrlLike(String value) {
+            addCriterion("descrypt_url like", value, "descryptUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescryptUrlNotLike(String value) {
+            addCriterion("descrypt_url not like", value, "descryptUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescryptUrlIn(List<String> values) {
+            addCriterion("descrypt_url in", values, "descryptUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescryptUrlNotIn(List<String> values) {
+            addCriterion("descrypt_url not in", values, "descryptUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescryptUrlBetween(String value1, String value2) {
+            addCriterion("descrypt_url between", value1, value2, "descryptUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescryptUrlNotBetween(String value1, String value2) {
+            addCriterion("descrypt_url not between", value1, value2, "descryptUrl");
+            return (Criteria) this;
+        }
+
         public Criteria andReleaseTimeIsNull() {
             addCriterion("release_time is null");
             return (Criteria) this;

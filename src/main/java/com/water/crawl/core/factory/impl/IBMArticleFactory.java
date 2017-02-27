@@ -50,10 +50,13 @@ public class IBMArticleFactory implements IArticleFactory {
             article.setId(UUID.randomUUID().toString());
             article.setAuthor(author);
             article.setTitle(title);
+            article.setCategory("IBM");
             article.setContent(content);
             article.setDescription(description);
             article.setReference(reference);
-//            article.setDecryptUrl(decryptUrl);
+            article.setReleaseTime(date);
+            article.setCreateOn(System.currentTimeMillis());
+            article.setDescryptUrl(decryptUrl);
         } catch (Exception e) {
             article = null;
             methodOneExecuteFailureTimes++;
@@ -78,10 +81,13 @@ public class IBMArticleFactory implements IArticleFactory {
             article.setId(UUID.randomUUID().toString());
             article.setAuthor(author);
             article.setTitle(title);
+            article.setCategory("IBM");
             article.setContent(content);
             article.setDescription(description);
             article.setReference(reference);
-//            article.setDecryptUrl(decryptUrl);
+            article.setReleaseTime(createOn);
+            article.setDescryptUrl(decryptUrl);
+            article.setCreateOn(System.currentTimeMillis());
         } catch (Exception e) {
             article = null;
             methodTwoExecuteFailureTimes++;
@@ -107,10 +113,13 @@ public class IBMArticleFactory implements IArticleFactory {
             article.setId(UUID.randomUUID().toString());
             article.setAuthor(author);
             article.setTitle(title);
+            article.setCategory("IBM");
+            article.setReleaseTime(createOn);
             article.setContent(content);
             article.setDescription(description);
             article.setReference(reference);
-//            article.setDecryptUrl(decryptUrl);
+            article.setDescryptUrl(decryptUrl);
+            article.setCreateOn(System.currentTimeMillis());
         } catch (Exception e) {
             article = null;
             methodThreeExecuteFailureTimes++;
@@ -136,10 +145,13 @@ public class IBMArticleFactory implements IArticleFactory {
             article.setId(UUID.randomUUID().toString());
             article.setAuthor(author);
             article.setTitle(title);
+            article.setCategory("IBM");
             article.setContent(content);
             article.setDescription(description);
             article.setReference(reference);
-//            article.setDecryptUrl(decryptUrl);
+            article.setReleaseTime(date);
+            article.setDescryptUrl(decryptUrl);
+            article.setCreateOn(System.currentTimeMillis());
         } catch (Exception e) {
             article = null;
             methodFourExecuteFailureTimes++;

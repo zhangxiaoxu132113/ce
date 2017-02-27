@@ -15,6 +15,8 @@ public class ITArticle implements Serializable {
 
     private String reference;
 
+    private String descryptUrl;
+
     private String releaseTime;
 
     private Long createOn;
@@ -69,6 +71,14 @@ public class ITArticle implements Serializable {
 
     public void setReference(String reference) {
         this.reference = reference == null ? null : reference.trim();
+    }
+
+    public String getDescryptUrl() {
+        return descryptUrl;
+    }
+
+    public void setDescryptUrl(String descryptUrl) {
+        this.descryptUrl = descryptUrl == null ? null : descryptUrl.trim();
     }
 
     public String getReleaseTime() {

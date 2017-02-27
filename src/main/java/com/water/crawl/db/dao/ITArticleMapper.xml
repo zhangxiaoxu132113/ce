@@ -8,6 +8,7 @@
     <result column="author" property="author" jdbcType="VARCHAR" />
     <result column="category" property="category" jdbcType="VARCHAR" />
     <result column="reference" property="reference" jdbcType="VARCHAR" />
+    <result column="descrypt_url" property="descryptUrl" jdbcType="VARCHAR" />
     <result column="release_time" property="releaseTime" jdbcType="VARCHAR" />
     <result column="create_on" property="createOn" jdbcType="BIGINT" />
   </resultMap>
@@ -73,7 +74,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, title, description, author, category, reference, release_time, create_on
+    id, title, description, author, category, reference, descrypt_url, release_time, 
+    create_on
   </sql>
   <sql id="Blob_Column_List" >
     content
@@ -129,12 +131,12 @@
   <insert id="insert" parameterType="com.water.crawl.db.model.ITArticle" >
     insert into it_article (id, title, description, 
       author, category, reference, 
-      release_time, create_on, content
-      )
+      descrypt_url, release_time, create_on, 
+      content)
     values (#{id,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{author,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, #{reference,jdbcType=VARCHAR}, 
-      #{releaseTime,jdbcType=VARCHAR}, #{createOn,jdbcType=BIGINT}, #{content,jdbcType=LONGVARCHAR}
-      )
+      #{descryptUrl,jdbcType=VARCHAR}, #{releaseTime,jdbcType=VARCHAR}, #{createOn,jdbcType=BIGINT}, 
+      #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.water.crawl.db.model.ITArticle" >
     insert into it_article
@@ -156,6 +158,9 @@
       </if>
       <if test="reference != null" >
         reference,
+      </if>
+      <if test="descryptUrl != null" >
+        descrypt_url,
       </if>
       <if test="releaseTime != null" >
         release_time,
@@ -185,6 +190,9 @@
       </if>
       <if test="reference != null" >
         #{reference,jdbcType=VARCHAR},
+      </if>
+      <if test="descryptUrl != null" >
+        #{descryptUrl,jdbcType=VARCHAR},
       </if>
       <if test="releaseTime != null" >
         #{releaseTime,jdbcType=VARCHAR},
@@ -224,6 +232,9 @@
       <if test="record.reference != null" >
         reference = #{record.reference,jdbcType=VARCHAR},
       </if>
+      <if test="record.descryptUrl != null" >
+        descrypt_url = #{record.descryptUrl,jdbcType=VARCHAR},
+      </if>
       <if test="record.releaseTime != null" >
         release_time = #{record.releaseTime,jdbcType=VARCHAR},
       </if>
@@ -246,6 +257,7 @@
       author = #{record.author,jdbcType=VARCHAR},
       category = #{record.category,jdbcType=VARCHAR},
       reference = #{record.reference,jdbcType=VARCHAR},
+      descrypt_url = #{record.descryptUrl,jdbcType=VARCHAR},
       release_time = #{record.releaseTime,jdbcType=VARCHAR},
       create_on = #{record.createOn,jdbcType=BIGINT},
       content = #{record.content,jdbcType=LONGVARCHAR}
@@ -261,6 +273,7 @@
       author = #{record.author,jdbcType=VARCHAR},
       category = #{record.category,jdbcType=VARCHAR},
       reference = #{record.reference,jdbcType=VARCHAR},
+      descrypt_url = #{record.descryptUrl,jdbcType=VARCHAR},
       release_time = #{record.releaseTime,jdbcType=VARCHAR},
       create_on = #{record.createOn,jdbcType=BIGINT}
     <if test="_parameter != null" >
@@ -285,6 +298,9 @@
       <if test="reference != null" >
         reference = #{reference,jdbcType=VARCHAR},
       </if>
+      <if test="descryptUrl != null" >
+        descrypt_url = #{descryptUrl,jdbcType=VARCHAR},
+      </if>
       <if test="releaseTime != null" >
         release_time = #{releaseTime,jdbcType=VARCHAR},
       </if>
@@ -304,6 +320,7 @@
       author = #{author,jdbcType=VARCHAR},
       category = #{category,jdbcType=VARCHAR},
       reference = #{reference,jdbcType=VARCHAR},
+      descrypt_url = #{descryptUrl,jdbcType=VARCHAR},
       release_time = #{releaseTime,jdbcType=VARCHAR},
       create_on = #{createOn,jdbcType=BIGINT},
       content = #{content,jdbcType=LONGVARCHAR}
@@ -316,6 +333,7 @@
       author = #{author,jdbcType=VARCHAR},
       category = #{category,jdbcType=VARCHAR},
       reference = #{reference,jdbcType=VARCHAR},
+      descrypt_url = #{descryptUrl,jdbcType=VARCHAR},
       release_time = #{releaseTime,jdbcType=VARCHAR},
       create_on = #{createOn,jdbcType=BIGINT}
     where id = #{id,jdbcType=VARCHAR}
@@ -351,12 +369,12 @@
     </if>
   </select>
   <insert id="insertBatch" >
-    insert into it_article (id, title, description, author, category, reference, release_time, create_on, content) values 
+    insert into it_article (id, title, description, author, category, reference, descrypt_url, release_time, create_on, content) values 
     <foreach collection="list" item="item" index="index" separator="," >
       (#{item.id,jdbcType=VARCHAR}, #{item.title,jdbcType=VARCHAR}, #{item.description,jdbcType=VARCHAR}, 
         #{item.author,jdbcType=VARCHAR}, #{item.category,jdbcType=VARCHAR}, #{item.reference,jdbcType=VARCHAR}, 
-        #{item.releaseTime,jdbcType=VARCHAR}, #{item.createOn,jdbcType=BIGINT}, #{item.content,jdbcType=LONGVARCHAR}
-        )
+        #{item.descryptUrl,jdbcType=VARCHAR}, #{item.releaseTime,jdbcType=VARCHAR}, #{item.createOn,jdbcType=BIGINT}, 
+        #{item.content,jdbcType=LONGVARCHAR})
     </foreach>
   </insert>
 </mapper>
