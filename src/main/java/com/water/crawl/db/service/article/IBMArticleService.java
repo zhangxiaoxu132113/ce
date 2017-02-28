@@ -10,7 +10,6 @@ public interface IBMArticleService extends ITArticleService{
 
     /**
      * 获取当前页面的所有文章链接
-     *
      * @param html 内容
      * @return List<String>
      */
@@ -18,7 +17,6 @@ public interface IBMArticleService extends ITArticleService{
 
     /**
      * 获取IBM开发者社区所有模块的分类
-     *
      * @return Set<String>
      */
     Set<String> getIBMArticleCategoryUrl();

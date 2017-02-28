@@ -23,10 +23,11 @@ public class FetchArticleTask {
     private IBMArticleService ibmArticleService;
 
     public void fetchIBMArticles() {
-        System.out.println("抓取IBM的文章-----");
+        System.out.println("抓取IBM开发者社区的文章--------------------------------------------------");
         List<ITArticle> articles = new ArrayList<ITArticle>();
         List<String> fetchFailurelinks = new ArrayList<String>();
         Set<String> articleCategoryUrls = new HashSet<String>();
+
         articleCategoryUrls = ibmArticleService.getIBMArticleCategoryUrl();
         System.out.println("开始抓取IBM开发者社区各个模块的文章，" + articleCategoryUrls.size());
         IArticleFactory articleFactory = ArticleFactory.build(ArticleFactory.FactoryConfig.IBM);

@@ -25,13 +25,18 @@ public class IBMArticleServiceImpl extends ITArticleServiceImpl implements IBMAr
     @Override
     public List<String> getAllArticleLink(String html) {
         List<String> links = new ArrayList<String>();
-        Document doc = Jsoup.parse(html);
-        Element articleListEle = doc.select("table.ibm-data-table tbody").get(0);
-        if (articleListEle != null) {
-            Elements linkEles = articleListEle.getElementsByTag("a");
-            for (Element linkEle : linkEles) {
-                links.add(linkEle.attr("abs:href"));
+        Document doc = null;
+        try {
+            doc = Jsoup.parse(html);
+            Element articleListEle = doc.select("table.ibm-data-table tbody").get(0);
+            if (articleListEle != null) {
+                Elements linkEles = articleListEle.getElementsByTag("a");
+                for (Element linkEle : linkEles) {
+                    links.add(linkEle.attr("abs:href"));
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return links;
     }
@@ -59,7 +64,7 @@ public class IBMArticleServiceImpl extends ITArticleServiceImpl implements IBMAr
                         e.printStackTrace();
                     }
                     System.out.println("开始请求 ===========================" + url);
-                    result = (String) HttpRequestTool.getRequest(url);
+                    result = (String) HttpRequestTool.getRequest(url,false);
                     if (StringUtils.isNotBlank(result)) doc = Jsoup.parse(result);
                     if (doc.select(".ibm-ind-link a").size() > 0) {
                         Element element = doc.select(".ibm-ind-link a").get(0);

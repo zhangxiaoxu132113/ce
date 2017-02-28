@@ -156,7 +156,7 @@ public class HttpRequestTool {
                     obj = JSON.parseObject(result, cls);//解析json为pojo
                 } catch (Exception e) {
                     System.out.println("json 解析失败!");
-                    e.printStackTrace();
+                    if (isOutInfo) e.printStackTrace();
                 }
             } else {
                 obj = result;
