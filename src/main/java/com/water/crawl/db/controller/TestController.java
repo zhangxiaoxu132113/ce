@@ -1,12 +1,16 @@
 package com.water.crawl.db.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.water.crawl.core.cache.CacheManager;
 import com.water.crawl.core.factory.IArticleFactory;
 import com.water.crawl.core.factory.impl.ArticleFactory;
+import com.water.crawl.core.repositories.ArticleRepositories;
 import com.water.crawl.db.dao.ITArticleMapper;
 import com.water.crawl.db.model.ITArticle;
 import com.water.crawl.db.model.dto.CrawlKeyword;
+import com.water.crawl.utils.ElasticSearchUtils;
+import com.water.crawl.utils.ElasticsearchExtTemplate;
 import com.water.crawl.utils.HttpRequestTool;
 import com.xpush.serialization.protobuf.ProtoEntity;
 import org.apache.commons.lang.StringUtils;
@@ -26,6 +30,10 @@ import java.util.*;
  */
 @RestController
 public class TestController {
+
+
+    @Resource
+    private ArticleRepositories articleRepositories;
 
     @Resource
     private CacheManager cacheManager;
@@ -59,6 +67,7 @@ public class TestController {
                         ITArticle article = articleFactory.createArticle(doc, link);
                         if (article != null) {
                             articleMapper.insert(article);
+                            ElasticSearchUtils.addDocument(JSONObject.toJSONString(article), "blog", "article", article.getId());
                             articles.add(article);
                         } else {
                             fetchFailurelinks.add(link);
@@ -158,5 +167,12 @@ public class TestController {
             }
         }
         return linkList;
+    }
+
+    @RequestMapping(value = "/test1")
+    public void addDocument() {
+        ITArticle article = new ITArticle();
+        article.setContent("zhangmiaojie");
+        articleRepositories.save(article);
     }
 }
