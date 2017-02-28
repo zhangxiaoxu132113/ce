@@ -5,5 +5,33 @@ package com.water.crawl.utils;
  */
 public class Constant {
 
-
+    /**
+     * 文章按网站分类
+     */
+    public static enum ArticleCategory {
+        NONE(0,"未分类"),
+        IBM(1,"IBM"),
+        CSDN(2,"CSDN"),
+        GOOGLE(3,"GOOGLE");
+        public static String getName(int index) {
+            for (ArticleCategory item : ArticleCategory.values()) {
+                if (item.getIndex() == index) {
+                    return item.name;
+                }
+            }
+            return null;
+        }
+        private ArticleCategory(int index,String name) {
+            this.index=index;
+            this.name=name;
+        }
+        private int index;
+        private String name;
+        public int getIndex() {
+            return index;
+        }
+        public String getName() {
+            return name;
+        }
+    }
 }

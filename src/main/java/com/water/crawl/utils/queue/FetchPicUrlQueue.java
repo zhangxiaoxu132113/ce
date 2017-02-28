@@ -1,4 +1,4 @@
-package com.water.crawl.queue;
+package com.water.crawl.utils.queue;
 
 import java.util.LinkedList;
 

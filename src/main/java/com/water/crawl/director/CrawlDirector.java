@@ -1,7 +1,7 @@
 package com.water.crawl.director;
 
 import com.water.crawl.db.model.CrawlingTask;
-import com.water.crawl.handler.Handler;
+import com.water.crawl.director.handler.Handler;
 import com.xpush.queue.QueueClient;
 import com.xpush.queue.QueueManager;
 import com.xpush.serialization.protobuf.ProtoEntity;
