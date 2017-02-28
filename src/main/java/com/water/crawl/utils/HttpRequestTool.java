@@ -101,8 +101,9 @@ public class HttpRequestTool {
         return postRequest(requestUrl, null, null, null, null, false);
     }
 
-    public static void postRequest(String requestUrl, boolean isOutInfo) {
+    public static String postRequest(String requestUrl, boolean isOutInfo) {
         postRequest(requestUrl, null, null, null, null, isOutInfo);
+        return requestUrl;
     }
 
     public static Object postRequest(String requestUrl, Map<String, String> paramMap, boolean isOutInfo) {
