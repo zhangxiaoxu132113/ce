@@ -3,8 +3,11 @@ package com.water.crawl.db.service.article.impl;
 
 import com.water.crawl.core.factory.impl.ArticleFactory;
 import com.water.crawl.db.dao.ITArticleMapper;
+import com.water.crawl.db.dao.ITLibMapper;
 import com.water.crawl.db.model.ITArticle;
 import com.water.crawl.db.model.ITArticleCriteria;
+import com.water.crawl.db.model.ITLib;
+import com.water.crawl.db.model.ITLibCriteria;
 import com.water.crawl.db.service.article.ITArticleService;
 import com.water.crawl.utils.Constant;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +23,9 @@ public class ITArticleServiceImpl implements ITArticleService {
     @Resource
     private ITArticleMapper iTArticleMapper;
 
+    @Resource
+    private ITLibMapper itLibMapper;
+
     @Override
     public Integer addArticle(ITArticle article) {
         if (article != null && StringUtils.isNotBlank(article.getTitle())) {
@@ -34,7 +40,12 @@ public class ITArticleServiceImpl implements ITArticleService {
         return -1;
     }
 
-    private List<ITArticle> queryArticleByCondition(Map<String, Object> queryParams) {
+    /**
+     * 根据条件查询文章
+     * @param queryParams 查询参数
+     * @return            List<ITArticle>
+     */
+    protected List<ITArticle> queryArticleByCondition(Map<String, Object> queryParams) {
         if (queryParams == null) {
             throw new RuntimeException("参数不能为null!");
         }
@@ -48,5 +59,24 @@ public class ITArticleServiceImpl implements ITArticleService {
             criteria.andCategoryEqualTo((String) queryParams.get("category"));
         }
         return iTArticleMapper.selectByExample(articleCriteria);
+    }
+
+    /**
+     * 根据条件查询知识库
+     * @param queryParams 查询参数
+     * @return            List<ITLib>
+     */
+    protected List<ITLib> queryLibByCondition(Map<String, Object> queryParams) {
+        if (queryParams == null) {
+            throw new RuntimeException("参数不能为null!");
+        }
+        ITLibCriteria itLibCriteria = new ITLibCriteria();
+        ITLibCriteria.Criteria criteria = itLibCriteria.createCriteria();
+        if (queryParams.containsKey("name")) {
+            criteria.andNameEqualTo((String) queryParams.get("name"));
+        } else if (queryParams.containsKey("category")) {
+            criteria.andCategoryEqualTo((Integer) queryParams.get("category"));
+        }
+        return itLibMapper.selectByExample(itLibCriteria);
     }
 }

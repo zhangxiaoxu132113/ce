@@ -181,6 +181,10 @@ public class HttpRequestTool {
         return getRequest(requestUrl, cls, null, null, isOutInfo);
     }
 
+    public static Object getRequestByCookies(String requestUrl, CookieConfig cookieConfig, boolean isOutInfo) {
+        return getRequest(requestUrl, null, null, cookieConfig, isOutInfo);
+    }
+
     /**
      * 设置请求次数
      *

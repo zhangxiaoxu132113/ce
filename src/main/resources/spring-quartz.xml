@@ -24,6 +24,18 @@
         </property>
     </bean>
 
+    <!-- 抓取CSDN知识库下的所有文章 -->
+    <bean id="jobTask02" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="quartzJob01"/>
+        </property>
+        <property name="targetMethod">
+            <value>fetchCSDNArticleLib</value>
+        </property>
+    </bean>
+
+
+    <!-- 时间分配 -->
     <!-- 每分钟扫描待处理的单次任务 -->
     <bean id="jobRunTime01" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail">
@@ -34,12 +46,23 @@
         </property>
     </bean>
 
+    <!-- 每分钟扫描待处理的单次任务 -->
+    <bean id="jobRunTime02" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="jobTask02"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 15 17 1 3 ?</value>
+        </property>
+    </bean>
+
     <!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
     <bean id="startQuertz" lazy-init="true" autowire="default"
           class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
                 <ref bean="jobRunTime01"/>
+                <ref bean="jobRunTime02"/>
             </list>
         </property>
     </bean>
