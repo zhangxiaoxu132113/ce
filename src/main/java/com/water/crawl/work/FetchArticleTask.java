@@ -81,11 +81,11 @@ public class FetchArticleTask {
         List<ITLib> itLibList = icsdnArticleService.getAllLibCategory();
         Set<String> linkSet = new HashSet<>();
         IArticleFactory articleFactory = ArticleFactory.build(ArticleFactory.FactoryConfig.CSDN);
-        for (ITLib itLib : itLibList) {
+        for (ITLib itLib : itLibList) { //遍历每一个知识点
             String html = (String) HttpRequestTool.getRequest(itLib.getUrl(), false);
             Document doc = Jsoup.parse(html);
             Elements elements = doc.getElementsByTag("a");
-            for (Element element : elements) {
+            for (Element element : elements) { //获取每一个知识点下面的子知识点
                 if (element.attr("href").contains("node/") || element.attr("href").contains("knowledge/")) {
                     String link = element.attr("href");
                     linkSet.add(link);
@@ -105,23 +105,23 @@ public class FetchArticleTask {
                         if (StringUtils.isNotBlank(doc.select("#totalPage").attr("value2"))) {
                             count = Integer.valueOf(doc.select("#totalPage").attr("value2"));
                         }
+
                         for (Element ele : elements1) {
                             String articleLink = ele.attr("href");
                             html = (String) HttpRequestTool.getRequest(articleLink);
-                            doc = Jsoup.parse(html);
-                            ITArticle article = articleFactory.createArticle(doc, articleLink);
-                            if (article != null) {
-                                icsdnArticleService.addArticle(article);
-                            } else {
-                                System.out.println(articleLink + "连接解析有问题！！！！-------------------------------");
+                            if (StringUtils.isNotBlank(html)) {
+                                doc = Jsoup.parse(html);
+                                ITArticle article = articleFactory.createArticle(doc, articleLink);
+                                if (article != null) {
+                                    icsdnArticleService.addArticle(article);
+                                } else {
+                                    System.out.println(articleLink + "连接解析有问题！！！！-------------------------------");
+                                }
                             }
                         }
-                        tmpLink = link;
-                        count = 1; //重置为第一页
                     }
-
                 }
-
+                count = 1; //重置为第一页
             }
         }
     }
