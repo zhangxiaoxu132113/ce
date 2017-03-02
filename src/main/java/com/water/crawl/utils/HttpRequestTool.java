@@ -70,12 +70,15 @@ public class HttpRequestTool {
 
             if (headerMap != null && headerMap.entrySet().size() > 0) {
                 Header[] headers = new Header[headerMap.entrySet().size()];
-                int i=0;
+                int i = 0;
                 for (Map.Entry<String, String> header : headerMap.entrySet()) {
-                    headers[i] =new BasicHeader(header.getKey(), header.getValue());
+                    headers[i] = new BasicHeader(header.getKey(), header.getValue());
                     i++;
                 }
                 post.setHeaders(headers); //设置请求头信息
+            } else {
+                Header header = new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+                post.setHeader(header);
             }
             HttpContext localContext = new BasicHttpContext();
             CloseableHttpResponse response = client.execute(post, localContext);
@@ -111,9 +114,11 @@ public class HttpRequestTool {
     public static Object postRequest(String requestUrl, Map<String, String> paramMap, boolean isOutInfo) {
         return postRequest(requestUrl, paramMap, null, null, null, isOutInfo);
     }
+
     public static Object postRequest(String requestUrl, Map<String, String> paramMap, Map<String, String> headerMap, boolean isOutInfo) {
         return postRequest(requestUrl, paramMap, headerMap, null, null, isOutInfo);
     }
+
     public static Object postRequest(String requestUrl, Map<String, String> paramMap, Class cls, boolean isOutInfo) {
         return postRequest(requestUrl, paramMap, null, null, cls, isOutInfo);
     }
@@ -146,12 +151,15 @@ public class HttpRequestTool {
             get.setConfig(config);// 设置请求超时时间
             if (headerMap != null && headerMap.entrySet().size() > 0) {
                 Header[] headers = new Header[headerMap.entrySet().size()];
-                int i=0;
+                int i = 0;
                 for (Map.Entry<String, String> header : headerMap.entrySet()) {
-                    headers[i] =new BasicHeader(header.getKey(), header.getValue());
+                    headers[i] = new BasicHeader(header.getKey(), header.getValue());
                     i++;
                 }
                 get.setHeaders(headers); //设置请求头信息
+            } else {
+                Header header = new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+                get.setHeader(header);
             }
 
             CloseableHttpResponse response = client.execute(get, localContext);

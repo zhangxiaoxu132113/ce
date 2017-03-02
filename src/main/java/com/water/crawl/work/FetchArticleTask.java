@@ -7,8 +7,10 @@ import com.water.crawl.db.model.ITArticle;
 import com.water.crawl.db.model.ITLib;
 import com.water.crawl.db.service.article.IBMArticleService;
 import com.water.crawl.db.service.article.ICSDNArticleService;
+import com.water.crawl.db.service.article.IOSCHINAArticleService;
 import com.water.crawl.utils.ElasticSearchUtils;
 import com.water.crawl.utils.HttpRequestTool;
+import com.water.crawl.utils.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,7 +21,6 @@ import javax.annotation.Resource;
 import java.util.*;
 
 /**
- *
  * Created by zhangmiaojie on 2017/2/28.
  */
 public class FetchArticleTask {
@@ -29,6 +30,9 @@ public class FetchArticleTask {
 
     @Resource
     private ICSDNArticleService icsdnArticleService;
+
+    @Resource
+    private IOSCHINAArticleService ioschinaArticleService;
 
     /**
      * 抓取IBM开发者社区的文章
@@ -125,4 +129,33 @@ public class FetchArticleTask {
             }
         }
     }
+
+    public void fetchOSCHINAArticle() {
+        String base_url = "https://www.oschina.net/blog";                                   //第一次进来不是ajax请求
+        String ajax_url = "https://www.oschina.net/action/ajax/get_more_recommend_blog";    //第二次进来是ajax请求
+        Set<String> linkSet = ioschinaArticleService.getAllCategory();
+        for (String link : linkSet) {
+            Map<String, String> queryParams = StringUtil.getParamWithUrl(link);
+            String html = "";
+            for (int i = 1; ; i++) {
+                if (i == 1) {
+                    html = (String) HttpRequestTool.postRequest(base_url, queryParams, false);
+                } else {
+                    queryParams.put("q", String.valueOf(i));
+                    html = (String) HttpRequestTool.postRequest(ajax_url, queryParams, false);
+                }
+
+                Document doc = Jsoup.parse(html);
+                Elements articleLinks = doc.select(".blog-title-link");
+                for (Element articleLinkEle : articleLinks) {
+                    String articleLink = articleLinkEle.attr("href");
+                    System.out.println(articleLink);
+                    html = (String) HttpRequestTool.getRequest(articleLink, false);
+                    doc = Jsoup.parse(html);
+                    //创建文章
+                }
+            }
+        }
+    }
+
 }
