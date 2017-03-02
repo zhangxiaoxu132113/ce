@@ -13,6 +13,6 @@ import java.util.UUID;
 public class TestElastcsearch {
 
     public static void main(String[] args) {
-        ElasticSearchUtils.searchDocumentByTerm("mysql");
+        ElasticSearchUtils.searchDocumentByTerm("kafka");
     }
 }

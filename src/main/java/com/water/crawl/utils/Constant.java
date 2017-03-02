@@ -10,9 +10,9 @@ public class Constant {
      */
     public static enum ArticleCategory {
         NONE(0,"未分类"),
-        IBM(1,"IBM"),
-        CSDN(2,"CSDN"),
-        GOOGLE(3,"GOOGLE");
+        IBM(1,"IBM"),           //IBM开发者社区
+        CSDN(2,"CSDN"),         //CSDN
+        OS_CHINA(3,"oschina");  //开源中国
         public static String getName(int index) {
             for (ArticleCategory item : ArticleCategory.values()) {
                 if (item.getIndex() == index) {

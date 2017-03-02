@@ -69,11 +69,13 @@ public class HttpRequestTool {
             }
 
             if (headerMap != null && headerMap.entrySet().size() > 0) {
-                List<Header> headers = new ArrayList<Header>();
+                Header[] headers = new Header[headerMap.entrySet().size()];
+                int i=0;
                 for (Map.Entry<String, String> header : headerMap.entrySet()) {
-                    headers.add(new BasicHeader(header.getKey(), header.getValue()));
+                    headers[i] =new BasicHeader(header.getKey(), header.getValue());
+                    i++;
                 }
-                post.setHeaders((Header[]) headers.toArray()); //设置请求头信息
+                post.setHeaders(headers); //设置请求头信息
             }
             HttpContext localContext = new BasicHttpContext();
             CloseableHttpResponse response = client.execute(post, localContext);
@@ -109,7 +111,9 @@ public class HttpRequestTool {
     public static Object postRequest(String requestUrl, Map<String, String> paramMap, boolean isOutInfo) {
         return postRequest(requestUrl, paramMap, null, null, null, isOutInfo);
     }
-
+    public static Object postRequest(String requestUrl, Map<String, String> paramMap, Map<String, String> headerMap, boolean isOutInfo) {
+        return postRequest(requestUrl, paramMap, headerMap, null, null, isOutInfo);
+    }
     public static Object postRequest(String requestUrl, Map<String, String> paramMap, Class cls, boolean isOutInfo) {
         return postRequest(requestUrl, paramMap, null, null, cls, isOutInfo);
     }
@@ -141,11 +145,13 @@ public class HttpRequestTool {
                     .build();
             get.setConfig(config);// 设置请求超时时间
             if (headerMap != null && headerMap.entrySet().size() > 0) {
-                List<Header> headers = new ArrayList<Header>();
+                Header[] headers = new Header[headerMap.entrySet().size()];
+                int i=0;
                 for (Map.Entry<String, String> header : headerMap.entrySet()) {
-                    headers.add(new BasicHeader(header.getKey(), header.getValue()));
+                    headers[i] =new BasicHeader(header.getKey(), header.getValue());
+                    i++;
                 }
-                get.setHeaders((Header[]) headers.toArray()); //设置请求头信息
+                get.setHeaders(headers); //设置请求头信息
             }
 
             CloseableHttpResponse response = client.execute(get, localContext);
@@ -175,6 +181,10 @@ public class HttpRequestTool {
 
     public static Object getRequest(String requestUrl, boolean isOutInfo) {
         return getRequest(requestUrl, null, null, null, isOutInfo);
+    }
+
+    public static Object getRequest(String requestUrl, Map<String, String> headers, boolean isOutInfo) {
+        return getRequest(requestUrl, null, headers, null, isOutInfo);
     }
 
     public static Object getRequest(String requestUrl, Class cls, boolean isOutInfo) {
