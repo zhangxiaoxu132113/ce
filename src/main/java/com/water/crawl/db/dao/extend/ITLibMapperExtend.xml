@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.water.crawl.db.dao.extend.ITLibMapperExtend">
-
-    <select id="getAllLib" resultType="com.water.crawl.db.model.ITLib">
-      SELECT * FROM it_lib;
-    </select>
-</mapper>
