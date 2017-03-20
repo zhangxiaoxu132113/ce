@@ -18,7 +18,7 @@ import java.util.*;
 /**
  * Created by zhangmiaojie on 2017/3/1.
  */
-@Service("csdnArticleService")
+@Service
 public class CSDNArticleServiceImpl extends ITArticleServiceImpl implements ICSDNArticleService {
 
     private static String CSDN_LIB_URL = "http://lib.csdn.net/bases";

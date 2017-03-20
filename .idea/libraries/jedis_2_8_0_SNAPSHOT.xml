@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="jedis-2.8.0-SNAPSHOT">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/extlib/jedis-2.8.0-SNAPSHOT.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

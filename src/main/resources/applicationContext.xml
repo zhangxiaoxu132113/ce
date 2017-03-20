@@ -18,6 +18,10 @@
         <property name="hostAndPorts" value="@redis.address@:@redis.port@"/>
     </bean>
 
+    <bean id="crawlBox" class="com.water.crawl.core.CrawlBox" init-method="initialize">
+        <property name="filePath" value="crawl/" />
+    </bean>
+
     <import resource="spring-mybatis.xml"/>
     <import resource="spring-quartz.xml"/>
     <import resource="spring-dubbo-consumer.xml"/>

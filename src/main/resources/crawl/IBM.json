@@ -1,0 +1,76 @@
+[
+  {
+    "id": "IBM",
+    "description": "ibm开发者社区",
+    "module": [
+      {
+        "mid": "Article",
+        "ruleList": [
+          {
+            "id": "title",
+            "rule": [
+              "title",
+              "title",
+              "title"
+            ],
+            "get": "html"
+          },
+          {
+            "id": "author",
+            "rule": [
+              "a.ibm-popup-link",
+              ".dw-article-ps-author",
+              ".dw-article-authordate"
+            ],
+            "get": "text"
+          },
+          {
+            "id": "content",
+            "rule": [
+              ".ibm-col-1-1",
+              ".ibm-col-6-4",
+              ".ibm-col-6-4"
+            ],
+            "get": "html"
+          }
+        ]
+      }
+    ]
+  },
+
+
+  {
+    "id": "CSDN",
+    "description": "CSDN",
+    "module": [
+      {
+        "mid": "Article",
+        "ruleList": [
+          {
+            "id": "title",
+            "rule": [
+              "aa",
+              "bb"
+            ],
+            "get": "text"
+          },
+          {
+            "id": "author",
+            "rule": [
+              "er"
+            ],
+            "get": "text"
+          },
+          {
+            "id": "content",
+            "rule": [
+              "aa",
+              "bb"
+            ],
+            "get": "html"
+          }
+        ]
+      }
+    ]
+  }
+]

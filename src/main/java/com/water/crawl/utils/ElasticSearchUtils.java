@@ -11,13 +11,17 @@ import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
+import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.util.Map;
 
@@ -121,6 +125,50 @@ public class ElasticSearchUtils {
             System.out.println(searchHit.getAt(i).getSource().get("title") + " : " + searchHit.getAt(i).getScore());
 //            System.out.println(searchHit.getAt(i).getSource().get("content"));
         }
+    }
 
+    public static XContentBuilder createIKMapping(Class cls) {
+        XContentBuilder xContentBuilder = null;
+        try {
+            xContentBuilder = XContentFactory.jsonBuilder();
+            xContentBuilder.startObject().startObject("article").startObject("_all").field("analyzer","ik_smart").field("search_analyzer","ik_smart").endObject();
+            xContentBuilder.startObject("properties");
+            for (Field field : cls.getDeclaredFields()) {
+                if (field.getType().getSimpleName().toLowerCase().contains("long")) continue;
+                xContentBuilder.startObject(field.getName()).field("type", field.getType().getSimpleName().toLowerCase()).field("analyzer","ik_smart").field("search_analyzer","ik_smart").endObject();
+            }
+            xContentBuilder.endObject().endObject().endObject();
+            System.out.println(xContentBuilder.string());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return xContentBuilder;
+    }
+
+    public static boolean createIndex(Class cls) {
+        XContentBuilder xContentBuilder = createIKMapping(cls);
+        client.admin().indices()
+                .preparePutMapping("blog")
+                .setType("article")
+                .setSource(xContentBuilder)
+                .execute()
+                .actionGet();
+
+        return false;
+    }
+
+    public static void matchQueryBuilder(String index, String type, String key, String value) {
+        MatchQueryBuilder queryBuilder = QueryBuilders.matchQuery(key, value);
+        SearchResponse searchResponse = client.prepareSearch(index)
+                .setTypes(type)
+                .setQuery(queryBuilder)
+                .execute()
+                .actionGet();
+
+        SearchHits hits = searchResponse.getHits();
+        for (SearchHit hit : hits) {
+            String title = (String) hit.getSource().get("title");
+            System.out.println(title);
+        }
     }
 }

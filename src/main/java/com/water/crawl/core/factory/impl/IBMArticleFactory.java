@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document;
 import java.util.UUID;
 
 /**
+ *
  * Created by zhangmiaojie on 2017/2/23.
  */
 public class IBMArticleFactory implements IArticleFactory {
@@ -40,7 +41,7 @@ public class IBMArticleFactory implements IArticleFactory {
             String title = doc.getElementsByTag("title").get(0).text();
             String description = doc.select("meta[name=description]").get(0).attr("content");
             String content = doc.select(".ibm-col-1-1").get(0).html();
-            String author = doc.select("a.ibm-popup-link").get(0).html();
+            String author = doc.select("a.ibm-popup-link").get(0).ownText();
             String date = doc.select(".dw-summary-date").get(0).html();
             String reference = "";
             if (doc.select(".ibm-bullet-list") != null && doc.select(".ibm-bullet-list").size() > 0) {
@@ -74,7 +75,7 @@ public class IBMArticleFactory implements IArticleFactory {
             if (doc.select(".ibm-bullet-list") != null && doc.select(".ibm-bullet-list").size() > 0) {
                 reference = doc.select(".ibm-bullet-list").get(0).html();
             }
-            String author = doc.select(".dw-article-ps-author").get(0).html();
+            String author = doc.select(".dw-article-ps-author").get(0).ownText();
             String content = doc.select(".ibm-col-6-4").get(1).html();
             String createOn = doc.select("#dw-article-ps-date").get(0).html();
 

@@ -37,22 +37,22 @@
 
     <!-- 时间分配 -->
     <!-- 每分钟扫描待处理的单次任务 -->
-    <bean id="jobRunTime01" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    <bean id="jobRunTime01" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail">
             <ref bean="jobTask01"/>
         </property>
         <property name="cronExpression">
-            <value>0 23 17 28 2 ?</value>
+            <value>0 8 22 19 3 ?</value>
         </property>
     </bean>
 
     <!-- 每分钟扫描待处理的单次任务 -->
-    <bean id="jobRunTime02" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    <bean id="jobRunTime02" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail">
             <ref bean="jobTask02"/>
         </property>
         <property name="cronExpression">
-            <value>0 05 17 3 3 ?</value>
+            <value>0 59 20 19 3 ?</value>
         </property>
     </bean>
 
