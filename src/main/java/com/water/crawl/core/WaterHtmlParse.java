@@ -7,10 +7,12 @@ import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.TagNameFilter;
 import org.htmlparser.tags.ImageTag;
-import org.htmlparser.tags.LinkTag;
 import org.htmlparser.tags.TitleTag;
 import org.htmlparser.util.NodeList;
-import org.htmlparser.util.ParserException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,33 +91,16 @@ public class WaterHtmlParse {
             throw new RuntimeException("不能解析内容为空的字符！");
         }
         List<String> hrefLists = new ArrayList<String>();
-
-        try {
-            Parser parser = new Parser(htmlBody);
-            NodeFilter nodeFilter = new TagNameFilter("a");
-            NodeList nodeList = parser.extractAllNodesThatMatch(nodeFilter);
-
-            Node eachNode = null;
-            LinkTag linkTag = null;
-
-            if (nodeList != null && nodeList.size() > 0) {
-                for (int i = 0; i < nodeList.size(); i++) {
-                    eachNode = nodeList.elementAt(i);
-                    if (eachNode instanceof LinkTag) {
-                        linkTag = (LinkTag) eachNode;
-                        String href = linkTag.getAttribute("href");
-                        if (StringUtils.isNotBlank(href)) { //如果href标签为空，则不添加到集合中
-                            System.out.println("href = " + href);
-                            hrefLists.add(href);
-                        }
-                    }
-                }
+        Document doc = Jsoup.parse(htmlBody);
+        Elements linkElements = doc.select("a");
+        for (Element linkEle : linkElements){
+            String url = linkEle.absUrl("href");
+            if (StringUtils.isNotBlank(url) && (url.startsWith("http")||url.startsWith("https"))) {
+                System.out.println(url);
+                hrefLists.add(url);
             }
-            return hrefLists;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
+        }
         return hrefLists;
     }
 }
