@@ -62,7 +62,7 @@ public class FetchArticleTask {
         for (String url : articleCategoryUrls) {
             System.out.println("开始抓取 ： " + url);
 
-            Map<String, String> paramMap = new HashMap<String, String>();
+            Map<String, String> paramMap = new HashMap<>();
             for (int i = 1; true; i++) {//循环获取所有模块下每个页面的文章
                 paramMap.put("start", String.valueOf(i + (i - 1) * 100));
                 paramMap.put("end", String.valueOf(i * 100));

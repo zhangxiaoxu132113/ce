@@ -85,6 +85,9 @@ public class WaterHtmlParse {
      * @descriptino 获取页面的a标签的href属性对应的值
      */
     public static List<String> getHrefWithA(String htmlBody) {
+        if (StringUtils.isBlank(htmlBody)) {
+            throw new RuntimeException("不能解析内容为空的字符！");
+        }
         List<String> hrefLists = new ArrayList<String>();
 
         try {

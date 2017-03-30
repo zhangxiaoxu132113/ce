@@ -1,5 +1,7 @@
 package com.water.test;
 
+import com.water.crawl.utils.HttpRequestTool;
+
 import java.util.Random;
 
 /**
@@ -7,8 +9,9 @@ import java.util.Random;
  */
 public class TestUid {
     public static void main(String[] args) {
-
-        System.out.println(randomUid());
+        String url = "http://www.csdn.net/";
+        String pageHtml = (String) HttpRequestTool.getRequest(url, true);
+        System.out.println(pageHtml);
     }
 
     /**
