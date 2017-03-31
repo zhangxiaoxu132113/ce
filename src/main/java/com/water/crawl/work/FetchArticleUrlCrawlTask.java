@@ -13,14 +13,26 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
+ * 1，当程序启动的时候，会传入一个要抓取的网站的根url路径，保存到fetching_root_urls队列中
+ * 2，调用start方法开始执行名程序
+ * 3，while循环，每次判断fetching_root_urls队列中是否有数据，有的话就取出一条数据作为根 url开始爬取数据
+ * 4，爬虫执行的深度为三层，执行到第四层的时候，不再执行下去，将第四层的url连接放到fetching_root_urls对列中
+ *    放到fetching_root_urls队列之前先从fetching_root_urls_record判断这个root是否已经爬取过了
+ *    然后也要判断是否超过了队列的长度（后面考虑，定义一个定点长度的队列）
+ * 5, 每次爬取url之前会判断该url是否是在我们要爬取的网站服务（或域名），如果不是，则跳过，避免爬取其他网站的数据
+ *    然后判断这个链接是否已经访问多了，如果访问过了则不处理，如果没有访问过则访问该链接，并解析该链接是是否是我们想要的文章连接
+ *    如果是的话，则保存到fetching_article_urls这个队列中。
+ *    直到根url下的三层抓取完，则在重复上面的操作，直到把整个网站给榨干。
+ *
  * Created by zhangmiaojie on 2017/3/30.
  */
-public class FetchArticleUrlCrawlTask implements Runnable {
+public class FetchArticleUrlCrawlTask {
     private final static String ROOT_URL = "http://blog.csdn.net/pelick/article/details/8331798";
     private Log log = LogFactory.getLog(FetchArticleUrlCrawlTask.class);
 
     @Resource
     private CacheManager cacheManager;
+
     public FetchArticleUrlCrawlTask(CacheManager cacheManager) {
         this.cacheManager = cacheManager;
         initRootUrlQueue(false);
@@ -32,11 +44,10 @@ public class FetchArticleUrlCrawlTask implements Runnable {
      * @param isEmpty 是否清空数据
      */
     public void initRootUrlQueue(boolean isEmpty) {
-        ShardedJedis jedis = cacheManager.getShardedJedis();
         if (isEmpty) {
-            jedis.del(RedisKey.Prefix.FETCHING_ROOT_URLS);
+            cacheManager.del(RedisKey.Prefix.FETCHING_ROOT_URLS);
         }
-        pushUrl(ROOT_URL, RedisKey.Prefix.FETCHING_ROOT_URLS,false);
+        pushUrl(ROOT_URL, RedisKey.Prefix.FETCHING_ROOT_URLS, false);
     }
 
     /**
@@ -45,10 +56,9 @@ public class FetchArticleUrlCrawlTask implements Runnable {
      * @param links 跟节点
      */
     public void pushRootUrlQueue(List<String> links) {
-        ShardedJedis jedis = cacheManager.getShardedJedis();
-        if (jedis.llen(RedisKey.Prefix.FETCHING_ROOT_URLS) < 100000) {
+        if (cacheManager.llen(RedisKey.Prefix.FETCHING_ROOT_URLS) < 100000) {
             for (String link : links) {
-                pushUrl(link, RedisKey.Prefix.FETCHING_ROOT_URLS,false);
+                pushUrl(link, RedisKey.Prefix.FETCHING_ROOT_URLS, false);
             }
         }
     }
@@ -61,13 +71,12 @@ public class FetchArticleUrlCrawlTask implements Runnable {
      */
     public void pushUrl(String url, String queueName, boolean isCheck) {
         if (StringUtils.isNotBlank(url) && url.contains("csdn")) {
-            ShardedJedis jedis = cacheManager.getShardedJedis();
             if (isCheck) {
-                if (jedis.sadd(RedisKey.Prefix.FETCHING_URL_RECORDS, url) != 0) {
-                    jedis.lpush(queueName, url);
+                if (cacheManager.sadd(RedisKey.Prefix.FETCHING_URL_RECORDS, url) != 0) {
+                    cacheManager.lpush(queueName, url);
                 }
             } else {
-                jedis.lpush(queueName, url);
+                cacheManager.lpush(queueName, url);
             }
         }
     }
@@ -80,49 +89,40 @@ public class FetchArticleUrlCrawlTask implements Runnable {
         if (StringUtils.isNotBlank(url)) {
             log.info("解析过滤url = " + url);
             if (url.contains("blog.csdn.net") && url.contains("article")) {
-                pushUrl(url, RedisKey.Prefix.FETCHing_ARTICLE_URLS,true);
+                pushUrl(url, RedisKey.Prefix.FETCHing_ARTICLE_URLS, false);
             }
         }
     }
 
-    @Override
-    public void run() {
-        ShardedJedis jedis = cacheManager.getShardedJedis();
+    public void start() {
         String rootUrl;
         String pageHtml;
-        while (jedis.llen(RedisKey.Prefix.FETCHING_ROOT_URLS) > 0) {
+        while (cacheManager.llen(RedisKey.Prefix.FETCHING_ROOT_URLS) > 0) {
             //访问root
-            rootUrl = jedis.lpop(RedisKey.Prefix.FETCHING_ROOT_URLS);
+            rootUrl = cacheManager.lpop(RedisKey.Prefix.FETCHING_ROOT_URLS);
             if (StringUtils.isBlank(rootUrl)) continue;
             pageHtml = (String) HttpRequestTool.getRequest(rootUrl, false);
             List<String> links = WaterHtmlParse.getHrefWithA(pageHtml);
             for (String link_1 : links) {// 获取root下面说的所有的url连接 -- 第一层
-                parseUrlAndPutQueue(link_1);
-                pageHtml = getRequestUrl(link_1);
+                pageHtml = getAndParseRequestUrl(link_1);
                 if (StringUtils.isBlank(pageHtml)) continue;
                 List<String> linksLevelTwo = WaterHtmlParse.getHrefWithA(pageHtml);
-
                 for (String link_2 : linksLevelTwo) {// 遍历第一层的连接，开始抓取第二层的url连接 -- 第二层
-                    parseUrlAndPutQueue(link_2);
-                    pageHtml = getRequestUrl(link_2);
+                    pageHtml = getAndParseRequestUrl(link_2);
                     if (StringUtils.isBlank(pageHtml)) continue;
                     List<String> linksLevelThree = WaterHtmlParse.getHrefWithA(pageHtml);
-
                     for (String link_3 : linksLevelThree) {//遍历第二层的连接，开始抓取第三层的url连接 -- 第三层
-                        parseUrlAndPutQueue(link_3);
-                        pageHtml = getRequestUrl(link_3);
+                        pageHtml = getAndParseRequestUrl(link_3);
                         if (StringUtils.isBlank(pageHtml)) continue;
                         List<String> linksLevelFour = WaterHtmlParse.getHrefWithA(pageHtml);
-
                         for (String link_4 : linksLevelFour) {//遍历第三层的连接，将四层的url连接放到一个根url节点的队列中 -- 终止循环
-                            parseUrlAndPutQueue(link_4);
-                            pageHtml = getRequestUrl(link_4);
+                            pageHtml = getAndParseRequestUrl(link_4);
                             if (StringUtils.isBlank(pageHtml)) continue;
                             List<String> linksLevelFive = WaterHtmlParse.getHrefWithA(pageHtml);
                             pushRootUrlQueue(linksLevelFive);
                             log.warn("------------------------------------------------------------");
                             try {
-                                Thread.sleep(1000 * 10);
+                                Thread.sleep(1000 * 2);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -134,9 +134,14 @@ public class FetchArticleUrlCrawlTask implements Runnable {
         log.info("任务执行完毕！");
     }
 
-    public String getRequestUrl(String url) {
+    public String getAndParseRequestUrl(String url) {
         if (StringUtils.isNotBlank(url) && url.contains("csdn")) {
-            return (String) HttpRequestTool.getRequest(url);
+            ShardedJedis jedis = cacheManager.getShardedJedis();
+            if (!jedis.sismember(RedisKey.Prefix.FETCHING_URL_RECORDS, url)) { //如果抓取过，则跳过
+                parseUrlAndPutQueue(url);
+                jedis.sadd(RedisKey.Prefix.FETCHING_URL_RECORDS, url);
+                return (String) HttpRequestTool.getRequest(url);
+            }
         }
         return "";
     }

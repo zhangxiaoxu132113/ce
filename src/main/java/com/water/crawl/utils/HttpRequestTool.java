@@ -10,9 +10,11 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
@@ -161,7 +163,6 @@ public class HttpRequestTool {
                 Header header = new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
                 get.setHeader(header);
             }
-
             CloseableHttpResponse response = client.execute(get, localContext);
             HttpEntity entity = response.getEntity();
             String result = EntityUtils.toString(entity, "UTF-8");
@@ -214,7 +215,7 @@ public class HttpRequestTool {
             @Override
             public boolean retryRequest(IOException exception, int executionCount, HttpContext httpContext) {
                 HttpRequest request = (HttpRequest) httpContext.getAttribute(ExecutionContext.HTTP_REQUEST);
-                System.out.println("访问失败【" + executionCount + "】尝试重新访问【" + requestUrl + "】");
+                System.out.println("访问失败【" + executionCount + "】尝试重新访问 -----> " + requestUrl + "");
 
                 if (executionCount > retryCount) {
                     abortHttpRequest(httpRequestBase);
@@ -318,13 +319,13 @@ public class HttpRequestTool {
         }
     }
 
-//    private static HttpClient createDefaultHttpClient(String requestUrl, CookieConfig cookieConfig) {
-//        HttpClient client = HttpClients.custom()
-//                .setRetryHandler(setRequestRetryCount(requestUrl, 3))
-//                .setDefaultCookieStore(setCookies(cookieConfig))
-//                .build();
-//        return client;
-//    }
+    public static void main(String[] args) {
+        for (int i=0;i <30;i++) {
+            HttpRequestTool.getRequest("http://www.tuicool.com/articles/fUBZnyB", false);
+            System.out.println("visite " + i);
+        }
+
+    }
 
 
 }
