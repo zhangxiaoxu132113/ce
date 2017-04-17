@@ -1,7 +1,7 @@
 package com.water.test;
 
 import com.water.crawl.core.WaterHtmlParse;
-import com.water.crawl.utils.HttpRequestTool;
+import com.water.crawl.utils.http.HttpRequestTool;
 
 import java.util.Random;
 

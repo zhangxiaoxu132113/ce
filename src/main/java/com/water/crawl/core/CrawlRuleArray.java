@@ -7,6 +7,8 @@ import java.util.List;
  */
 public class CrawlRuleArray {
     private String mid;
+//    private
+//    private String returnType;
     private List<CrawlRule> ruleList;
 
     public String getMid() {
@@ -16,6 +18,14 @@ public class CrawlRuleArray {
     public void setMid(String mid) {
         this.mid = mid;
     }
+
+//    public String getReturnType() {
+//        return returnType;
+//    }
+//
+//    public void setReturnType(String returnType) {
+//        this.returnType = returnType;
+//    }
 
     public List<CrawlRule> getRuleList() {
         return ruleList;

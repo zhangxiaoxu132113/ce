@@ -394,63 +394,113 @@ public class ITArticleCriteria {
             return (Criteria) this;
         }
 
-        public Criteria andCategoryEqualTo(String value) {
+        public Criteria andCategoryEqualTo(Integer value) {
             addCriterion("category =", value, "category");
             return (Criteria) this;
         }
 
-        public Criteria andCategoryNotEqualTo(String value) {
+        public Criteria andCategoryNotEqualTo(Integer value) {
             addCriterion("category <>", value, "category");
             return (Criteria) this;
         }
 
-        public Criteria andCategoryGreaterThan(String value) {
+        public Criteria andCategoryGreaterThan(Integer value) {
             addCriterion("category >", value, "category");
             return (Criteria) this;
         }
 
-        public Criteria andCategoryGreaterThanOrEqualTo(String value) {
+        public Criteria andCategoryGreaterThanOrEqualTo(Integer value) {
             addCriterion("category >=", value, "category");
             return (Criteria) this;
         }
 
-        public Criteria andCategoryLessThan(String value) {
+        public Criteria andCategoryLessThan(Integer value) {
             addCriterion("category <", value, "category");
             return (Criteria) this;
         }
 
-        public Criteria andCategoryLessThanOrEqualTo(String value) {
+        public Criteria andCategoryLessThanOrEqualTo(Integer value) {
             addCriterion("category <=", value, "category");
             return (Criteria) this;
         }
 
-        public Criteria andCategoryLike(String value) {
-            addCriterion("category like", value, "category");
-            return (Criteria) this;
-        }
-
-        public Criteria andCategoryNotLike(String value) {
-            addCriterion("category not like", value, "category");
-            return (Criteria) this;
-        }
-
-        public Criteria andCategoryIn(List<String> values) {
+        public Criteria andCategoryIn(List<Integer> values) {
             addCriterion("category in", values, "category");
             return (Criteria) this;
         }
 
-        public Criteria andCategoryNotIn(List<String> values) {
+        public Criteria andCategoryNotIn(List<Integer> values) {
             addCriterion("category not in", values, "category");
             return (Criteria) this;
         }
 
-        public Criteria andCategoryBetween(String value1, String value2) {
+        public Criteria andCategoryBetween(Integer value1, Integer value2) {
             addCriterion("category between", value1, value2, "category");
             return (Criteria) this;
         }
 
-        public Criteria andCategoryNotBetween(String value1, String value2) {
+        public Criteria andCategoryNotBetween(Integer value1, Integer value2) {
             addCriterion("category not between", value1, value2, "category");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginIsNull() {
+            addCriterion("origin is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginIsNotNull() {
+            addCriterion("origin is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginEqualTo(Integer value) {
+            addCriterion("origin =", value, "origin");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginNotEqualTo(Integer value) {
+            addCriterion("origin <>", value, "origin");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginGreaterThan(Integer value) {
+            addCriterion("origin >", value, "origin");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginGreaterThanOrEqualTo(Integer value) {
+            addCriterion("origin >=", value, "origin");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginLessThan(Integer value) {
+            addCriterion("origin <", value, "origin");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginLessThanOrEqualTo(Integer value) {
+            addCriterion("origin <=", value, "origin");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginIn(List<Integer> values) {
+            addCriterion("origin in", values, "origin");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginNotIn(List<Integer> values) {
+            addCriterion("origin not in", values, "origin");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginBetween(Integer value1, Integer value2) {
+            addCriterion("origin between", value1, value2, "origin");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginNotBetween(Integer value1, Integer value2) {
+            addCriterion("origin not between", value1, value2, "origin");
             return (Criteria) this;
         }
 
@@ -721,6 +771,66 @@ public class ITArticleCriteria {
 
         public Criteria andCreateOnNotBetween(Long value1, Long value2) {
             addCriterion("create_on not between", value1, value2, "createOn");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleIsNull() {
+            addCriterion("module is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleIsNotNull() {
+            addCriterion("module is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleEqualTo(Integer value) {
+            addCriterion("module =", value, "module");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleNotEqualTo(Integer value) {
+            addCriterion("module <>", value, "module");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleGreaterThan(Integer value) {
+            addCriterion("module >", value, "module");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleGreaterThanOrEqualTo(Integer value) {
+            addCriterion("module >=", value, "module");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleLessThan(Integer value) {
+            addCriterion("module <", value, "module");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleLessThanOrEqualTo(Integer value) {
+            addCriterion("module <=", value, "module");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleIn(List<Integer> values) {
+            addCriterion("module in", values, "module");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleNotIn(List<Integer> values) {
+            addCriterion("module not in", values, "module");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleBetween(Integer value1, Integer value2) {
+            addCriterion("module between", value1, value2, "module");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleNotBetween(Integer value1, Integer value2) {
+            addCriterion("module not between", value1, value2, "module");
             return (Criteria) this;
         }
     }

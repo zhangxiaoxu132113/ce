@@ -28,7 +28,7 @@ public class TestController {
     @RequestMapping(value = "/test")
     public String test() {
 //        new Thread(new FetchArticleUrlCrawlTask(cacheManager)).start();
-        new FetchArticleUrlCrawlTask(cacheManager).start();
+        new Thread(new FetchArticleUrlCrawlTask(cacheManager)).start();
         return "test";
     }
 

@@ -34,6 +34,26 @@
         </property>
     </bean>
 
+    <!-- 抓取开源中国的资讯文章 -->
+    <bean id="jobTask03" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="quartzJob01"/>
+        </property>
+        <property name="targetMethod">
+            <value>fetchGreeArticle</value>
+        </property>
+    </bean>
+
+    <!-- 抓取深度开源文章 -->
+    <bean id="jobTask04" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="quartzJob01"/>
+        </property>
+        <property name="targetMethod">
+            <value>fetchOpen2Open</value>
+        </property>
+    </bean>
+
 
     <!-- 时间分配 -->
     <!-- 每分钟扫描待处理的单次任务 -->
@@ -42,7 +62,7 @@
             <ref bean="jobTask01"/>
         </property>
         <property name="cronExpression">
-            <value>0 8 22 19 3 ?</value>
+            <value>0 34 22 16 4 ?</value>
         </property>
     </bean>
 
@@ -52,7 +72,27 @@
             <ref bean="jobTask02"/>
         </property>
         <property name="cronExpression">
-            <value>0 59 20 19 3 ?</value>
+            <value>0 52 21 12 4 ?</value>
+        </property>
+    </bean>
+
+    <!-- 每分钟扫描待处理的单次任务 -->
+    <bean id="jobRunTime03" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobTask03"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 33 18 4 4 ?</value>
+        </property>
+    </bean>
+
+    <!-- 每分钟扫描待处理的单次任务 -->
+    <bean id="jobRunTime04" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobTask04"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 5 11 16 4 ?</value>
         </property>
     </bean>
 
@@ -63,7 +103,9 @@
             <list>
                 <ref bean="jobRunTime01"/>
                 <ref bean="jobRunTime02"/>
+                <ref bean="jobRunTime03"/>
+                <ref bean="jobRunTime04"/>
             </list>
         </property>
     </bean>
- </beans>
+</beans>

@@ -1,10 +1,9 @@
-package com.water.crawl.core;
+package com.water.crawl.utils.http;
 
-import com.water.crawl.utils.StringUtil;
+import com.water.crawl.utils.lang.StringUtil;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,23 +13,9 @@ import java.util.regex.Pattern;
  */
 public class DownloadImg {
 
-    public static void main(String[]args){
-        String hostName = null;
-        try {
-//            hostName = new URL("http://bbs.csdn.net/topics/390082054").toString();
-//            String topDomainUrl = getTopDomainWithoutSubdomain(hostName);
-//            System.out.println(topDomainUrl);
-              String picName = "haha.jpg";
-              picName = picName.substring(0,picName.lastIndexOf(".jpg") + ".jpg".length());
-            System.out.println("picName : " + picName);
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-    }
-
     /***
-     *
+     * 下载图片
+     * @param requestUrl   请求的网页链接
      * @param imgSrc       图片资源的uri路径
      * @param filePath     保存到本地的路径
      */

@@ -51,7 +51,7 @@ public class IBMArticleFactory implements IArticleFactory {
             article.setId(UUID.randomUUID().toString());
             article.setAuthor(author);
             article.setTitle(title);
-            article.setCategory("IBM");
+//            article.setCategory("IBM");
             article.setContent(content);
             article.setDescription(description);
             article.setReference(reference);
@@ -82,7 +82,7 @@ public class IBMArticleFactory implements IArticleFactory {
             article.setId(UUID.randomUUID().toString());
             article.setAuthor(author);
             article.setTitle(title);
-            article.setCategory("IBM");
+//            article.setCategory("IBM");
             article.setContent(content);
             article.setDescription(description);
             article.setReference(reference);
@@ -114,7 +114,7 @@ public class IBMArticleFactory implements IArticleFactory {
             article.setId(UUID.randomUUID().toString());
             article.setAuthor(author);
             article.setTitle(title);
-            article.setCategory("IBM");
+//            article.setCategory("IBM");
             article.setReleaseTime(createOn);
             article.setContent(content);
             article.setDescription(description);
@@ -146,7 +146,7 @@ public class IBMArticleFactory implements IArticleFactory {
             article.setId(UUID.randomUUID().toString());
             article.setAuthor(author);
             article.setTitle(title);
-            article.setCategory("IBM");
+//            article.setCategory("IBM");
             article.setContent(content);
             article.setDescription(description);
             article.setReference(reference);

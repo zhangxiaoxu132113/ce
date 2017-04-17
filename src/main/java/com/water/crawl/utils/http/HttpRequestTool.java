@@ -1,6 +1,7 @@
-package com.water.crawl.utils;
+package com.water.crawl.utils.http;
 
 import com.alibaba.fastjson.JSON;
+import com.water.crawl.utils.CookieConfig;
 import org.apache.http.*;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpRequestRetryHandler;
@@ -139,16 +140,16 @@ public class HttpRequestTool {
         HttpGet get = null;
         Object obj = null;
         try {
+            get = new HttpGet(requestUrl);
             client = HttpClients.custom()
                     .setRetryHandler(setRequestRetryCount(get, requestUrl, 3))
                     .setDefaultCookieStore(setCookies(cookieConfig))
                     .build();
-            get = new HttpGet(requestUrl);
             HttpContext localContext = new BasicHttpContext();
             RequestConfig config = RequestConfig.custom()
-                    .setConnectionRequestTimeout(1000)
-                    .setConnectTimeout(1000)
-                    .setSocketTimeout(1000)
+                    .setConnectionRequestTimeout(20000)
+                    .setConnectTimeout(20000)
+                    .setSocketTimeout(20000)
                     .build();
             get.setConfig(config);// 设置请求超时时间
             if (headerMap != null && headerMap.entrySet().size() > 0) {
@@ -320,11 +321,12 @@ public class HttpRequestTool {
     }
 
     public static void main(String[] args) {
-        for (int i=0;i <30;i++) {
-            HttpRequestTool.getRequest("http://www.tuicool.com/articles/fUBZnyB", false);
-            System.out.println("visite " + i);
-        }
-
+//        for (int i=0;i <30;i++) {
+//            HttpRequestTool.getRequest("http://www.tuicool.com/articles/fUBZnyB", false);
+//            System.out.println("visite " + i);
+//        }
+        String result = (String) HttpRequestTool.getRequest("https://www.oschina.net/news/81722/saltops-0-2-0",false);
+        System.out.println(result);
     }
 
 

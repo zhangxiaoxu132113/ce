@@ -1,0 +1,145 @@
+[
+  {
+    "id": "www.ibm.com",
+    "description": "ibm开发者社区",
+    "module": [
+      {
+        "mid": "article",
+
+        "ruleList": [
+          {
+            "id": "title",
+            "rule": [
+              "title",
+              "title",
+              "title"
+            ],
+            "get": "html"
+          },
+          {
+            "id": "author",
+            "rule": [
+              "a.ibm-popup-link",
+              ".dw-article-ps-author",
+              ".dw-article-authordate"
+            ],
+            "get": "text"
+          },
+          {
+            "id": "content",
+            "rule": [
+              ".ibm-col-1-1",
+              ".ibm-col-6-4",
+              ".ibm-col-6-4"
+            ],
+            "get": "html"
+          },{
+            "id":"description",
+            "rule":[
+              "meta[name=description]",
+              "meta[name=description]",
+              "meta[name=description]"
+            ],
+            "get":"attr:content"
+          },{
+            "id":"releaseTime",
+            "rule":[".dw-summary-date","#dw-article-ps-dat",".dw-article-pubdate"],
+            "get":"html"
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "id": "CSDN",
+    "description": "CSDN",
+    "module": [
+      {
+        "mid": "knowledge_base",
+        "ruleList": [
+          {
+            "id": "author",
+            "rule": [
+              ".author a"
+            ],
+            "get": "ownText"
+          },
+          {
+            "id": "title",
+            "rule": [
+              ".maincontent h1"
+            ],
+            "get": "ownText"
+          },
+          {
+            "id": "content",
+            "rule": [
+              ".divtexts"
+            ],
+            "get": "html"
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "id": "OpenChina",
+    "description": "Article",
+    "module": [
+      {
+        "mid": "Article",
+        "ruleList": [
+          {
+            "id": "title",
+            "rule": [
+              ".news-content h1"
+            ],
+            "get": "ownText"
+          },
+          {
+            "id": "content",
+            "rule": [
+              ".editor-viewer"
+            ],
+            "get": "html"
+          },
+          {
+            "id":"reference",
+            "rule": [
+              ".link-list"
+            ],
+            "get":"html"
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "id": "open-open",
+    "description": "深度开源经验",
+    "module": [
+      {
+        "mid": "Article",
+        "ruleList": [
+          {
+            "id": "title",
+            "rule": [
+              "#articleTitle"
+            ],
+            "get": "text"
+          },
+          {
+            "id": "content",
+            "rule": [
+              "#readercontainer"
+            ],
+            "get": "html"
+          }
+        ]
+      }
+    ]
+  }
+]

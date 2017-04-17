@@ -96,7 +96,7 @@ public class WaterHtmlParse {
         for (Element linkEle : linkElements){
             String url = linkEle.absUrl("href");
             if (StringUtils.isNotBlank(url) && (url.startsWith("http")||url.startsWith("https"))) {
-                System.out.println(url);
+//                System.out.println(url);
                 hrefLists.add(url);
             }
 

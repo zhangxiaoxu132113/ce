@@ -1,13 +1,13 @@
-package com.water.crawl.utils;
+package com.water.crawl.utils.lang;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
  * Created by mrwater on 2016/11/27.
  */
 public class StringUtil {
+    public static Calendar calendar = Calendar.getInstance();
 
     /**
      * 获取网站的一级域名
@@ -69,25 +70,12 @@ public class StringUtil {
         return sb.toString();
     }
 
-
-    public static void main(String[] args) {
-        String url = "https://www.oschina.net/blog?classification=428602";
-        Map<String, String> getParams = new HashMap<String, String>();
-        String[] strs = url.split("[?]");
-        if (strs.length == 2) {
-            String str = strs[1];
-            strs = str.split("&");
-            if (strs.length > 0) {
-                for (int i = 0; i < strs.length; i++) {
-                    String[] queryArr = strs[i].split("=");
-                    if (queryArr.length == 2){
-                        getParams.put(queryArr[0],queryArr[1]);
-                    }
-                }
-            }
-        }
-    }
-
+    /**
+     * 根据URL链接获取参数
+     *
+     * @param url
+     * @return
+     */
     public static Map<String, String> getParamWithUrl(String url) {
         Map<String, String> getParams = null;
         if (StringUtils.isNotBlank(url)) {
@@ -99,13 +87,31 @@ public class StringUtil {
                 if (strs.length > 0) {
                     for (int i = 0; i < strs.length; i++) {
                         String[] queryArr = strs[i].split("=");
-                        if (queryArr.length == 2){
-                            getParams.put(queryArr[0],queryArr[1]);
+                        if (queryArr.length == 2) {
+                            getParams.put(queryArr[0], queryArr[1]);
                         }
                     }
                 }
             }
         }
         return getParams;
+    }
+
+    public static String uuid() {
+        return UUID.randomUUID().toString();
+    }
+
+    /**
+     * 生成11长度的uid
+     */
+    public static String generateShortUid() {
+        String uid = String.valueOf(calendar.getTime().getTime()); //13位数字
+        uid = uid.substring(5, uid.length());                      //取后面8位
+        uid = new java.util.Random().nextInt(900)+100 + uid;       //随机生成3位 拼接后 8位数字
+        return uid;
+    }
+
+    public static void main(String[] args) throws MalformedURLException {
+//
     }
 }

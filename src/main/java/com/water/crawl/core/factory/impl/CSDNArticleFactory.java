@@ -27,7 +27,7 @@ public class CSDNArticleFactory implements IArticleFactory {
             article.setContent(content);
 //        article.setReleaseTime();
             article.setDescryptUrl(decryptUrl);
-            article.setCategory(Constant.ArticleCategory.CSDN.getName());
+//            article.setCategory(Constant.ArticleCategory.CSDN.getName());
             article.setCreateOn(System.currentTimeMillis());
         } catch (Exception e) {
             article = null;

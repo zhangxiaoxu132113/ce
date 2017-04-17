@@ -11,7 +11,9 @@ public class ITArticle implements Serializable {
 
     private String author;
 
-    private String category;
+    private Integer category;
+
+    private Integer origin;
 
     private String reference;
 
@@ -20,6 +22,8 @@ public class ITArticle implements Serializable {
     private String releaseTime;
 
     private Long createOn;
+
+    private Integer module;
 
     private String content;
 
@@ -57,12 +61,20 @@ public class ITArticle implements Serializable {
         this.author = author == null ? null : author.trim();
     }
 
-    public String getCategory() {
+    public Integer getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
-        this.category = category == null ? null : category.trim();
+    public void setCategory(Integer category) {
+        this.category = category;
+    }
+
+    public Integer getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(Integer origin) {
+        this.origin = origin;
     }
 
     public String getReference() {
@@ -95,6 +107,14 @@ public class ITArticle implements Serializable {
 
     public void setCreateOn(Long createOn) {
         this.createOn = createOn;
+    }
+
+    public Integer getModule() {
+        return module;
+    }
+
+    public void setModule(Integer module) {
+        this.module = module;
     }
 
     public String getContent() {

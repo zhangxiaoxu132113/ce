@@ -10,4 +10,7 @@ public interface ITArticleService {
      * @return Integer
      */
     Integer addArticle(ITArticle article);
+
+
+    void consummateArticle(ITArticle article, int origin, int category, String descryptUrl);
 }

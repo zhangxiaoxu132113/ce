@@ -5,7 +5,7 @@ import com.water.crawl.db.dao.ITLibMapper;
 import com.water.crawl.db.model.ITLib;
 import com.water.crawl.db.service.article.ICSDNArticleService;
 import com.water.crawl.utils.Constant;
-import com.water.crawl.utils.HttpRequestTool;
+import com.water.crawl.utils.http.HttpRequestTool;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -59,7 +59,7 @@ public class CSDNArticleServiceImpl extends ITArticleServiceImpl implements ICSD
                     itLib.setUrl(link);
                     itLib.setPic(pic);
                     itLib.setBgPic(bgPic);
-                    itLib.setCategory(Constant.ArticleCategory.CSDN.getIndex());
+//                    itLib.setCategory(Constant.ArticleCategory.CSDN.getIndex());
                     itLib.setCreateOn(System.currentTimeMillis());
                     effectCount += itLibMapper.insert(itLib);
                 }

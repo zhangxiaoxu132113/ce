@@ -6,11 +6,13 @@
     <result column="title" property="title" jdbcType="VARCHAR" />
     <result column="description" property="description" jdbcType="VARCHAR" />
     <result column="author" property="author" jdbcType="VARCHAR" />
-    <result column="category" property="category" jdbcType="VARCHAR" />
+    <result column="category" property="category" jdbcType="INTEGER" />
+    <result column="origin" property="origin" jdbcType="INTEGER" />
     <result column="reference" property="reference" jdbcType="VARCHAR" />
     <result column="descrypt_url" property="descryptUrl" jdbcType="VARCHAR" />
     <result column="release_time" property="releaseTime" jdbcType="VARCHAR" />
     <result column="create_on" property="createOn" jdbcType="BIGINT" />
+    <result column="module" property="module" jdbcType="INTEGER" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="com.water.crawl.db.model.ITArticle" extends="BaseResultMap" >
     <result column="content" property="content" jdbcType="LONGVARCHAR" />
@@ -74,8 +76,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, title, description, author, category, reference, descrypt_url, release_time, 
-    create_on
+    id, title, description, author, category, origin, reference, descrypt_url, release_time, 
+    create_on, module
   </sql>
   <sql id="Blob_Column_List" >
     content
@@ -130,13 +132,15 @@
   </delete>
   <insert id="insert" parameterType="com.water.crawl.db.model.ITArticle" >
     insert into it_article (id, title, description, 
-      author, category, reference, 
-      descrypt_url, release_time, create_on, 
-      content)
+      author, category, origin, 
+      reference, descrypt_url, release_time, 
+      create_on, module, content
+      )
     values (#{id,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
-      #{author,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, #{reference,jdbcType=VARCHAR}, 
-      #{descryptUrl,jdbcType=VARCHAR}, #{releaseTime,jdbcType=VARCHAR}, #{createOn,jdbcType=BIGINT}, 
-      #{content,jdbcType=LONGVARCHAR})
+      #{author,jdbcType=VARCHAR}, #{category,jdbcType=INTEGER}, #{origin,jdbcType=INTEGER}, 
+      #{reference,jdbcType=VARCHAR}, #{descryptUrl,jdbcType=VARCHAR}, #{releaseTime,jdbcType=VARCHAR}, 
+      #{createOn,jdbcType=BIGINT}, #{module,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.water.crawl.db.model.ITArticle" >
     insert into it_article
@@ -156,6 +160,9 @@
       <if test="category != null" >
         category,
       </if>
+      <if test="origin != null" >
+        origin,
+      </if>
       <if test="reference != null" >
         reference,
       </if>
@@ -167,6 +174,9 @@
       </if>
       <if test="createOn != null" >
         create_on,
+      </if>
+      <if test="module != null" >
+        module,
       </if>
       <if test="content != null" >
         content,
@@ -186,7 +196,10 @@
         #{author,jdbcType=VARCHAR},
       </if>
       <if test="category != null" >
-        #{category,jdbcType=VARCHAR},
+        #{category,jdbcType=INTEGER},
+      </if>
+      <if test="origin != null" >
+        #{origin,jdbcType=INTEGER},
       </if>
       <if test="reference != null" >
         #{reference,jdbcType=VARCHAR},
@@ -199,6 +212,9 @@
       </if>
       <if test="createOn != null" >
         #{createOn,jdbcType=BIGINT},
+      </if>
+      <if test="module != null" >
+        #{module,jdbcType=INTEGER},
       </if>
       <if test="content != null" >
         #{content,jdbcType=LONGVARCHAR},
@@ -227,7 +243,10 @@
         author = #{record.author,jdbcType=VARCHAR},
       </if>
       <if test="record.category != null" >
-        category = #{record.category,jdbcType=VARCHAR},
+        category = #{record.category,jdbcType=INTEGER},
+      </if>
+      <if test="record.origin != null" >
+        origin = #{record.origin,jdbcType=INTEGER},
       </if>
       <if test="record.reference != null" >
         reference = #{record.reference,jdbcType=VARCHAR},
@@ -240,6 +259,9 @@
       </if>
       <if test="record.createOn != null" >
         create_on = #{record.createOn,jdbcType=BIGINT},
+      </if>
+      <if test="record.module != null" >
+        module = #{record.module,jdbcType=INTEGER},
       </if>
       <if test="record.content != null" >
         content = #{record.content,jdbcType=LONGVARCHAR},
@@ -255,11 +277,13 @@
       title = #{record.title,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       author = #{record.author,jdbcType=VARCHAR},
-      category = #{record.category,jdbcType=VARCHAR},
+      category = #{record.category,jdbcType=INTEGER},
+      origin = #{record.origin,jdbcType=INTEGER},
       reference = #{record.reference,jdbcType=VARCHAR},
       descrypt_url = #{record.descryptUrl,jdbcType=VARCHAR},
       release_time = #{record.releaseTime,jdbcType=VARCHAR},
       create_on = #{record.createOn,jdbcType=BIGINT},
+      module = #{record.module,jdbcType=INTEGER},
       content = #{record.content,jdbcType=LONGVARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -271,11 +295,13 @@
       title = #{record.title,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       author = #{record.author,jdbcType=VARCHAR},
-      category = #{record.category,jdbcType=VARCHAR},
+      category = #{record.category,jdbcType=INTEGER},
+      origin = #{record.origin,jdbcType=INTEGER},
       reference = #{record.reference,jdbcType=VARCHAR},
       descrypt_url = #{record.descryptUrl,jdbcType=VARCHAR},
       release_time = #{record.releaseTime,jdbcType=VARCHAR},
-      create_on = #{record.createOn,jdbcType=BIGINT}
+      create_on = #{record.createOn,jdbcType=BIGINT},
+      module = #{record.module,jdbcType=INTEGER}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -293,7 +319,10 @@
         author = #{author,jdbcType=VARCHAR},
       </if>
       <if test="category != null" >
-        category = #{category,jdbcType=VARCHAR},
+        category = #{category,jdbcType=INTEGER},
+      </if>
+      <if test="origin != null" >
+        origin = #{origin,jdbcType=INTEGER},
       </if>
       <if test="reference != null" >
         reference = #{reference,jdbcType=VARCHAR},
@@ -307,6 +336,9 @@
       <if test="createOn != null" >
         create_on = #{createOn,jdbcType=BIGINT},
       </if>
+      <if test="module != null" >
+        module = #{module,jdbcType=INTEGER},
+      </if>
       <if test="content != null" >
         content = #{content,jdbcType=LONGVARCHAR},
       </if>
@@ -318,11 +350,13 @@
     set title = #{title,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       author = #{author,jdbcType=VARCHAR},
-      category = #{category,jdbcType=VARCHAR},
+      category = #{category,jdbcType=INTEGER},
+      origin = #{origin,jdbcType=INTEGER},
       reference = #{reference,jdbcType=VARCHAR},
       descrypt_url = #{descryptUrl,jdbcType=VARCHAR},
       release_time = #{releaseTime,jdbcType=VARCHAR},
       create_on = #{createOn,jdbcType=BIGINT},
+      module = #{module,jdbcType=INTEGER},
       content = #{content,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -331,11 +365,13 @@
     set title = #{title,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       author = #{author,jdbcType=VARCHAR},
-      category = #{category,jdbcType=VARCHAR},
+      category = #{category,jdbcType=INTEGER},
+      origin = #{origin,jdbcType=INTEGER},
       reference = #{reference,jdbcType=VARCHAR},
       descrypt_url = #{descryptUrl,jdbcType=VARCHAR},
       release_time = #{releaseTime,jdbcType=VARCHAR},
-      create_on = #{createOn,jdbcType=BIGINT}
+      create_on = #{createOn,jdbcType=BIGINT},
+      module = #{module,jdbcType=INTEGER}
     where id = #{id,jdbcType=VARCHAR}
   </update>
   <select resultMap="ResultMapWithBLOBs" parameterType="com.water.crawl.db.model.ITArticleCriteria" id="selectByExampleWithBLOBsWithRowbounds" >
@@ -369,12 +405,13 @@
     </if>
   </select>
   <insert id="insertBatch" >
-    insert into it_article (id, title, description, author, category, reference, descrypt_url, release_time, create_on, content) values 
+    insert into it_article (id, title, description, author, category, origin, reference, descrypt_url, release_time, create_on, module, content) values 
     <foreach collection="list" item="item" index="index" separator="," >
       (#{item.id,jdbcType=VARCHAR}, #{item.title,jdbcType=VARCHAR}, #{item.description,jdbcType=VARCHAR}, 
-        #{item.author,jdbcType=VARCHAR}, #{item.category,jdbcType=VARCHAR}, #{item.reference,jdbcType=VARCHAR}, 
-        #{item.descryptUrl,jdbcType=VARCHAR}, #{item.releaseTime,jdbcType=VARCHAR}, #{item.createOn,jdbcType=BIGINT}, 
-        #{item.content,jdbcType=LONGVARCHAR})
+        #{item.author,jdbcType=VARCHAR}, #{item.category,jdbcType=INTEGER}, #{item.origin,jdbcType=INTEGER}, 
+        #{item.reference,jdbcType=VARCHAR}, #{item.descryptUrl,jdbcType=VARCHAR}, #{item.releaseTime,jdbcType=VARCHAR}, 
+        #{item.createOn,jdbcType=BIGINT}, #{item.module,jdbcType=INTEGER}, #{item.content,jdbcType=LONGVARCHAR}
+        )
     </foreach>
   </insert>
 </mapper>

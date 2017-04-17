@@ -1,6 +1,7 @@
 package com.water.crawl.db.model;
 
-import com.water.crawl.core.WaterHtmlParse;
+
+import com.water.crawl.utils.html.HtmlParseUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -52,7 +53,7 @@ public class Html {
                 this.url = url;
                 this.responseStatus = httpResponse.getStatusLine().getStatusCode();
                 this.body = EntityUtils.toString(httpResponse.getEntity(), "gb2312");
-                this.title = WaterHtmlParse.getPageTitle(body);
+                this.title = HtmlParseUtils.getPageTitle(body);
                 System.out.println("请求资源地址 =【" + url + "】响应状态码 = 【" + responseStatus + "】标题 = 【" + title + "】");
             }
         } catch (IOException e) {

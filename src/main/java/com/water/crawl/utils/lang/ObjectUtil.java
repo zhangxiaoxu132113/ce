@@ -1,4 +1,4 @@
-package com.water.crawl.utils;
+package com.water.crawl.utils.lang;
 
 
 import java.io.ByteArrayInputStream;
