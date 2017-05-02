@@ -7,7 +7,9 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +18,26 @@ import java.util.regex.Pattern;
  */
 public class StringUtil {
 
+    public static Set<String> staticResourceNames = new HashSet<String>();
+    static {
+        initStaticResourceNames();
+    }
+
+    public static void initStaticResourceNames() {
+        staticResourceNames.add("js");
+        staticResourceNames.add("css");
+        staticResourceNames.add("jpg");
+        staticResourceNames.add("png");
+    }
+
+    public static boolean isRequestStaticResourceUrl(String url) {
+        if (StringUtils.isNotBlank(url)) {
+            for (String srn : staticResourceNames) {
+                if (url.contains(srn)) return true;
+            }
+        }
+        return false;
+    }
     /**
      * 获取网站的一级域名
      *

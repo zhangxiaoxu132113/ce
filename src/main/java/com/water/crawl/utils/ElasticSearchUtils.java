@@ -38,7 +38,7 @@ public class ElasticSearchUtils {
             Settings settings = org.elasticsearch.common.settings.Settings.builder().put("cluster.name", "my-application").build();
             //创建client
             client = new PreBuiltTransportClient(settings)
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("119.23.71.245"), 9300));
         } catch (Exception e) {
             logger.error(e);
         }

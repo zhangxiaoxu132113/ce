@@ -10,11 +10,9 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
@@ -22,6 +20,10 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
@@ -160,7 +162,7 @@ public class HttpRequestTool {
                 }
                 get.setHeaders(headers); //设置请求头信息
             } else {
-                Header header = new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+                Header header = new BasicHeader("User-Agent", UARandomUtil.getPCUA());
                 get.setHeader(header);
             }
             CloseableHttpResponse response = client.execute(get, localContext);
@@ -319,14 +321,30 @@ public class HttpRequestTool {
         }
     }
 
-    public static void main(String[] args) {
-        for (int i=0;i <30;i++) {
-            HttpRequestTool.getRequest("http://www.tuicool.com/articles/fUBZnyB", false);
-            System.out.println("visite " + i);
-        }
+    public static void main(String[] args) throws Exception {
+        getJavaThreadBook();
+    }
 
+    public static void getJavaThreadBook() {
+        String root_url = "http://ifeve.com/java-7-concurrency-cookbook/";
+        String pageHtml = (String) getRequest(root_url);
+        Document doc = Jsoup.parse(pageHtml);
+
+        Elements baseEle = doc.select(".post_content");
+        Elements titleEles = baseEle.select("h3");
+        Elements secondTitleEles = baseEle.select("ol");
+        int total = 8;
+        for (int i = 0; i < total; i++) {
+            Element titleEle = titleEles.get(i + 1);
+            Element secondTitleEle = secondTitleEles.get(i);
+            System.out.println(titleEle.text());
+            Elements linkEles = secondTitleEle.select("li > a");
+            for (Element linkEle : linkEles) {
+                System.out.println(linkEle.text() + "\t\t" + linkEle.absUrl("href"));
+            }
+
+        }
     }
 
 
 }
-

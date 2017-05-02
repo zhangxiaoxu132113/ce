@@ -18,7 +18,6 @@ public class RedisConfig {
     private ShardedJedisPool shardedJedisPool;
 
     @Bean(name = "redisCacheManager")
-    @Scope("singleton")
     public CacheManager getCacheManager() {
         return new RedisCacheManagerImpl(shardedJedisPool);
     }

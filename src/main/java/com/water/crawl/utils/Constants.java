@@ -14,6 +14,8 @@ import java.util.Properties;
  */
 public class Constants {
     public static Properties properties;
+    private static String ACCESS_LOG_PATH = "access.log.path";
+
 
     static {
         Resource resource = new ClassPathResource("/crawl/config.properties");
@@ -24,9 +26,7 @@ public class Constants {
         }
     }
 
-    public static class RequestHeaders {
-        public static String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36";
-
-        public static String HOST_WEIBO = "weibo.com";
+    public static String getACCESS_LOG_PATH() {
+        return (String) properties.get(ACCESS_LOG_PATH);
     }
 }

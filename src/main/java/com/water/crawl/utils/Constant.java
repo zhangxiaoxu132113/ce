@@ -34,4 +34,11 @@ public class Constant {
             return name;
         }
     }
+
+    /**
+     * 第三方api接口信息
+     */
+    public static class API {
+        public static String QUERY_IP = "http://ip.taobao.com/service/getIpInfo.php?ip=%s"; //查询IP地址信息
+    }
 }
