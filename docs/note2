@@ -1,0 +1,117 @@
+
+  ***********************
+  *  思维导图库的设计      *
+  ***********************
+  --------------------------------------------------------------------------------------------
+  user - 用户表，关联了it_map这张表，意味着用户可以创建思维导图
+  user - 【用户表】
+    id          主键
+    name        用户名
+  --------------------------------------------------------------------------------------------
+  it_map - 【思维导图表】
+    id          主键
+    user_id     用户主键
+    lib_id      知识库主键
+    name        思维导图
+    parent_id   父节点
+    level       等级
+    create_on   创建时间
+
+    备注:关联了用户和it_lib库这张表
+  --------------------------------------------------------------------------------------------
+  it_lib - 【知识库】
+    id          主键
+    name        知识库名称
+    create_on   创建时间
+  --------------------------------------------------------------------------------------------
+  it_article - 【文章】
+    id             主键
+    title          文章标题
+    description    文章简介描述
+    author         文章作者
+    origin         文章来源（such as：IBM,CSDN）
+    category       文章分类（技术博文，资讯文章，教程文章）
+    tag            文章标签（多个用逗号分开）
+    content        文章内容
+    reference      文章参考列表
+    release_time   文章发布时间（如果抓取不到，则设置为create_on同值）
+    create_on      文章创建时间
+  --------------------------------------------------------------------------------------------
+  it_map_article - 【思维导图和文章的关联表】
+    id          主键
+    article_id  文章主键
+    map_id      思维导图主键
+    create_on   创建时间
+
+    备注：找到关联的思维导图下的所有文章。【一对多关系】
+  --------------------------------------------------------------------------------------------
+
+  ***********************
+  *  教程的数据库表的设计  *
+  ***********************
+  --------------------------------------------------------------------------------------------
+  it_course_topics - 【教程主题】
+  id                 主键
+  name               教程名称
+  parent_id          父节点教程
+  sort               排序
+  description        描述
+  create_on          创建时间
+  --------------------------------------------------------------------------------------------
+  it_course        - 【课程】
+  id                 主键
+  topic_id           所属教程主题id
+  name               教程名称
+  parent_id          父节点教程
+  sort               排序
+  create_on          创建时间
+
+  public static void fetchCourseTopics() {
+          String requestUrl = "http://www.yiibai.com/";
+          String htmlPage = (String) HttpRequestTool.getRequest(requestUrl, false);
+          if (htmlPage == null) return;
+          Document doc = Jsoup.parse(htmlPage);
+          Elements itemElements = doc.select(".item");
+          for (Element item : itemElements) {
+              String parentNode = item.select("h2").text();
+              System.out.println("教程专题：" + parentNode);
+              Elements sonElements = item.select(".blogroll a");
+              for (Element sonEle : sonElements) {
+                  String sonNode = sonEle.text();
+                  String description = sonEle.attr("title");
+                  String url = sonEle.absUrl("href");
+                  if (StringUtils.isNotBlank(url)) {
+                      System.out.println("开始抓取 -> " + sonNode + " - > " + url);
+                      htmlPage = (String) HttpRequestTool.getRequest(url, false);
+                      if (htmlPage == null) continue;
+                      Document sonDoc = Jsoup.parse(htmlPage);
+                      Elements menus = sonDoc.select(".pagemenu li a");
+                      for (Element oneItem : menus) {
+                          String title = oneItem.text();
+                          String articleUrl = oneItem.absUrl("href");
+                          System.out.println("标题:" + title + " | 链接=" + articleUrl);
+                      }
+                  }
+                  System.out.println(sonNode + ":" + description);
+              }
+              System.out.println("---------------------------------------------------------------------------------");
+          }
+  //        System.out.println(htmlPage);
+      }
+
+
+  快速构建自己的知识思维导图，提供了大量教程，用户可以收藏对应得教程
+
+    1，技术博文的展示
+        * 根据分类展示IT博文
+        * 给文章打标签
+        * 展示文章的时候会有一个面包屑，展示文章的所属
+
+    2，资讯
+        * 热门资讯
+        * 软件更新资讯
+
+    3，知识库
+        * 将所有的技术利用思维导图的模式管理起来
+        *
+
