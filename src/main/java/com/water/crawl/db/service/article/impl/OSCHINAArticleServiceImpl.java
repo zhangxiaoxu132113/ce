@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * Created by zhangmiaojie on 2017/3/2.
  */
-@Service("osCHINAArticleService")
+@Service
 public class OSCHINAArticleServiceImpl implements IOSCHINAArticleService {
     public static String CATEGORY_URL = "https://www.oschina.net/blog";
 

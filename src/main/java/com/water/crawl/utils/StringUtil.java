@@ -14,36 +14,37 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ *
  * Created by mrwater on 2016/11/27.
  */
 public class StringUtil {
-
     public static Set<String> staticResourceNames = new HashSet<String>();
     static {
         initStaticResourceNames();
     }
 
     public static void initStaticResourceNames() {
-        staticResourceNames.add("js");
-        staticResourceNames.add("css");
-        staticResourceNames.add("jpg");
-        staticResourceNames.add("png");
+        String filterStaticResource = Constants.getFILTER_STATIC_RESOURCE();
+        String[] resources = filterStaticResource.split(",");
+        for (String resource : resources) {
+            staticResourceNames.add(resource);
+        }
     }
 
+    /**
+     * 判断是否访问的是静态资源
+     */
     public static boolean isRequestStaticResourceUrl(String url) {
         if (StringUtils.isNotBlank(url)) {
             for (String srn : staticResourceNames) {
-                if (url.contains(srn)) return true;
+                if (url.lastIndexOf(srn) != -1) return true;
             }
         }
         return false;
     }
+
     /**
      * 获取网站的一级域名
-     *
-     * @param url
-     * @return
-     * @throws MalformedURLException
      */
     public static String getTopDomainWithoutSubdomain(String url) throws MalformedURLException {
         String host = new URL(url).getHost().toLowerCase();// 此处获取值转换为小写
@@ -57,9 +58,6 @@ public class StringUtil {
 
     /**
      * unicode编码
-     *
-     * @param str
-     * @return
      */
     public static String decodeUnicode(String str) {
         Charset set = Charset.forName("UTF-16");
@@ -110,6 +108,9 @@ public class StringUtil {
         }
     }
 
+    /**
+     * 获取url的参数
+     */
     public static Map<String, String> getParamWithUrl(String url) {
         Map<String, String> getParams = null;
         if (StringUtils.isNotBlank(url)) {

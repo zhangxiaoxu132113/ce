@@ -15,7 +15,7 @@ import java.util.Properties;
 public class Constants {
     public static Properties properties;
     private static String ACCESS_LOG_PATH = "access.log.path";
-
+    private static String FILTER_STATIC_RESOURCE = "filter.static.resource";
 
     static {
         Resource resource = new ClassPathResource("/crawl/config.properties");
@@ -28,5 +28,9 @@ public class Constants {
 
     public static String getACCESS_LOG_PATH() {
         return (String) properties.get(ACCESS_LOG_PATH);
+    }
+
+    public static String getFILTER_STATIC_RESOURCE() {
+        return (String) properties.get(FILTER_STATIC_RESOURCE);
     }
 }

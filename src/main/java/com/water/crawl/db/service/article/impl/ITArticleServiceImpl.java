@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service("iTArticleService")
+@Service
 public class ITArticleServiceImpl implements ITArticleService {
     @Resource
     private ITArticleMapper iTArticleMapper;
@@ -79,4 +79,6 @@ public class ITArticleServiceImpl implements ITArticleService {
         }
         return itLibMapper.selectByExample(itLibCriteria);
     }
+
+
 }

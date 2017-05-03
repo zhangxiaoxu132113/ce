@@ -22,13 +22,12 @@ import java.util.UUID;
  */
 public class TaskQuartz {
     private static Log LOG = LogFactory.getLog(TaskQuartz.class);
-
     public static void main(String[] args) {
 
     }
 
     /**
-     * 统计上一天的服务器访问日志
+     * 统计前一天的服务器访问日志
      */
     public void handleAccessLog() {
         String filePattern = "localhost_access_log.%s.txt";

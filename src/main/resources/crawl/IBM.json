@@ -72,5 +72,31 @@
         ]
       }
     ]
+  },
+
+  {
+    "id": "open-open",
+    "description": "深度开源经验",
+    "module": [
+      {
+        "mid": "Article",
+        "ruleList": [
+          {
+            "id": "title",
+            "rule": [
+              "#articleTitle"
+            ],
+            "get": "text"
+          },
+          {
+            "id": "content",
+            "rule": [
+              "#readercontainer"
+            ],
+            "get": "html"
+          }
+        ]
+      }
+    ]
   }
 ]
