@@ -6,10 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.water.crawl.core.CrawlAction;
 import com.water.crawl.core.factory.IArticleFactory;
 import com.water.crawl.core.factory.impl.ArticleFactory;
-import com.water.crawl.db.dao.CourseSubjectMapper;
-import com.water.crawl.db.dao.ITArticleMapper;
-import com.water.crawl.db.dao.ITCategoryMapper;
-import com.water.crawl.db.dao.ITCourseMapper;
+import com.water.crawl.db.dao.*;
 import com.water.crawl.db.model.*;
 import com.water.crawl.db.service.IBMArticleService;
 import com.water.crawl.db.service.ICSDNArticleService;
@@ -55,13 +52,13 @@ public class FetchArticleTask {
     private IArticleService esArticleService;
 
     @Resource
-    private ITCourseMapper courseMapper;
-
-    @Resource
     private ITCategoryMapper categoryMapper;
 
     @Resource
     private CourseSubjectMapper courseSubjectMapper;
+
+    @Resource
+    private CourseMapper courseMapper;
 
     private Gson gson = new Gson();
 
@@ -96,7 +93,7 @@ public class FetchArticleTask {
         for (String url : articleCategoryUrls) {
             System.out.println("开始抓取 ： " + url);
 
-            Map<String, String> paramMap = new HashMap<>();
+            Map<String, String> paramMap = new HashMap<String, String>();
             for (int i = 1; true; i++) {//循环获取所有模块下每个页面的文章
                 paramMap.put("start", String.valueOf(i + (i - 1) * 100));
                 paramMap.put("end", String.valueOf(i * 100));
@@ -128,9 +125,9 @@ public class FetchArticleTask {
         crawlAction.work();
 
         int count = 1;
-        Map<String, String> queryMap = new HashMap<>();
+        Map<String, String> queryMap = new HashMap<String, String>();
         List<ITLib> itLibList = icsdnArticleService.getAllLibCategory();
-        Set<String> linkSet = new HashSet<>();
+        Set<String> linkSet = new HashSet<String>();
         IArticleFactory articleFactory = ArticleFactory.build(ArticleFactory.FactoryConfig.CSDN);
         for (ITLib itLib : itLibList) { //遍历每一个知识点
             String html = (String) HttpRequestTool.getRequest(itLib.getUrl(), false);
@@ -232,7 +229,7 @@ public class FetchArticleTask {
             course.setName(title);
             course.setParentId(null);
             course.setCreateOn(System.currentTimeMillis());
-            courseMapper.insert(course);
+//            courseMapper.insert(course);
             Elements linkEles = secondTitleEle.select("li > a");
             for (Element linkEle : linkEles) {
                 System.out.println(linkEle.text() + "\t\t" + linkEle.absUrl("href"));
@@ -306,7 +303,7 @@ public class FetchArticleTask {
     }
 
     public void importArticle2Es() {
-        Map<String, Object> queryMap = new HashMap<>();
+        Map<String, Object> queryMap = new HashMap<String, Object>();
         String id = "";
         queryMap.put("count", 100);
         while (true) {
@@ -323,6 +320,25 @@ public class FetchArticleTask {
     }
 
     public void fetchCourse2() {
+        CrawlAction crawlAction = new CrawlAction("YIBAI", "Article") {
+            @Override
+            public void action(JsonObject obj) {
+                String json = obj.toString();
+                Type type = new TypeToken<ITArticle>() {
+                }.getType();
+                ITArticle article = gson.fromJson(json, type);
+                if (article != null) {
+                    article.setId(UUID.randomUUID().toString());
+                    article.setCategory("yibai");
+                    if (ibmArticleService.addArticle(article) > 0) {
+                        com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
+                        BeanUtils.copyProperties(article, esArticle);
+                        esArticleService.addArticle(esArticle);
+                        this.setObj(article);
+                    }
+                }
+            }
+        };
         String rootUrl = "http://www.yiibai.com/";
         String page = null;
         Document doc = null;
@@ -362,10 +378,27 @@ public class FetchArticleTask {
                 page = (String) HttpRequestTool.getRequest(link);
                 doc = Jsoup.parse(page);
                 Elements titleElements = doc.select(".pagemenu > li > a");
+                byte sort = 1;
                 for (Element titleEle : titleElements) {
                     String title = titleEle.text();
                     String titleLink = titleEle.absUrl("href");
                     System.out.println(title);
+
+                    Course course = new Course();
+                    course.setId(StringUtil.uuid());
+                    course.setSort(sort);
+                    sort++;
+                    course.setTitle(title);
+                    course.setCreateOn(System.currentTimeMillis());
+                    course.setUpdateTime(System.currentTimeMillis());
+                    crawlAction.setUrl(titleLink);
+                    crawlAction.work();
+                    if (crawlAction.getObj() != null) {
+                        ITArticle article = (ITArticle) crawlAction.getObj();
+                        course.setArticleId(article.getId());
+                    }
+                    courseMapper.insert(course);
+
                 }
 
             }
@@ -374,6 +407,7 @@ public class FetchArticleTask {
     }
 
     public static void main(String[] args) {
+
         String rootUrl = "http://www.yiibai.com/";
         String page = null;
         Document doc = null;
@@ -415,6 +449,7 @@ public class FetchArticleTask {
                     String title = titleEle.text();
                     String titleLink = titleEle.absUrl("href");
                     System.out.println(title);
+
                 }
 
             }

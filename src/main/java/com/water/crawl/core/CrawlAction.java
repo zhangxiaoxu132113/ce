@@ -13,6 +13,7 @@ public abstract class CrawlAction<T> {
     private String id;
     private String module;
     private String url;
+    private Object obj;
     private static ExecutorService executorService = Executors.newFixedThreadPool(20);
 
     public CrawlAction(String id, String module, String url) {
@@ -42,4 +43,12 @@ public abstract class CrawlAction<T> {
     }
 
     public abstract void action(JsonObject obj);
+
+    public Object getObj() {
+        return obj;
+    }
+
+    public void setObj(Object obj) {
+        this.obj = obj;
+    }
 }

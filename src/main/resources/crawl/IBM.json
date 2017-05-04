@@ -98,5 +98,35 @@
         ]
       }
     ]
+  },
+
+  {
+    "id": "YIBAI",
+    "description": "一百教程",
+    "module": [
+      {
+        "mid": "Article",
+        "ruleList": [
+          {
+            "id": "title",
+            "rule": [
+              ".article-title"
+            ],
+            "get": "text"
+          },
+          {
+            "id": "content",
+            "rule": [
+              ".article-content"
+            ],
+            "get": "html"
+          }
+        ]
+      }
+    ]
   }
+
+
+
+
 ]
