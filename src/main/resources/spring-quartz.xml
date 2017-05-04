@@ -31,7 +31,7 @@
             <ref bean="quartzJob01"/>
         </property>
         <property name="targetMethod">
-            <value>fetchopen2open</value>
+            <value>fetchCourse2</value>
         </property>
     </bean>
 
@@ -63,7 +63,7 @@
             <ref bean="jobTask02" />
         </property>
         <property name="cronExpression">
-            <value>0 25 17 21 4 ?</value>
+            <value>0 17 16 4 5 ?</value>
         </property>
     </bean>
 

@@ -1,7 +1,7 @@
 package com.water.crawl.db.controller;
 
 import com.water.crawl.core.cache.CacheManager;
-import com.water.crawl.db.service.article.ICSDNArticleService;
+import com.water.crawl.db.service.ICSDNArticleService;
 import com.water.crawl.work.FetchArticleUrlCrawlTask;
 import com.water.es.api.Service.IArticleService;
 import org.springframework.web.bind.annotation.RequestMapping;

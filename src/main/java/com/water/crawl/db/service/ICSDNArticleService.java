@@ -1,4 +1,4 @@
-package com.water.crawl.db.service.article;
+package com.water.crawl.db.service;
 
 import com.water.crawl.db.model.ITLib;
 

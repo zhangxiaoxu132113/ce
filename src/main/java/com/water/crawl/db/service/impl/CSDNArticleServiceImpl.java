@@ -1,9 +1,9 @@
-package com.water.crawl.db.service.article.impl;
+package com.water.crawl.db.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.water.crawl.db.dao.ITLibMapper;
 import com.water.crawl.db.model.ITLib;
-import com.water.crawl.db.service.article.ICSDNArticleService;
+import com.water.crawl.db.service.ICSDNArticleService;
 import com.water.crawl.utils.Constant;
 import com.water.crawl.utils.HttpRequestTool;
 import org.jsoup.Jsoup;

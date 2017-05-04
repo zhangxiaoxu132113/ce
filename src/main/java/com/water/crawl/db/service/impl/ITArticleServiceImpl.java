@@ -1,14 +1,13 @@
-package com.water.crawl.db.service.article.impl;
+package com.water.crawl.db.service.impl;
 
 
-import com.water.crawl.core.factory.impl.ArticleFactory;
 import com.water.crawl.db.dao.ITArticleMapper;
 import com.water.crawl.db.dao.ITLibMapper;
 import com.water.crawl.db.model.ITArticle;
 import com.water.crawl.db.model.ITArticleCriteria;
 import com.water.crawl.db.model.ITLib;
 import com.water.crawl.db.model.ITLibCriteria;
-import com.water.crawl.db.service.article.ITArticleService;
+import com.water.crawl.db.service.ITArticleService;
 import com.water.crawl.utils.Constant;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
-package com.water.crawl.db.service.article.impl;
+package com.water.crawl.db.service.impl;
 
 import com.water.crawl.db.dao.ITCourseTopicsMapper;
-import com.water.crawl.db.service.article.ITCourseTopicsService;
+import com.water.crawl.db.service.ITCourseTopicsService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

@@ -6,10 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -130,5 +127,9 @@ public class StringUtil {
             }
         }
         return getParams;
+    }
+
+    public static String uuid() {
+        return UUID.randomUUID().toString();
     }
 }

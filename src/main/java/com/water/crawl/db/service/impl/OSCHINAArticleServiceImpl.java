@@ -1,6 +1,6 @@
-package com.water.crawl.db.service.article.impl;
+package com.water.crawl.db.service.impl;
 
-import com.water.crawl.db.service.article.IOSCHINAArticleService;
+import com.water.crawl.db.service.IOSCHINAArticleService;
 import com.water.crawl.utils.HttpRequestTool;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

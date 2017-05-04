@@ -6,16 +6,14 @@ import com.google.gson.reflect.TypeToken;
 import com.water.crawl.core.CrawlAction;
 import com.water.crawl.core.factory.IArticleFactory;
 import com.water.crawl.core.factory.impl.ArticleFactory;
+import com.water.crawl.db.dao.CourseSubjectMapper;
 import com.water.crawl.db.dao.ITArticleMapper;
 import com.water.crawl.db.dao.ITCategoryMapper;
 import com.water.crawl.db.dao.ITCourseMapper;
-import com.water.crawl.db.model.ITArticle;
-import com.water.crawl.db.model.ITCategory;
-import com.water.crawl.db.model.ITCourse;
-import com.water.crawl.db.model.ITLib;
-import com.water.crawl.db.service.article.IBMArticleService;
-import com.water.crawl.db.service.article.ICSDNArticleService;
-import com.water.crawl.db.service.article.IOSCHINAArticleService;
+import com.water.crawl.db.model.*;
+import com.water.crawl.db.service.IBMArticleService;
+import com.water.crawl.db.service.ICSDNArticleService;
+import com.water.crawl.db.service.IOSCHINAArticleService;
 import com.water.crawl.utils.HttpRequestTool;
 import com.water.crawl.utils.StringUtil;
 import com.water.es.api.Service.IArticleService;
@@ -61,6 +59,9 @@ public class FetchArticleTask {
 
     @Resource
     private ITCategoryMapper categoryMapper;
+
+    @Resource
+    private CourseSubjectMapper courseSubjectMapper;
 
     private Gson gson = new Gson();
 
@@ -266,7 +267,7 @@ public class FetchArticleTask {
             Elements sonCategories = cateogry.select(".item-list > .subitem > a");// 获取总的分类下的子分类
             for (Element sonCategory : sonCategories) {
                 String sonCategoryStr = sonCategory.text();
-                System.out.println("\t\t\t"+sonCategoryStr);
+                System.out.println("\t\t\t" + sonCategoryStr);
                 category = new ITCategory();
                 category.setId(UUID.randomUUID().toString());
                 category.setPartentId(partnetId);
@@ -319,5 +320,105 @@ public class FetchArticleTask {
             }
 
         }
+    }
+
+    public void fetchCourse2() {
+        String rootUrl = "http://www.yiibai.com/";
+        String page = null;
+        Document doc = null;
+        page = (String) HttpRequestTool.getRequest(rootUrl);
+        doc = Jsoup.parse(page);
+        Element items = doc.select(".article-content > .items").get(0);
+        Elements itemList = items.select(".item");
+        for (int i = 1; i < itemList.size(); i++) {
+            CourseSubject courseSubject = new CourseSubject();
+            Element item = itemList.get(i);
+            String category = item.select("h2").text();
+            if (StringUtils.isNotBlank(category) && category.equals("推荐教程")) continue;
+            System.out.println(category);
+            courseSubject.setId(StringUtil.uuid());
+            courseSubject.setName(category);
+            courseSubject.setCreateOn(System.currentTimeMillis());
+            courseSubject.setUpdateTime(System.currentTimeMillis());
+            courseSubjectMapper.insert(courseSubject);
+            String partentId = courseSubject.getId();
+            Elements liEles = item.select(".blogroll").get(0).select("li > a");
+            for (Element liEle : liEles) {
+                courseSubject = new CourseSubject();
+                String link = liEle.absUrl("href");
+                String name = liEle.text();
+                String desc = liEle.attr("title");
+                System.out.println(name + ":" + link + desc);
+
+                courseSubject.setId(StringUtil.uuid());
+                courseSubject.setName(name);
+                courseSubject.setDescription(desc);
+                courseSubject.setPartentId(partentId);
+                courseSubject.setCreateOn(System.currentTimeMillis());
+                courseSubject.setUpdateTime(System.currentTimeMillis());
+                courseSubjectMapper.insert(courseSubject);
+
+                log.info("开始抓取每一个专题的文章");
+                page = (String) HttpRequestTool.getRequest(link);
+                doc = Jsoup.parse(page);
+                Elements titleElements = doc.select(".pagemenu > li > a");
+                for (Element titleEle : titleElements) {
+                    String title = titleEle.text();
+                    String titleLink = titleEle.absUrl("href");
+                    System.out.println(title);
+                }
+
+            }
+        }
+        System.out.println("运行结束！");
+    }
+
+    public static void main(String[] args) {
+        String rootUrl = "http://www.yiibai.com/";
+        String page = null;
+        Document doc = null;
+        page = (String) HttpRequestTool.getRequest(rootUrl);
+        doc = Jsoup.parse(page);
+        Element items = doc.select(".article-content > .items").get(0);
+        Elements itemList = items.select(".item");
+        for (int i = 1; i < itemList.size(); i++) {
+            CourseSubject courseSubject = new CourseSubject();
+            Element item = itemList.get(i);
+            String category = item.select("h2").text();
+            if (StringUtils.isNotBlank(category) && category.equals("推荐教程")) continue;
+            System.out.println(category);
+            courseSubject.setId(StringUtil.uuid());
+            courseSubject.setName(category);
+            courseSubject.setCreateOn(System.currentTimeMillis());
+            courseSubject.setUpdateTime(System.currentTimeMillis());
+            String partentId = courseSubject.getId();
+            Elements liEles = item.select(".blogroll").get(0).select("li > a");
+            for (Element liEle : liEles) {
+                courseSubject = new CourseSubject();
+                String link = liEle.absUrl("href");
+                String name = liEle.text();
+                String desc = liEle.attr("title");
+                System.out.println(name + ":" + link + desc);
+
+                courseSubject.setId(StringUtil.uuid());
+                courseSubject.setName(name);
+                courseSubject.setDescription(desc);
+                courseSubject.setPartentId(partentId);
+                courseSubject.setCreateOn(System.currentTimeMillis());
+                courseSubject.setUpdateTime(System.currentTimeMillis());
+
+                log.info("开始抓取每一个专题的文章");
+                page = (String) HttpRequestTool.getRequest(link);
+                doc = Jsoup.parse(page);
+                Elements titleElements = doc.select(".pagemenu > li > a");
+                for (Element titleEle : titleElements) {
+                    String title = titleEle.text();
+                    String titleLink = titleEle.absUrl("href");
+                    System.out.println(title);
+                }
+
+            }
+        }
+        System.out.println("运行结束！");
     }
 }

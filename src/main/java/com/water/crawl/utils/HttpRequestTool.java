@@ -148,9 +148,9 @@ public class HttpRequestTool {
             get = new HttpGet(requestUrl);
             HttpContext localContext = new BasicHttpContext();
             RequestConfig config = RequestConfig.custom()
-                    .setConnectionRequestTimeout(1000)
-                    .setConnectTimeout(1000)
-                    .setSocketTimeout(1000)
+                    .setConnectionRequestTimeout(10000)
+                    .setConnectTimeout(10000)
+                    .setSocketTimeout(10000)
                     .build();
             get.setConfig(config);// 设置请求超时时间
             if (headerMap != null && headerMap.entrySet().size() > 0) {
