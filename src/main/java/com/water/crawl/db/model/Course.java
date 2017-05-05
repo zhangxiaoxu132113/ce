@@ -7,9 +7,11 @@ public class Course implements Serializable {
 
     private String articleId;
 
-    private String title;
+    private String courseSubjectId;
 
     private String partentId;
+
+    private String title;
 
     private Byte sort;
 
@@ -35,12 +37,12 @@ public class Course implements Serializable {
         this.articleId = articleId == null ? null : articleId.trim();
     }
 
-    public String getTitle() {
-        return title;
+    public String getCourseSubjectId() {
+        return courseSubjectId;
     }
 
-    public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
+    public void setCourseSubjectId(String courseSubjectId) {
+        this.courseSubjectId = courseSubjectId == null ? null : courseSubjectId.trim();
     }
 
     public String getPartentId() {
@@ -49,6 +51,14 @@ public class Course implements Serializable {
 
     public void setPartentId(String partentId) {
         this.partentId = partentId == null ? null : partentId.trim();
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title == null ? null : title.trim();
     }
 
     public Byte getSort() {

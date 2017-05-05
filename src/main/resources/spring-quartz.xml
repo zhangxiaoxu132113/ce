@@ -63,7 +63,7 @@
             <ref bean="jobTask02" />
         </property>
         <property name="cronExpression">
-            <value>0 16 18 4 5 ?</value>
+            <value>0 21 11 5 5 ?</value>
         </property>
     </bean>
 

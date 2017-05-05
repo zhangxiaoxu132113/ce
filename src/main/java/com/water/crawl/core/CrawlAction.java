@@ -13,7 +13,7 @@ public abstract class CrawlAction<T> {
     private String id;
     private String module;
     private String url;
-    private Object obj;
+    private Object data;
     private static ExecutorService executorService = Executors.newFixedThreadPool(20);
 
     public CrawlAction(String id, String module, String url) {
@@ -26,12 +26,14 @@ public abstract class CrawlAction<T> {
         this.id = id;
         this.module = module;
     }
+
     public void work() {
+        final Object fData = this.data;
         if (StringUtils.isNotBlank(this.url)) {
             executorService.execute(new CrawlCallBack(CrawlBox.getCrawlKey(id, module), url) {
                 @Override
                 public void calBack(JsonObject obj) {
-                    action(obj);
+                    action(obj, fData);
                 }
             });
 
@@ -42,13 +44,17 @@ public abstract class CrawlAction<T> {
         this.url = url;
     }
 
-    public abstract void action(JsonObject obj);
-
-    public Object getObj() {
-        return obj;
+    public String getUrl() {
+        return this.url;
     }
 
-    public void setObj(Object obj) {
-        this.obj = obj;
+    public Object getData() {
+        return data;
     }
+
+    public void setData(Object data) {
+        this.data = data;
+    }
+
+    public abstract void action(JsonObject obj, Object data);
 }

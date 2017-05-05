@@ -6,7 +6,10 @@ import com.google.gson.reflect.TypeToken;
 import com.water.crawl.core.CrawlAction;
 import com.water.crawl.core.factory.IArticleFactory;
 import com.water.crawl.core.factory.impl.ArticleFactory;
-import com.water.crawl.db.dao.*;
+import com.water.crawl.db.dao.CourseMapper;
+import com.water.crawl.db.dao.CourseSubjectMapper;
+import com.water.crawl.db.dao.ITArticleMapper;
+import com.water.crawl.db.dao.ITCategoryMapper;
 import com.water.crawl.db.model.*;
 import com.water.crawl.db.service.IBMArticleService;
 import com.water.crawl.db.service.ICSDNArticleService;
@@ -72,7 +75,7 @@ public class FetchArticleTask {
         Set<String> articleCategoryUrls = new HashSet<String>();
         CrawlAction crawlAction = new CrawlAction("IBM", "Article") {
             @Override
-            public void action(JsonObject obj) {
+            public void action(JsonObject obj, Object data) {
                 String json = obj.toString();
                 Type type = new TypeToken<ITArticle>() {
                 }.getType();
@@ -116,10 +119,8 @@ public class FetchArticleTask {
         Gson gson = new Gson();
         CrawlAction crawlAction = new CrawlAction("IBM", "Article", "https://www.ibm.com/developerworks/cn/web/wa-implement-a-single-page-application-with-angular2/index.html") {
             @Override
-            public void action(JsonObject obj) {
+            public void action(JsonObject obj, Object data) {
                 System.out.println();
-//                Type type = new TypeToken<Article>>() {}.getType();
-//                crawlRuleList = gson.fromJson(json, listType);
             }
         };
         crawlAction.work();
@@ -175,7 +176,6 @@ public class FetchArticleTask {
                 count = 1; //重置为第一页
             }
         }
-
     }
 
     /**
@@ -322,7 +322,8 @@ public class FetchArticleTask {
     public void fetchCourse2() {
         CrawlAction crawlAction = new CrawlAction("YIBAI", "Article") {
             @Override
-            public void action(JsonObject obj) {
+            public void action(JsonObject obj, Object data) {
+                Course course = (Course) data;
                 String json = obj.toString();
                 Type type = new TypeToken<ITArticle>() {
                 }.getType();
@@ -334,14 +335,15 @@ public class FetchArticleTask {
                         com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
                         BeanUtils.copyProperties(article, esArticle);
                         esArticleService.addArticle(esArticle);
-                        this.setObj(article);
+                        course.setArticleId(String.valueOf(article.getId()));
+                        courseMapper.insert(course);
                     }
                 }
             }
         };
         String rootUrl = "http://www.yiibai.com/";
-        String page = null;
-        Document doc = null;
+        String page;
+        Document doc;
         page = (String) HttpRequestTool.getRequest(rootUrl);
         doc = Jsoup.parse(page);
         Element items = doc.select(".article-content > .items").get(0);
@@ -350,7 +352,6 @@ public class FetchArticleTask {
             CourseSubject courseSubject = new CourseSubject();
             Element item = itemList.get(i);
             String category = item.select("h2").text();
-            if (StringUtils.isNotBlank(category) && category.equals("推荐教程")) continue;
             System.out.println(category);
             courseSubject.setId(StringUtil.uuid());
             courseSubject.setName(category);
@@ -375,29 +376,41 @@ public class FetchArticleTask {
                 courseSubjectMapper.insert(courseSubject);
 
                 log.info("开始抓取每一个专题的文章");
+                int retry = 1;
                 page = (String) HttpRequestTool.getRequest(link);
+                while (true) {
+                    if (StringUtils.isBlank(page) || retry++ != 3) {
+                        page = (String) HttpRequestTool.getRequest(link);
+                    } else {
+                        break;
+                    }
+                }
+                if (StringUtils.isBlank(page)) continue;
                 doc = Jsoup.parse(page);
                 Elements titleElements = doc.select(".pagemenu > li > a");
                 byte sort = 1;
+                String coursePartentId = "";
                 for (Element titleEle : titleElements) {
                     String title = titleEle.text();
                     String titleLink = titleEle.absUrl("href");
                     System.out.println(title);
-
                     Course course = new Course();
                     course.setId(StringUtil.uuid());
                     course.setSort(sort);
                     sort++;
                     course.setTitle(title);
+                    course.setCourseSubjectId(courseSubject.getId());
                     course.setCreateOn(System.currentTimeMillis());
                     course.setUpdateTime(System.currentTimeMillis());
-                    crawlAction.setUrl(titleLink);
-                    crawlAction.work();
-                    if (crawlAction.getObj() != null) {
-                        ITArticle article = (ITArticle) crawlAction.getObj();
-                        course.setArticleId(article.getId());
+                    if (StringUtils.isBlank(titleLink)) {
+                        courseMapper.insert(course);
+                        coursePartentId = course.getId();
+                        continue;
                     }
-                    courseMapper.insert(course);
+                    course.setPartentId(coursePartentId);
+                    crawlAction.setUrl(titleLink);
+                    crawlAction.setData(course);
+                    crawlAction.work();
 
                 }
 
