@@ -1,9 +1,13 @@
 package com.water.crawl.utils;
 
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -21,7 +25,7 @@ public class StringUtil {
     }
 
     public static void initStaticResourceNames() {
-        String filterStaticResource = Constants.getFILTER_STATIC_RESOURCE();
+        String filterStaticResource = Constants.FILTER_STATIC_RESOURCE;
         String[] resources = filterStaticResource.split(",");
         for (String resource : resources) {
             staticResourceNames.add(resource);
@@ -87,22 +91,23 @@ public class StringUtil {
     }
 
 
-    public static void main(String[] args) {
-        String url = "https://www.oschina.net/blog?classification=428602";
-        Map<String, String> getParams = new HashMap<String, String>();
-        String[] strs = url.split("[?]");
-        if (strs.length == 2) {
-            String str = strs[1];
-            strs = str.split("&");
-            if (strs.length > 0) {
-                for (int i = 0; i < strs.length; i++) {
-                    String[] queryArr = strs[i].split("=");
-                    if (queryArr.length == 2){
-                        getParams.put(queryArr[0],queryArr[1]);
-                    }
-                }
-            }
-        }
+    public static void main(String[] args) throws UnsupportedEncodingException {
+//        String url = "https://www.oschina.net/blog?classification=428602";
+//        Map<String, String> getParams = new HashMap<String, String>();
+//        String[] strs = url.split("[?]");
+//        if (strs.length == 2) {
+//            String str = strs[1];
+//            strs = str.split("&");
+//            if (strs.length > 0) {
+//                for (int i = 0; i < strs.length; i++) {
+//                    String[] queryArr = strs[i].split("=");
+//                    if (queryArr.length == 2){
+//                        getParams.put(queryArr[0],queryArr[1]);
+//                    }
+//                }
+//            }
+//        }
+        decode();
     }
 
     /**
@@ -127,6 +132,27 @@ public class StringUtil {
             }
         }
         return getParams;
+    }
+
+    public static String encode(String content) {
+        return encode(content, "utf-8");
+    }
+    public static String encode(String content, String enc) {
+        try {
+            return URLEncoder.encode(URLEncoder.encode(content, enc), enc);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+
+    public static String decode() throws UnsupportedEncodingException {
+        String content = "%BC%EC%B2%E2";
+        content = URLDecoder.decode(content,"utf-8");
+        content = URLDecoder.decode(content,"utf-8");
+        System.out.println(content);
+        return content;
     }
 
     public static String uuid() {

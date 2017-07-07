@@ -1,13 +1,18 @@
 package com.water.crawl.core;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.water.crawl.core.factory.CrawlFactory;
 import org.apache.bcel.util.ClassLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 一个抓取页面的解析容器
@@ -17,7 +22,9 @@ import java.util.*;
  */
 public class CrawlBox {
     private Log logger = LogFactory.getLog(getClass());
+
     private static String filePath = "crawl";
+    private static List<CrawlRule> crawlRuleList = new ArrayList<>();
     private static Map<String, List<CrawlRule>> crawlContainer = new HashMap<>();
 
     public void initialize() {
@@ -70,10 +77,13 @@ public class CrawlBox {
         put(crawlRules);
     }
 
-
     public void loadCrawl(File filePath) {
         List<CrawlRule> crawlRules = CrawlFactory.getCrawlRulelist(filePath);
-        put(crawlRules);
+        if (crawlRules != null && !crawlRules.isEmpty()) {
+            crawlRuleList.add(crawlRules.get(0));
+            put(crawlRules);
+        }
+
     }
 
     private void put(List<CrawlRule> crawlRules) {
@@ -104,9 +114,17 @@ public class CrawlBox {
         return crawlContainer.size();
     }
 
+    public Map<String, List<CrawlRule>> getAllCrawler() {
+        return crawlContainer;
+    }
+
+    public static List<CrawlRule> getCrawlRuleList() {
+        return crawlRuleList;
+    }
+
     public static void main(String[] args) {
         CrawlBox crawlBox = new CrawlBox();
         crawlBox.initialize();
-
     }
+
 }

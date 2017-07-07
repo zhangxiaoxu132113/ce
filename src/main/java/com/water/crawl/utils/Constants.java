@@ -14,23 +14,20 @@ import java.util.Properties;
  */
 public class Constants {
     public static Properties properties;
-    private static String ACCESS_LOG_PATH = "access.log.path";
-    private static String FILTER_STATIC_RESOURCE = "filter.static.resource";
+    public static String ACCESS_LOG_PATH;
+    public static String FILTER_STATIC_RESOURCE;
+    public static String CRALWER_PATH;
 
     static {
-        Resource resource = new ClassPathResource("/crawl/config.properties");
+        Resource resource = new ClassPathResource("/config.properties");
         try {
             properties = PropertiesLoaderUtils.loadProperties(resource);
+            CRALWER_PATH = (String) properties.get("crawler.path");
+            ACCESS_LOG_PATH = (String) properties.get("access.log.path");
+            FILTER_STATIC_RESOURCE = (String) properties.get("filter.static.resource");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static String getACCESS_LOG_PATH() {
-        return (String) properties.get(ACCESS_LOG_PATH);
-    }
-
-    public static String getFILTER_STATIC_RESOURCE() {
-        return (String) properties.get(FILTER_STATIC_RESOURCE);
-    }
 }

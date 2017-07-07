@@ -12,7 +12,7 @@
 
     <!-- 定时任务01：文章抓取任务 -->
     <bean id="quartzJob01" class="com.water.crawl.work.FetchArticleTask"></bean>
-    <bean id="quartzJob02" class="com.water.crawl.utils.quartz.TaskQuartz"></bean>
+    <bean id="quartzJob02" class="com.water.crawl.work.TaskQuartz"></bean>
 
 
     <!-- 抓取IBM开发者社区的文章 -->
@@ -43,6 +43,16 @@
         </property>
         <property name="targetMethod">
             <value>handleAccessLog</value>
+        </property>
+    </bean>
+
+    <!-- 全量数据库的文章导入es -->
+    <bean id="jobTask12" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="quartzJob02"/>
+        </property>
+        <property name="targetMethod">
+            <value>importArticle2Es</value>
         </property>
     </bean>
 
@@ -77,14 +87,25 @@
         </property>
     </bean>
 
+    <!--  -->
+    <bean id="jobRunTime12" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobTask12" />
+        </property>
+        <property name="cronExpression">
+            <value>0 18 15 31 5 ?</value>
+        </property>
+    </bean>
+
     <!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
     <bean id="startQuertz" lazy-init="true" autowire="default"
           class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-                <ref bean="jobRunTime01"/>
-                <ref bean="jobRunTime02"/>
-                <ref bean="jobRunTime11"/>
+                <!--<ref bean="jobRunTime01"/>-->
+                <!--<ref bean="jobRunTime02"/>-->
+                <!--<ref bean="jobRunTime11"/>-->
+                <ref bean="jobRunTime12"/>
             </list>
         </property>
     </bean>

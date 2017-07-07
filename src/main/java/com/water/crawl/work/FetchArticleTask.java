@@ -302,23 +302,6 @@ public class FetchArticleTask {
         }
     }
 
-    public void importArticle2Es() {
-        Map<String, Object> queryMap = new HashMap<String, Object>();
-        String id = "";
-        queryMap.put("count", 100);
-        while (true) {
-            queryMap.put("id", id);
-            List<ITArticle> articleList = articleMapper.getAllArticle(queryMap);
-            for (ITArticle article : articleList) {
-                com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
-                BeanUtils.copyProperties(article, esArticle);
-                esArticleService.addArticle(esArticle);
-                id = article.getId();
-            }
-
-        }
-    }
-
     public void fetchCourse2() {
         CrawlAction crawlAction = new CrawlAction("YIBAI", "Article") {
             @Override

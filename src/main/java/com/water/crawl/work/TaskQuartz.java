@@ -1,20 +1,24 @@
-package com.water.crawl.utils.quartz;
+package com.water.crawl.work;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.water.crawl.db.dao.ITArticleMapper;
+import com.water.crawl.db.model.ITArticle;
 import com.water.crawl.utils.*;
+import com.water.es.api.Service.IArticleService;
 import com.water.es.entry.AccessLog;
 import com.water.es.entry.IPAddressInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeanUtils;
 
+import javax.annotation.Resource;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by zhangmiaojie on 2016/12/2.
@@ -22,8 +26,17 @@ import java.util.UUID;
  */
 public class TaskQuartz {
     private static Log LOG = LogFactory.getLog(TaskQuartz.class);
-    public static void main(String[] args) {
 
+    @Resource
+    private ITArticleMapper articleMapper;
+
+    @Resource(name = "esArticleService")
+    private IArticleService esArticleService;
+
+    public static void main(String[] args) {
+        double processValue = 150.0;
+        int allValue = 2000;
+        System.out.println("已处理:" + processValue + ",当前进度=" + (int) ((processValue / allValue) * 100) + "%");
     }
 
     /**
@@ -32,7 +45,7 @@ public class TaskQuartz {
     public void handleAccessLog() {
         String filePattern = "localhost_access_log.%s.txt";
         String currentdDateStr = DateUtil.DATE_FORMAT_YMD.format(new Date(DateUtil.getDayTimeInMillis(new Date(), -1)));
-        String filePath = Constants.getACCESS_LOG_PATH() + String.format(filePattern, currentdDateStr);
+        String filePath = Constants.ACCESS_LOG_PATH + String.format(filePattern, currentdDateStr);
         File logFile = new File(filePath);
         if (!logFile.exists()) {
             LOG.warn("【" + currentdDateStr + "】 - 当天没有需要分析的日志！");
@@ -87,6 +100,45 @@ public class TaskQuartz {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 全量的把数据的文章导入到es中
+     */
+    public void importArticle2Es() {
+        Map<String, Object> queryMap = new HashMap<>();
+        String id = "";
+        queryMap.put("count", 100);
+        double processValue = 0.0;
+        int allValue = articleMapper.countByExample(null);
+        LOG.info("开始处理任务，数据总量为" + allValue);
+        while (true) {
+            queryMap.put("id", id);
+            List<ITArticle> articleList = articleMapper.getAllArticle(queryMap);
+            for (ITArticle article : articleList) {
+                String description = article.getDescription();
+                String content = HtmlUtil.Html2Text(article.getContent());
+                if (StringUtils.isBlank(description)) {// 如果description内容为空，则设置description的内容
+                    if (content.length() >= 255) {
+                        description = content.substring(0, 255);
+                    } else {
+                        description = content;
+                    }
+                    article.setDescription(description);
+                    articleMapper.updateByPrimaryKeySelective(article);
+                }
+
+                article.setContent(content);
+                com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
+                BeanUtils.copyProperties(article, esArticle);
+                esArticleService.addArticle(esArticle);
+                id = article.getId();
+            }
+
+            processValue += 100.0;
+            LOG.info("已处理:" + processValue + ",当前进度=" + ((processValue / allValue) * 100) + "%");
         }
     }
 }
