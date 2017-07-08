@@ -2,7 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.water.crawl.db.dao.extend.ITArticleMapperExtend">
     <!--扩展方法-->
-    <select id="getAllArticles" resultType="com.water.crawl.db.model.ITArticle" >
-        SELECT * FROM it_article;
+    <select id="getAllArticle" parameterType="java.util.Map" resultType="com.water.crawl.db.model.ITArticle">
+        SELECT * FROM it_article as ksk
+        WHERE 1=1
+        <if test="id != '' and id != null">
+            AND ksk.id>#{id}
+        </if>
+        ORDER BY ksk.id
+        <if test="count != null and count > 0">
+            LIMIT #{count}
+        </if>
     </select>
 </mapper>

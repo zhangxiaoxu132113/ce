@@ -12,6 +12,7 @@
 
     <!-- 定时任务01：文章抓取任务 -->
     <bean id="quartzJob01" class="com.water.crawl.work.FetchArticleTask"></bean>
+    <bean id="quartzJob02" class="com.water.crawl.work.TaskQuartz"></bean>
 
 
     <!-- 抓取IBM开发者社区的文章 -->
@@ -30,30 +31,30 @@
             <ref bean="quartzJob01"/>
         </property>
         <property name="targetMethod">
-            <value>fetchCSDNArticleLib</value>
+            <value>fetchCourse2</value>
         </property>
     </bean>
 
-    <!-- 抓取开源中国的资讯文章 -->
-    <bean id="jobTask03" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+
+    <!-- 处理服务器访问日志 -->
+    <bean id="jobTask11" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
-            <ref bean="quartzJob01"/>
+            <ref bean="quartzJob02"/>
         </property>
         <property name="targetMethod">
-            <value>fetchGreeArticle</value>
+            <value>handleAccessLog</value>
         </property>
     </bean>
 
-    <!-- 抓取深度开源文章 -->
-    <bean id="jobTask04" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    <!-- 全量数据库的文章导入es -->
+    <bean id="jobTask12" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
-            <ref bean="quartzJob01"/>
+            <ref bean="quartzJob02"/>
         </property>
         <property name="targetMethod">
-            <value>fetchOpen2Open</value>
+            <value>importArticle2Es</value>
         </property>
     </bean>
-
 
     <!-- 时间分配 -->
     <!-- 每分钟扫描待处理的单次任务 -->
@@ -62,37 +63,37 @@
             <ref bean="jobTask01"/>
         </property>
         <property name="cronExpression">
-            <value>0 34 22 16 4 ?</value>
+            <value>0 25 10 11 4 ?</value>
         </property>
     </bean>
 
     <!-- 每分钟扫描待处理的单次任务 -->
     <bean id="jobRunTime02" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail">
-            <ref bean="jobTask02"/>
+            <ref bean="jobTask02" />
         </property>
         <property name="cronExpression">
-            <value>0 52 21 12 4 ?</value>
+            <value>0 21 11 5 5 ?</value>
         </property>
     </bean>
 
-    <!-- 每分钟扫描待处理的单次任务 -->
-    <bean id="jobRunTime03" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+    <!-- 每天凌晨零点15分处理昨天的服务器访问日志 -->
+    <bean id="jobRunTime11" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail">
-            <ref bean="jobTask03"/>
+            <ref bean="jobTask11" />
         </property>
         <property name="cronExpression">
-            <value>0 33 18 4 4 ?</value>
+            <value>0 25 17 21 4 ?</value>
         </property>
     </bean>
 
-    <!-- 每分钟扫描待处理的单次任务 -->
-    <bean id="jobRunTime04" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+    <!--  -->
+    <bean id="jobRunTime12" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail">
-            <ref bean="jobTask04"/>
+            <ref bean="jobTask12" />
         </property>
         <property name="cronExpression">
-            <value>0 5 11 16 4 ?</value>
+            <value>0 18 15 31 5 ?</value>
         </property>
     </bean>
 
@@ -101,11 +102,11 @@
           class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-                <ref bean="jobRunTime01"/>
-                <ref bean="jobRunTime02"/>
-                <ref bean="jobRunTime03"/>
-                <ref bean="jobRunTime04"/>
+                <!--<ref bean="jobRunTime01"/>-->
+                <!--<ref bean="jobRunTime02"/>-->
+                <!--<ref bean="jobRunTime11"/>-->
+                <ref bean="jobRunTime12"/>
             </list>
         </property>
     </bean>
-</beans>
+ </beans>

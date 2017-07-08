@@ -1,10 +1,13 @@
-package com.water.crawl.utils.lang;
+package com.water.crawl.utils;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -12,17 +15,37 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ *
  * Created by mrwater on 2016/11/27.
  */
 public class StringUtil {
-    public static Calendar calendar = Calendar.getInstance();
+    public static Set<String> staticResourceNames = new HashSet<String>();
+    static {
+        initStaticResourceNames();
+    }
+
+    public static void initStaticResourceNames() {
+        String filterStaticResource = Constants.FILTER_STATIC_RESOURCE;
+        String[] resources = filterStaticResource.split(",");
+        for (String resource : resources) {
+            staticResourceNames.add(resource);
+        }
+    }
+
+    /**
+     * 判断是否访问的是静态资源
+     */
+    public static boolean isRequestStaticResourceUrl(String url) {
+        if (StringUtils.isNotBlank(url)) {
+            for (String srn : staticResourceNames) {
+                if (url.lastIndexOf(srn) != -1) return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * 获取网站的一级域名
-     *
-     * @param url
-     * @return
-     * @throws MalformedURLException
      */
     public static String getTopDomainWithoutSubdomain(String url) throws MalformedURLException {
         String host = new URL(url).getHost().toLowerCase();// 此处获取值转换为小写
@@ -36,9 +59,6 @@ public class StringUtil {
 
     /**
      * unicode编码
-     *
-     * @param str
-     * @return
      */
     public static String decodeUnicode(String str) {
         Charset set = Charset.forName("UTF-16");
@@ -70,11 +90,28 @@ public class StringUtil {
         return sb.toString();
     }
 
+
+    public static void main(String[] args) throws UnsupportedEncodingException {
+//        String url = "https://www.oschina.net/blog?classification=428602";
+//        Map<String, String> getParams = new HashMap<String, String>();
+//        String[] strs = url.split("[?]");
+//        if (strs.length == 2) {
+//            String str = strs[1];
+//            strs = str.split("&");
+//            if (strs.length > 0) {
+//                for (int i = 0; i < strs.length; i++) {
+//                    String[] queryArr = strs[i].split("=");
+//                    if (queryArr.length == 2){
+//                        getParams.put(queryArr[0],queryArr[1]);
+//                    }
+//                }
+//            }
+//        }
+        decode();
+    }
+
     /**
-     * 根据URL链接获取参数
-     *
-     * @param url
-     * @return
+     * 获取url的参数
      */
     public static Map<String, String> getParamWithUrl(String url) {
         Map<String, String> getParams = null;
@@ -87,8 +124,8 @@ public class StringUtil {
                 if (strs.length > 0) {
                     for (int i = 0; i < strs.length; i++) {
                         String[] queryArr = strs[i].split("=");
-                        if (queryArr.length == 2) {
-                            getParams.put(queryArr[0], queryArr[1]);
+                        if (queryArr.length == 2){
+                            getParams.put(queryArr[0],queryArr[1]);
                         }
                     }
                 }
@@ -97,21 +134,28 @@ public class StringUtil {
         return getParams;
     }
 
+    public static String encode(String content) {
+        return encode(content, "utf-8");
+    }
+    public static String encode(String content, String enc) {
+        try {
+            return URLEncoder.encode(URLEncoder.encode(content, enc), enc);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+
+    public static String decode() throws UnsupportedEncodingException {
+        String content = "%BC%EC%B2%E2";
+        content = URLDecoder.decode(content,"utf-8");
+        content = URLDecoder.decode(content,"utf-8");
+        System.out.println(content);
+        return content;
+    }
+
     public static String uuid() {
         return UUID.randomUUID().toString();
-    }
-
-    /**
-     * 生成11长度的uid
-     */
-    public static String generateShortUid() {
-        String uid = String.valueOf(calendar.getTime().getTime()); //13位数字
-        uid = uid.substring(5, uid.length());                      //取后面8位
-        uid = new java.util.Random().nextInt(900)+100 + uid;       //随机生成3位 拼接后 8位数字
-        return uid;
-    }
-
-    public static void main(String[] args) throws MalformedURLException {
-//
     }
 }

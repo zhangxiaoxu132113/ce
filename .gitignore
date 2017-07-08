@@ -2,4 +2,6 @@
 /.idea/
 /target/
 /README.md
-/water-business-ce.iml
+*.iml
+
+*target/

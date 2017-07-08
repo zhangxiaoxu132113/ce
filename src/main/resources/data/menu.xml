@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menus>
+    <menu>
+        <name>所有分类</name>
+        <url>/all</url>
+        <sort>1</sort>
+    </menu>
+    <menu>
+        <name>资讯</name>
+        <url>/news</url>
+        <sort>3</sort>
+    </menu>
+    <menu>
+        <name>教程</name>
+        <url>/course</url>
+        <sort>2</sort>
+    </menu>
+    <menu>
+        <name>知识库</name>
+        <url>/k-base</url>
+        <sort>4</sort>
+    </menu>
+    <menu>
+        <name>资源</name>
+        <url>/resource</url>
+        <sort>5</sort>
+    </menu>
+</menus>

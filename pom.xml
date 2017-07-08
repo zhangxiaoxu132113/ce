@@ -165,7 +165,8 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
+            <version>4.0.2.RELEASE</version>
+            <scope>test</scope>
         </dependency>
         <!-- jedis -->
         <dependency>
@@ -273,7 +274,11 @@
             <artifactId>gson</artifactId>
             <version>2.6.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>11.0.2</version>
+        </dependency>
         <!-- local -->
         <dependency>
             <groupId>com.water</groupId>
@@ -319,7 +324,6 @@
                     <include>**/*.json</include>
                 </includes>
             </resource>
-
             <resource>
                 <directory>src/main/java</directory>
                 <filtering>true</filtering>

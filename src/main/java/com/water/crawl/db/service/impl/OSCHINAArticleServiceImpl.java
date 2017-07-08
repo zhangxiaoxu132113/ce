@@ -1,7 +1,7 @@
-package com.water.crawl.db.service.article.impl;
+package com.water.crawl.db.service.impl;
 
-import com.water.crawl.db.service.article.IOSCHINAArticleService;
-import com.water.crawl.utils.http.HttpRequestTool;
+import com.water.crawl.db.service.IOSCHINAArticleService;
+import com.water.crawl.utils.HttpRequestTool;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * Created by zhangmiaojie on 2017/3/2.
  */
-@Service("osCHINAArticleService")
+@Service
 public class OSCHINAArticleServiceImpl implements IOSCHINAArticleService {
     public static String CATEGORY_URL = "https://www.oschina.net/blog";
 

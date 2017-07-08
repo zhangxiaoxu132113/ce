@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by zhangmiaojie on 2017/2/4.
  */
-public class ShardedJedisPoolFactory implements InitializingBean,DisposableBean,FactoryBean<ShardedJedisPool> {
+public class ShardedJedisPoolFactory implements InitializingBean,DisposableBean,FactoryBean {
 
     private JedisPoolConfig poolConfig = null;
     private int timeout;
