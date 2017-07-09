@@ -1,6 +1,5 @@
 package com.water.test;
 
-import com.water.crawl.utils.HttpRequestTool;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;

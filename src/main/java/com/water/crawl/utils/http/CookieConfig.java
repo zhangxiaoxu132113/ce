@@ -1,4 +1,4 @@
-package com.water.crawl.utils;
+package com.water.crawl.utils.http;
 
 import java.util.Date;
 import java.util.Map;

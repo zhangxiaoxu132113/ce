@@ -14,8 +14,8 @@ import com.water.crawl.db.model.*;
 import com.water.crawl.db.service.IBMArticleService;
 import com.water.crawl.db.service.ICSDNArticleService;
 import com.water.crawl.db.service.IOSCHINAArticleService;
-import com.water.crawl.utils.HttpRequestTool;
-import com.water.crawl.utils.StringUtil;
+import com.water.crawl.utils.http.HttpRequestTool;
+import com.water.crawl.utils.lang.StringUtil;
 import com.water.es.api.Service.IArticleService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -25,6 +25,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Type;
@@ -39,28 +40,28 @@ import java.util.*;
 public class FetchArticleTask {
     private static Log log = LogFactory.getLog(FetchArticleTask.class);
 
-    @Resource
+    @Autowired
     private IBMArticleService ibmArticleService;
 
-    @Resource
+    @Autowired
     private ICSDNArticleService icsdnArticleService;
 
-    @Resource
+    @Autowired
     private IOSCHINAArticleService ioschinaArticleService;
 
-    @Resource
+    @Autowired
     private ITArticleMapper articleMapper;
 
     @Resource(name = "esArticleService")
     private IArticleService esArticleService;
 
-    @Resource
+    @Autowired
     private ITCategoryMapper categoryMapper;
 
-    @Resource
+    @Autowired
     private CourseSubjectMapper courseSubjectMapper;
 
-    @Resource
+    @Autowired
     private CourseMapper courseMapper;
 
     private Gson gson = new Gson();
@@ -313,7 +314,7 @@ public class FetchArticleTask {
                 ITArticle article = gson.fromJson(json, type);
                 if (article != null) {
                     article.setId(UUID.randomUUID().toString());
-                    article.setCategory("yibai");
+                    article.setCategory(3);
                     if (ibmArticleService.addArticle(article) > 0) {
                         com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
                         BeanUtils.copyProperties(article, esArticle);

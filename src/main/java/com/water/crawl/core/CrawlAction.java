@@ -32,7 +32,7 @@ public abstract class CrawlAction<T> {
         if (StringUtils.isNotBlank(this.url)) {
             executorService.execute(new CrawlCallBack(CrawlBox.getCrawlKey(id, module), url) {
                 @Override
-                public void calBack(JsonObject obj) {
+                public void calBack(JsonObject obj, String url) {
                     action(obj, fData);
                 }
             });

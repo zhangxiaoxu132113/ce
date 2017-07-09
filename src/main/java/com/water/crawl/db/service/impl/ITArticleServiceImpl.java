@@ -8,7 +8,6 @@ import com.water.crawl.db.model.ITArticleCriteria;
 import com.water.crawl.db.model.ITLib;
 import com.water.crawl.db.model.ITLibCriteria;
 import com.water.crawl.db.service.ITArticleService;
-import com.water.crawl.utils.Constant;
 import com.water.crawl.utils.lang.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -53,7 +52,7 @@ public class ITArticleServiceImpl implements ITArticleService {
         ITArticle article;
         while (true) {
             retryCount++;
-            uid = StringUtil.generateShortUid();
+            uid = StringUtil.uuid();
             article = iTArticleMapper.selectByPrimaryKey(uid);
             if (article == null) break;
             if (retryCount == 3) { //如果id重复，则重新生成，直到第三次退出循环

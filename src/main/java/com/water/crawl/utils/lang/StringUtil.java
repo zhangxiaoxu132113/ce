@@ -1,5 +1,6 @@
-package com.water.crawl.utils;
+package com.water.crawl.utils.lang;
 
+import com.water.crawl.utils.Constants;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang.StringUtils;
 

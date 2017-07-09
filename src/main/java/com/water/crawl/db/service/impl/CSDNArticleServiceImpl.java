@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.water.crawl.db.dao.ITLibMapper;
 import com.water.crawl.db.model.ITLib;
 import com.water.crawl.db.service.ICSDNArticleService;
-import com.water.crawl.utils.Constant;
 import com.water.crawl.utils.http.HttpRequestTool;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,7 +12,10 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by zhangmiaojie on 2017/3/1.

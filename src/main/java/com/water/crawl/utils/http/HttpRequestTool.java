@@ -1,6 +1,8 @@
-package com.water.crawl.utils;
+package com.water.crawl.utils.http;
 
 import com.alibaba.fastjson.JSON;
+import com.water.crawl.utils.UARandomUtil;
+import com.water.crawl.utils.http.CookieConfig;
 import org.apache.http.*;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpRequestRetryHandler;

@@ -1,7 +1,7 @@
 package com.water.test;
 
-import com.water.crawl.utils.HttpRequestTool;
-import com.water.crawl.utils.StringUtil;
+import com.water.crawl.utils.http.HttpRequestTool;
+import com.water.crawl.utils.lang.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import redis.clients.jedis.ShardedJedis;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,10 @@ public class TestController {
     }
 
     @RequestMapping(value = "/test1", method = RequestMethod.POST)
-    public String test1(@RequestBody CrawlRule crawlRule) {
+    public String test1(@RequestBody CrawlRule crawlRule, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*"); //允许哪些url可以跨域请求到本域
+        response.setHeader("Access-Control-Allow-Methods","POST"); //允许的请求方法，一般是GET,POST,PUT,DELETE,OPTIONS
+        response.setHeader("Access-Control-Allow-Headers","x-requested-with,content-type"); //允许哪些请求头
         String serverName = crawlRule.getId();
         String filePath = Constants.CRALWER_PATH + serverName + ".json";
         File file = new File(filePath);
