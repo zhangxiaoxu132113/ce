@@ -46,7 +46,7 @@ public class TestController {
     public String test1(@RequestBody CrawlRule crawlRule, HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin", "*"); //允许哪些url可以跨域请求到本域
         response.setHeader("Access-Control-Allow-Methods","POST"); //允许的请求方法，一般是GET,POST,PUT,DELETE,OPTIONS
-        response.setHeader("Access-Control-Allow-Headers","x-requested-with,content-type"); //允许哪些请求头
+        response.setHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept"); //允许哪些请求头
         String serverName = crawlRule.getId();
         String filePath = Constants.CRALWER_PATH + serverName + ".json";
         File file = new File(filePath);
