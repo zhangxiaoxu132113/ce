@@ -1,6 +1,6 @@
 package com.water.crawl.db.service.impl;
 
-import com.water.crawl.db.dao.ITCategoryMapper;
+import com.water.uubook.dao.ITCategoryMapper;
 import com.water.crawl.db.service.ITCategoryService;
 import org.springframework.stereotype.Service;
 

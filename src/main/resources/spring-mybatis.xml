@@ -14,8 +14,6 @@
         http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <!--注册数据库的连接信息 -->
-    <!--<context:property-placeholder location="classpath:config.properties"/>-->
-
     <!-- 配置kw业务dateSources -->
     <bean id="businessDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <!-- 数据库基本信息配置 -->
@@ -76,7 +74,7 @@
           scope="prototype">
         <property name="patterns">
             <list>
-                <value>com.water.crawl.db.dao.*</value>
+                <value>com.water.uubook.dao.*</value>
             </list>
         </property>
     </bean>
@@ -92,7 +90,7 @@
     </aop:config>
 
     <!-- 配置mybatis SqlSessionFactory -->
-    <bean id="paginationInterceptor" class="com.water.crawl.utils.mybatis.PaginationInterceptor"></bean>
+    <bean id="paginationInterceptor" class="com.water.uubook.utils.mybatis.PaginationInterceptor"></bean>
 
     <bean id="businessSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="businessDataSource"/>
@@ -107,7 +105,7 @@
 
     <!-- mapper自动注入 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.water.crawl.db.dao"/>
+        <property name="basePackage" value="com.water.uubook.dao"/>
         <property name="sqlSessionFactoryBeanName" value="businessSqlSessionFactory"/>
     </bean>
 

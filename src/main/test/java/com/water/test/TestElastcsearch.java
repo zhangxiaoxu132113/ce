@@ -1,7 +1,7 @@
 package com.water.test;
 
-import com.water.crawl.db.model.ITArticle;
 import com.water.crawl.utils.ElasticSearchUtils;
+import com.water.uubook.model.ITArticle;
 
 /**
  *

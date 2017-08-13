@@ -1,6 +1,7 @@
 package com.water.crawl.db.service;
 
-import com.water.crawl.db.model.ITArticle;
+import com.water.uubook.model.Article;
+import com.water.uubook.model.ITArticle;
 
 public interface ITArticleService {
 
@@ -9,8 +10,8 @@ public interface ITArticleService {
      * @param  article 文章对象
      * @return Integer
      */
-    Integer addArticle(ITArticle article);
+    Integer addArticle(Article article);
 
 
-    void consummateArticle(ITArticle article, int origin, int category, String descryptUrl);
+    void consummateArticle(Article article, int origin, int category, String descryptUrl);
 }

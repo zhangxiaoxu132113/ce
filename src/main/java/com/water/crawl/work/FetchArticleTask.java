@@ -6,14 +6,12 @@ import com.google.gson.reflect.TypeToken;
 import com.water.crawl.core.CrawlAction;
 import com.water.crawl.core.factory.IArticleFactory;
 import com.water.crawl.core.factory.impl.ArticleFactory;
-import com.water.crawl.db.dao.CourseMapper;
-import com.water.crawl.db.dao.CourseSubjectMapper;
-import com.water.crawl.db.dao.ITArticleMapper;
-import com.water.crawl.db.dao.ITCategoryMapper;
-import com.water.crawl.db.model.*;
+import com.water.uubook.dao.*;
+import com.water.uubook.model.*;
 import com.water.crawl.db.service.IBMArticleService;
 import com.water.crawl.db.service.ICSDNArticleService;
 import com.water.crawl.db.service.IOSCHINAArticleService;
+import com.water.crawl.utils.Constant;
 import com.water.crawl.utils.http.HttpRequestTool;
 import com.water.crawl.utils.lang.StringUtil;
 import com.water.es.api.Service.IArticleService;
@@ -25,7 +23,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Type;
@@ -37,32 +35,39 @@ import java.util.*;
  * <p>
  * Created by zhangmiaojie on 2017/2/28.
  */
+@Service("fetchArticleTask")
 public class FetchArticleTask {
     private static Log log = LogFactory.getLog(FetchArticleTask.class);
 
-    @Autowired
+    @Resource
     private IBMArticleService ibmArticleService;
 
-    @Autowired
+    @Resource
     private ICSDNArticleService icsdnArticleService;
 
-    @Autowired
+    @Resource
     private IOSCHINAArticleService ioschinaArticleService;
 
-    @Autowired
-    private ITArticleMapper articleMapper;
+    @Resource
+    private ArticleMapper articleMapper;
 
     @Resource(name = "esArticleService")
     private IArticleService esArticleService;
 
-    @Autowired
-    private ITCategoryMapper categoryMapper;
+    @Resource
+    private CategoryMapper categoryMapper;
 
-    @Autowired
+    @Resource
+    private TagMapper tagMapper;
+
+    @Resource
     private CourseSubjectMapper courseSubjectMapper;
 
-    @Autowired
+    @Resource
     private CourseMapper courseMapper;
+
+    @Resource
+    private TagRelationshipMapper tagRelationshipMapper;
 
     private Gson gson = new Gson();
 
@@ -71,29 +76,16 @@ public class FetchArticleTask {
      */
     public void fetchIBMArticles() {
         System.out.println("抓取IBM开发者社区的文章--------------------------------------------------");
-        List<ITArticle> articles = new ArrayList<ITArticle>();
+        List<Article> articles = new ArrayList<>();
         List<String> fetchFailurelinks = new ArrayList<String>();
         Set<String> articleCategoryUrls = new HashSet<String>();
-        CrawlAction crawlAction = new CrawlAction("IBM", "Article") {
-            @Override
-            public void action(JsonObject obj, Object data) {
-                String json = obj.toString();
-                Type type = new TypeToken<ITArticle>() {
-                }.getType();
-                ITArticle article = gson.fromJson(json, type);
-                if (article != null) {
-                    article.setId(UUID.randomUUID().toString());
-                    if (ibmArticleService.addArticle(article) > 0) {
-                        com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
-                        BeanUtils.copyProperties(article, esArticle);
-                        esArticleService.addArticle(esArticle);
-                    }
-                }
-            }
-        };
-//        articleCategoryUrls = ibmArticleService.getIBMArticleCategoryUrl();
-        articleCategoryUrls.add("https://www.ibm.com/developerworks/cn/views/java/libraryview.jsp");
+
+        articleCategoryUrls = ibmArticleService.getIBMArticleCategoryUrl();
+//        articleCategoryUrls.add("http://www.ibm.com/developerworks/cn/views/data/libraryview.jsp");
+//        articleCategoryUrls.add("http://www.ibm.com/developerworks/cn/views/java/libraryview.jsp");
         System.out.println("开始抓取IBM开发者社区各个模块的文章，" + articleCategoryUrls.size());
+
+        boolean isBreak = false;
         for (String url : articleCategoryUrls) {
             System.out.println("开始抓取 ： " + url);
 
@@ -101,16 +93,62 @@ public class FetchArticleTask {
             for (int i = 1; true; i++) {//循环获取所有模块下每个页面的文章
                 paramMap.put("start", String.valueOf(i + (i - 1) * 100));
                 paramMap.put("end", String.valueOf(i * 100));
-                String result = (String) HttpRequestTool.postRequest(url, paramMap, false);
+                String result = (String) HttpRequestTool.postRequest(url, paramMap, true);
                 if (StringUtils.isBlank(result)) break;
                 List<String> linkList = ibmArticleService.getAllArticleLink(result);
+                if (linkList == null || linkList.size() <= 0) {
+                    isBreak = true;
+                    break;
+                }
                 for (String link : linkList) {
                     log.info("开始抓取文章--" + link);
-                    crawlAction.setUrl(link);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    CrawlAction crawlAction = new CrawlAction("IBM", "Article", link) {
+                        @Override
+                        public void action(JsonObject obj, Object data) {
+                            String json = obj.toString();
+                            Type type = new TypeToken<Article>() {
+                            }.getType();
+                            Article article = gson.fromJson(json, type);
+                            if (article != null) {
+                                article.setCategory(0);
+                                article.setViewHits(0);
+                                article.setContent(handleContent(article.getContent(), this.getUrl()));
+                                article.setModule(Constant.ARTICLE_MODULE.BLOG.getIndex());
+                                if (article.getCreateOn() == null) {
+                                    article.setCreateOn(System.currentTimeMillis());
+                                }
+                                if (ibmArticleService.addArticle(article) > 0) {
+//                                    com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
+//                                    BeanUtils.copyProperties(article, esArticle);
+//                                    esArticleService.addArticle(esArticle);
+                                }
+                            }
+                        }
+
+
+                    };
                     crawlAction.work();
                 }
             }
+            if (isBreak) break;
         }
+    }
+
+    private String handleContent(String content, String url) {
+        Document doc = Jsoup.parse(content);
+        Elements eles = doc.select("img");
+        for (Element ele : eles) {
+            String imgSrc = ele.attr("src");
+            String newImgSrc = url.substring(0, url.lastIndexOf("/")+1) + imgSrc;
+            ele.attr("src", newImgSrc);
+        }
+
+        return doc.toString();
     }
 
     /**
@@ -161,7 +199,7 @@ public class FetchArticleTask {
                             html = (String) HttpRequestTool.getRequest(articleLink);
                             if (StringUtils.isNotBlank(html)) {
                                 doc = Jsoup.parse(html);
-                                ITArticle article = articleFactory.createArticle(doc, articleLink);
+                                Article article = articleFactory.createArticle(doc, articleLink);
                                 if (article != null) {
                                     icsdnArticleService.addArticle(article);
                                     com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
@@ -210,7 +248,6 @@ public class FetchArticleTask {
         }
     }
 
-
     public void fetchCourse() {
         String root_url = "http://ifeve.com/java-7-concurrency-cookbook/";
         String pageHtml = (String) HttpRequestTool.getRequest(root_url, false);
@@ -239,68 +276,68 @@ public class FetchArticleTask {
     }
 
     public void fetchopen2open() {
-        int fetchTotal = 0;
-        String domain = "http://www.open-open.com";
-        String url = "http://www.open-open.com/lib/list/401?pn=1";
-        Document doc;
-        String htmlPage;
-        log.info("开始抓取www.open-open.com... ...");
-        htmlPage = (String) HttpRequestTool.getRequest(url, false);
-        doc = Jsoup.parse(htmlPage);
-        Element allList = doc.select(".all-sort-list").get(0);
-        Elements categoryList = allList.select(".item");
-        ITCategory category;
-        String partnetId;
-        for (Element cateogry : categoryList) {// 获取总的分类
-            category = new ITCategory();
-            String categoryStr = cateogry.select("h3 > a").text();
-            category.setId(UUID.randomUUID().toString());
-            category.setPartentId("");
-            category.setLevel(1);
-            category.setName(categoryStr);
-            category.setCreateOn(System.currentTimeMillis());
-            categoryMapper.insert(category);
-            partnetId = category.getId();
-            System.out.println(categoryStr);
-            Elements sonCategories = cateogry.select(".item-list > .subitem > a");// 获取总的分类下的子分类
-            for (Element sonCategory : sonCategories) {
-                String sonCategoryStr = sonCategory.text();
-                System.out.println("\t\t\t" + sonCategoryStr);
-                category = new ITCategory();
-                category.setId(UUID.randomUUID().toString());
-                category.setPartentId(partnetId);
-                category.setLevel(2);
-                category.setName(sonCategoryStr);
-                category.setCreateOn(System.currentTimeMillis());
-                categoryMapper.insert(category);
-
-
-                System.out.println("\t\t\t" + sonCategoryStr);
-                String fetchUrl = domain + sonCategory.attr("href");
-                String tmpFetchUrl = fetchUrl + "?pn=%s";
-                String realRequestUrl = "";
-                for (int i = 0; ; i++) {
-                    if (i != 0) {
-                        realRequestUrl = String.format(tmpFetchUrl, i);
-                    } else {
-                        realRequestUrl = fetchUrl;
-                    }
-                    htmlPage = (String) HttpRequestTool.getRequest(realRequestUrl);
-                    doc = Jsoup.parse(htmlPage);
-                    Elements topicList = doc.select(".container > .row > .col-md-8 > .list > li");
-                    if (topicList == null || topicList.size() <= 0) {
-                        log.info(sonCategoryStr + "模块解析完成！");
-                        break;
-                    }
-                    for (Element topicEle : topicList) {
-                        String articleLink = domain + topicEle.select(".cont > a").attr("href");
-                        log.info("抓取文章链接 = " + articleLink);
-                        //TODO 交给爬虫容器
-                    }
-                }
-
-            }
-        }
+//        int fetchTotal = 0;
+//        String domain = "http://www.open-open.com";
+//        String url = "http://www.open-open.com/lib/list/401?pn=1";
+//        Document doc;
+//        String htmlPage;
+//        log.info("开始抓取www.open-open.com... ...");
+//        htmlPage = (String) HttpRequestTool.getRequest(url, false);
+//        doc = Jsoup.parse(htmlPage);
+//        Element allList = doc.select(".all-sort-list").get(0);
+//        Elements categoryList = allList.select(".item");
+//        ITCategory category;
+//        String partnetId;
+//        for (Element cateogry : categoryList) {// 获取总的分类
+//            category = new ITCategory();
+//            String categoryStr = cateogry.select("h3 > a").text();
+//            category.setId(UUID.randomUUID().toString());
+//            category.setPartentId("");
+//            category.setLevel(1);
+//            category.setName(categoryStr);
+//            category.setCreateOn(System.currentTimeMillis());
+//            categoryMapper.insert(category);
+//            partnetId = category.getId();
+//            System.out.println(categoryStr);
+//            Elements sonCategories = cateogry.select(".item-list > .subitem > a");// 获取总的分类下的子分类
+//            for (Element sonCategory : sonCategories) {
+//                String sonCategoryStr = sonCategory.text();
+//                System.out.println("\t\t\t" + sonCategoryStr);
+//                category = new ITCategory();
+//                category.setId(UUID.randomUUID().toString());
+//                category.setPartentId(partnetId);
+//                category.setLevel(2);
+//                category.setName(sonCategoryStr);
+//                category.setCreateOn(System.currentTimeMillis());
+//                categoryMapper.insert(category);
+//
+//
+//                System.out.println("\t\t\t" + sonCategoryStr);
+//                String fetchUrl = domain + sonCategory.attr("href");
+//                String tmpFetchUrl = fetchUrl + "?pn=%s";
+//                String realRequestUrl = "";
+//                for (int i = 0; ; i++) {
+//                    if (i != 0) {
+//                        realRequestUrl = String.format(tmpFetchUrl, i);
+//                    } else {
+//                        realRequestUrl = fetchUrl;
+//                    }
+//                    htmlPage = (String) HttpRequestTool.getRequest(realRequestUrl);
+//                    doc = Jsoup.parse(htmlPage);
+//                    Elements topicList = doc.select(".container > .row > .col-md-8 > .list > li");
+//                    if (topicList == null || topicList.size() <= 0) {
+//                        log.info(sonCategoryStr + "模块解析完成！");
+//                        break;
+//                    }
+//                    for (Element topicEle : topicList) {
+//                        String articleLink = domain + topicEle.select(".cont > a").attr("href");
+//                        log.info("抓取文章链接 = " + articleLink);
+//                        //TODO 交给爬虫容器
+//                    }
+//                }
+//
+//            }
+//        }
     }
 
     public void fetchCourse2() {
@@ -308,19 +345,17 @@ public class FetchArticleTask {
             @Override
             public void action(JsonObject obj, Object data) {
                 Course course = (Course) data;
-                String json = obj.toString();
-                Type type = new TypeToken<ITArticle>() {
+                Type type = new TypeToken<Article>() {
                 }.getType();
-                ITArticle article = gson.fromJson(json, type);
+                Article article = gson.fromJson(obj.toString(), type);
                 if (article != null) {
-                    article.setId(UUID.randomUUID().toString());
-                    article.setCategory(3);
-                    if (ibmArticleService.addArticle(article) > 0) {
-                        com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
-                        BeanUtils.copyProperties(article, esArticle);
-                        esArticleService.addArticle(esArticle);
-                        course.setArticleId(String.valueOf(article.getId()));
+                    article.setModule(Constant.ARTICLE_MODULE.JIAO_CHENG.getIndex());
+                    ibmArticleService.addArticle(article);
+                    Integer articleId = article.getId();
+                    if (articleId > 0) {
+                        course.setArticleId(articleId);
                         courseMapper.insert(course);
+
                     }
                 }
             }
@@ -337,28 +372,26 @@ public class FetchArticleTask {
             Element item = itemList.get(i);
             String category = item.select("h2").text();
             System.out.println(category);
-            courseSubject.setId(StringUtil.uuid());
             courseSubject.setName(category);
             courseSubject.setCreateOn(System.currentTimeMillis());
             courseSubject.setUpdateTime(System.currentTimeMillis());
-            courseSubjectMapper.insert(courseSubject);
-            String partentId = courseSubject.getId();
+            courseSubjectMapper.insertReturnPrimaryKey(courseSubject);
+            Integer coursePartentId = courseSubject.getId();
             Elements liEles = item.select(".blogroll").get(0).select("li > a");
             for (Element liEle : liEles) {
-                courseSubject = new CourseSubject();
+                CourseSubject courseSubject1 = new CourseSubject();
                 String link = liEle.absUrl("href");
                 String name = liEle.text();
                 String desc = liEle.attr("title");
                 System.out.println(name + ":" + link + desc);
 
-                courseSubject.setId(StringUtil.uuid());
-                courseSubject.setName(name);
-                courseSubject.setDescription(desc);
-                courseSubject.setPartentId(partentId);
-                courseSubject.setCreateOn(System.currentTimeMillis());
-                courseSubject.setUpdateTime(System.currentTimeMillis());
-                courseSubjectMapper.insert(courseSubject);
-
+                courseSubject1.setName(name);
+                courseSubject1.setDescription(desc);
+                courseSubject1.setPartentId(coursePartentId);
+                courseSubject1.setCreateOn(System.currentTimeMillis());
+                courseSubject1.setUpdateTime(System.currentTimeMillis());
+                courseSubjectMapper.insertReturnPrimaryKey(courseSubject1);
+                Integer partentId = courseSubject1.getId();
                 log.info("开始抓取每一个专题的文章");
                 int retry = 1;
                 page = (String) HttpRequestTool.getRequest(link);
@@ -373,25 +406,24 @@ public class FetchArticleTask {
                 doc = Jsoup.parse(page);
                 Elements titleElements = doc.select(".pagemenu > li > a");
                 byte sort = 1;
-                String coursePartentId = "";
                 for (Element titleEle : titleElements) {
                     String title = titleEle.text();
                     String titleLink = titleEle.absUrl("href");
-                    System.out.println(title);
+                    Integer courseParentId = 0;
                     Course course = new Course();
-                    course.setId(StringUtil.uuid());
                     course.setSort(sort);
                     sort++;
                     course.setTitle(title);
-                    course.setCourseSubjectId(courseSubject.getId());
+                    course.setCourseSubjectId(partentId);
                     course.setCreateOn(System.currentTimeMillis());
                     course.setUpdateTime(System.currentTimeMillis());
                     if (StringUtils.isBlank(titleLink)) {
-                        courseMapper.insert(course);
-                        coursePartentId = course.getId();
+                        courseMapper.insertReturnPrimarykey(course);
+                        courseParentId = course.getId();
                         continue;
                     }
-                    course.setPartentId(coursePartentId);
+                    System.out.println(title);
+                    course.setPartentId(courseParentId);
                     crawlAction.setUrl(titleLink);
                     crawlAction.setData(course);
                     crawlAction.work();
@@ -405,52 +437,58 @@ public class FetchArticleTask {
 
     public static void main(String[] args) {
 
-        String rootUrl = "http://www.yiibai.com/";
-        String page = null;
-        Document doc = null;
-        page = (String) HttpRequestTool.getRequest(rootUrl);
-        doc = Jsoup.parse(page);
-        Element items = doc.select(".article-content > .items").get(0);
-        Elements itemList = items.select(".item");
-        for (int i = 1; i < itemList.size(); i++) {
-            CourseSubject courseSubject = new CourseSubject();
-            Element item = itemList.get(i);
-            String category = item.select("h2").text();
-            if (StringUtils.isNotBlank(category) && category.equals("推荐教程")) continue;
-            System.out.println(category);
-            courseSubject.setId(StringUtil.uuid());
-            courseSubject.setName(category);
-            courseSubject.setCreateOn(System.currentTimeMillis());
-            courseSubject.setUpdateTime(System.currentTimeMillis());
-            String partentId = courseSubject.getId();
-            Elements liEles = item.select(".blogroll").get(0).select("li > a");
-            for (Element liEle : liEles) {
-                courseSubject = new CourseSubject();
-                String link = liEle.absUrl("href");
-                String name = liEle.text();
-                String desc = liEle.attr("title");
-                System.out.println(name + ":" + link + desc);
+//        String rootUrl = "http://www.yiibai.com/";
+//        String page = null;
+//        Document doc = null;
+//        page = (String) HttpRequestTool.getRequest(rootUrl);
+//        doc = Jsoup.parse(page);
+//        Element items = doc.select(".article-content > .items").get(0);
+//        Elements itemList = items.select(".item");
+//        for (int i = 1; i < itemList.size(); i++) {
+//            CourseSubject courseSubject = new CourseSubject();
+//            Element item = itemList.get(i);
+//            String category = item.select("h2").text();
+//            if (StringUtils.isNotBlank(category) && category.equals("推荐教程")) continue;
+//            System.out.println(category);
+//            courseSubject.setId(StringUtil.uuid());
+//            courseSubject.setName(category);
+//            courseSubject.setCreateOn(System.currentTimeMillis());
+//            courseSubject.setUpdateTime(System.currentTimeMillis());
+//            String partentId = courseSubject.getId();
+//            Elements liEles = item.select(".blogroll").get(0).select("li > a");
+//            for (Element liEle : liEles) {
+//                courseSubject = new CourseSubject();
+//                String link = liEle.absUrl("href");
+//                String name = liEle.text();
+//                String desc = liEle.attr("title");
+//                System.out.println(name + ":" + link + desc);
+//
+//                courseSubject.setId(StringUtil.uuid());
+//                courseSubject.setName(name);
+//                courseSubject.setDescription(desc);
+//                courseSubject.setPartentId(partentId);
+//                courseSubject.setCreateOn(System.currentTimeMillis());
+//                courseSubject.setUpdateTime(System.currentTimeMillis());
+//
+//                log.info("开始抓取每一个专题的文章");
+//                page = (String) HttpRequestTool.getRequest(link);
+//                doc = Jsoup.parse(page);
+//                Elements titleElements = doc.select(".pagemenu > li > a");
+//                for (Element titleEle : titleElements) {
+//                    String title = titleEle.text();
+//                    String titleLink = titleEle.absUrl("href");
+//
+//
+//                }
+//
+//            }
+//        }
+//        System.out.println("运行结束！");
 
-                courseSubject.setId(StringUtil.uuid());
-                courseSubject.setName(name);
-                courseSubject.setDescription(desc);
-                courseSubject.setPartentId(partentId);
-                courseSubject.setCreateOn(System.currentTimeMillis());
-                courseSubject.setUpdateTime(System.currentTimeMillis());
 
-                log.info("开始抓取每一个专题的文章");
-                page = (String) HttpRequestTool.getRequest(link);
-                doc = Jsoup.parse(page);
-                Elements titleElements = doc.select(".pagemenu > li > a");
-                for (Element titleEle : titleElements) {
-                    String title = titleEle.text();
-                    String titleLink = titleEle.absUrl("href");
-                    System.out.println(title);
+        String url = "https://www.ibm.com/developerworks/cn/java/j-local-Cucumber-high-level/image001.png";
 
-                }
-
-            }
-        }
-        System.out.println("运行结束！");
+        String newUrl = url.substring(0, url.lastIndexOf("/")+1);
+        System.out.println(newUrl);
     }
 }

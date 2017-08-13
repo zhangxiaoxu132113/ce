@@ -1,6 +1,7 @@
 package com.water.crawl.core.factory;
 
-import com.water.crawl.db.model.ITArticle;
+import com.water.uubook.model.Article;
+import com.water.uubook.model.ITArticle;
 import org.jsoup.nodes.Document;
 
 /**
@@ -8,7 +9,7 @@ import org.jsoup.nodes.Document;
  */
 public interface IArticleFactory {
 
-    ITArticle createArticle(Document doc, String decryptUrl);
+    Article createArticle(Document doc, String decryptUrl);
 
     void printExecuteInfo();
 }

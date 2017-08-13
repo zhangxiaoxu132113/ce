@@ -45,7 +45,7 @@ public class Constant {
     /**
      * 文章分类
      */
-    public static enum ARTICLE_CATEOGRY {
+    public static enum ARTICLE_MODULE {
         BLOG(0,"技术博文"),
         ZI_XUN(1,"资讯"),
         TOU_TIAO(2,"头条"),
@@ -53,7 +53,7 @@ public class Constant {
         ZHI_SHI_KU(4,"知识库");
 
         public static String getName(int index) {
-            for (ARTICLE_CATEOGRY item : ARTICLE_CATEOGRY.values()) {
+            for (ARTICLE_MODULE item : ARTICLE_MODULE.values()) {
                 if (item.getIndex() == index) {
                     return item.name;
                 }
@@ -61,7 +61,40 @@ public class Constant {
             return null;
         }
 
-        private ARTICLE_CATEOGRY(int index, String name) {
+        private ARTICLE_MODULE(int index, String name) {
+            this.index = index;
+            this.name = name;
+        }
+
+        private int index;
+        private String name;
+
+        public int getIndex() {
+            return index;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    public static enum ARTICLE_CATEGORY {
+        BLOG(0,"技术博文"),
+        ZI_XUN(1,"资讯"),
+        TOU_TIAO(2,"头条"),
+        JIAO_CHENG(3,"教程"),
+        ZHI_SHI_KU(4,"知识库");
+
+        public static String getName(int index) {
+            for (ARTICLE_CATEGORY item : ARTICLE_CATEGORY.values()) {
+                if (item.getIndex() == index) {
+                    return item.name;
+                }
+            }
+            return null;
+        }
+
+        private ARTICLE_CATEGORY(int index, String name) {
             this.index = index;
             this.name = name;
         }

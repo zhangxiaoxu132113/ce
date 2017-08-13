@@ -9,6 +9,10 @@ import com.water.crawl.db.service.ICSDNArticleService;
 import com.water.crawl.utils.Constants;
 import com.water.crawl.work.FetchArticleUrlCrawlTask;
 import com.water.es.api.Service.IArticleService;
+import com.water.uubook.dao.ArticleMapper;
+import com.water.uubook.dao.CourseMapper;
+import com.water.uubook.model.Article;
+import com.water.uubook.model.Course;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,6 +38,19 @@ public class TestController {
 
     @Resource
     private CacheManager cacheManager;
+
+    @Resource
+    private CourseMapper courseMapper;
+
+    @RequestMapping(value = "/test11")
+    public void tes11t() {
+        Course course = new Course();
+        course.setArticleId(11);
+        course.setCourseSubjectId(1);
+        Integer id = courseMapper.insertReturnPrimarykey(course);
+        System.out.println(id);
+        System.out.println(course.getId());
+    }
 
     @RequestMapping(value = "/test")
     public String test() {

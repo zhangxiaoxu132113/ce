@@ -9,7 +9,7 @@
           {
             "id": "title",
             "rule": [
-              "title",
+              "#ibm-pagetitle-h1",
               "title",
               "title"
             ],
@@ -18,7 +18,7 @@
           {
             "id": "author",
             "rule": [
-              "a.ibm-popup-link",
+              "span.dw-article-author a",
               ".dw-article-ps-author",
               ".dw-article-authordate"
             ],
@@ -27,7 +27,7 @@
           {
             "id": "content",
             "rule": [
-              ".ibm-col-1-1",
+              ".ibm-col-6-4",
               ".ibm-col-6-4",
               ".ibm-col-6-4"
             ],

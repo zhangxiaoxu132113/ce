@@ -30,7 +30,7 @@ public abstract class CrawlAction<T> {
     public void work() {
         final Object fData = this.data;
         if (StringUtils.isNotBlank(this.url)) {
-            executorService.execute(new CrawlCallBack(CrawlBox.getCrawlKey(id, module), url) {
+            executorService.execute(new CrawlCallBack(CrawlBox.getCrawlKey(id, module), this.url) {
                 @Override
                 public void calBack(JsonObject obj, String url) {
                     action(obj, fData);
