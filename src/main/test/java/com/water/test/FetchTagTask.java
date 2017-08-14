@@ -1,6 +1,6 @@
 package com.water.test;
 
-import com.water.crawl.utils.HttpRequestTool;
+import com.water.crawl.utils.http.HttpRequestTool;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
