@@ -64,5 +64,14 @@ public class FetchTagTask implements Runnable {
         Thread t1 = new Thread(fetchTagTask);
         t1.start();
     }
-    
+
+    /**
+     * 1，有一个url作为根url入口
+     * 2，根据上一个url获取新的url链接，判断新的url是不是帖子详情页，如果是，则放入队列（这个队列会有一个定时任务去抓取里面的数据）
+     *    不管是，还是不是，都要继续抓这个url下的所有url然后放入一个待抓取的队列，如此遍历三层，直到待抓取的url队列为10000，停止深度遍历
+     *    开启另外一个线程，他只负责遍历这个url下的所有url是否为帖子详情页的url，直到待抓取的url队列为1，停止爬取
+     * 3，
+     *
+     *
+     */
 }
