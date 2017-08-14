@@ -1,6 +1,6 @@
 package com.water.test;
 
-import com.water.crawl.utils.HttpRequestTool;
+import com.water.crawl.utils.http.HttpRequestTool;
 
 import java.util.HashMap;
 import java.util.Map;

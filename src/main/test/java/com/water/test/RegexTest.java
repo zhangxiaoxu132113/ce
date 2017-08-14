@@ -1,5 +1,9 @@
 package com.water.test;
 
+import com.water.uubook.dao.ArticleMapper;
+import com.water.uubook.model.Article;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -7,18 +11,6 @@ import java.util.regex.Pattern;
  * Created by zhangmiaojie on 2017/1/26.
  */
 public class RegexTest {
-    public static void main(String[] args) {
-//        Pattern pattern = Pattern.compile("");
-//        Matcher matcher = pattern.matcher("");
-//        while (matcher.find()) {
-//            System.out.println(matcher.group());
-//        }
-//        test01();
-
-        String url = "123";
-        url = url.substring(1,2);
-        System.out.println(url);
-    }
 
 
     public static void test01() {

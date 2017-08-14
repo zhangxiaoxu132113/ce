@@ -56,6 +56,16 @@
         </property>
     </bean>
 
+    <!-- 全量数据库的文章导入es -->
+    <bean id="jobTask13" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="quartzJob02"/>
+        </property>
+        <property name="targetMethod">
+            <value>handleArticleTag</value>
+        </property>
+    </bean>
+
     <!-- 时间分配 -->
     <!-- 每分钟扫描待处理的单次任务 -->
     <bean id="jobRunTime01" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
@@ -63,7 +73,7 @@
             <ref bean="jobTask01"/>
         </property>
         <property name="cronExpression">
-            <value>0 25 10 11 4 ?</value>
+            <value>0 13 23 7 8 ?</value>
         </property>
     </bean>
 
@@ -73,7 +83,7 @@
             <ref bean="jobTask02" />
         </property>
         <property name="cronExpression">
-            <value>0 21 11 5 5 ?</value>
+            <value>0 43 12 13 8 ?</value>
         </property>
     </bean>
 
@@ -93,7 +103,16 @@
             <ref bean="jobTask12" />
         </property>
         <property name="cronExpression">
-            <value>0 18 15 31 5 ?</value>
+            <value>0 52 11 12 8 ?</value>
+        </property>
+    </bean>
+
+    <bean id="jobRunTime13" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobTask13" />
+        </property>
+        <property name="cronExpression">
+            <value>0 1 0 9 8 ?</value>
         </property>
     </bean>
 
@@ -102,10 +121,11 @@
           class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-                <!--<ref bean="jobRunTime01"/>-->
-                <!--<ref bean="jobRunTime02"/>-->
+                <ref bean="jobRunTime01"/>
+                <ref bean="jobRunTime02"/>
                 <!--<ref bean="jobRunTime11"/>-->
                 <ref bean="jobRunTime12"/>
+                <ref bean="jobRunTime13"/>
             </list>
         </property>
     </bean>

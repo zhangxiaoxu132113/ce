@@ -1,11 +1,10 @@
 package com.water.crawl.db.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.water.crawl.db.dao.ITLibMapper;
-import com.water.crawl.db.model.ITLib;
+import com.water.uubook.dao.ITLibMapper;
 import com.water.crawl.db.service.ICSDNArticleService;
-import com.water.crawl.utils.Constant;
-import com.water.crawl.utils.HttpRequestTool;
+import com.water.crawl.utils.http.HttpRequestTool;
+import com.water.uubook.model.ITLib;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,7 +12,10 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by zhangmiaojie on 2017/3/1.
@@ -59,7 +61,7 @@ public class CSDNArticleServiceImpl extends ITArticleServiceImpl implements ICSD
                     itLib.setUrl(link);
                     itLib.setPic(pic);
                     itLib.setBgPic(bgPic);
-                    itLib.setCategory(Constant.ArticleCategory.CSDN.getIndex());
+//                    itLib.setCategory(Constant.ArticleCategory.CSDN.getIndex());
                     itLib.setCreateOn(System.currentTimeMillis());
                     effectCount += itLibMapper.insert(itLib);
                 }

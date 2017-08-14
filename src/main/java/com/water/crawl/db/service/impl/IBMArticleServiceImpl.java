@@ -1,7 +1,7 @@
 package com.water.crawl.db.service.impl;
 
 import com.water.crawl.db.service.IBMArticleService;
-import com.water.crawl.utils.HttpRequestTool;
+import com.water.crawl.utils.http.HttpRequestTool;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

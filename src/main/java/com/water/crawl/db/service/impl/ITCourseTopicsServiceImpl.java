@@ -1,6 +1,6 @@
 package com.water.crawl.db.service.impl;
 
-import com.water.crawl.db.dao.ITCourseTopicsMapper;
+import com.water.uubook.dao.ITCourseTopicsMapper;
 import com.water.crawl.db.service.ITCourseTopicsService;
 import org.springframework.stereotype.Service;
 

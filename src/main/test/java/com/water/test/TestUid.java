@@ -1,6 +1,5 @@
 package com.water.test;
 
-import com.water.crawl.utils.HttpRequestTool;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -11,6 +10,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import com.water.crawl.core.WaterHtmlParse;
+import com.water.crawl.utils.http.HttpRequestTool;
 
 import java.io.File;
 import java.io.FileOutputStream;

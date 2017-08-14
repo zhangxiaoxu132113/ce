@@ -3,6 +3,7 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/extlib/xpush-common.jar!/" />
       <root url="jar://$PROJECT_DIR$/extlib/xpush-service.jar!/" />
+      <root url="jar://$PROJECT_DIR$/extlib/je-analysis-1.5.3.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

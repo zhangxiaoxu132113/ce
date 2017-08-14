@@ -1,9 +1,6 @@
 package com.water.test.entry;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.water.crawl.core.CrawlAction;
-import com.water.crawl.db.model.Article;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +15,7 @@ public class TestParseJson2Obj {
 
     public static void main(String[] args) throws IOException {
 //        List<CrawlRule> crawlRuleList = null;
-//        InputStream is = ClassLoader.getSystemResourceAsStream("text.json");
+//        InputStream is = ClassLoader.getSystemResourceAsStream("");
 //        String json = inputStream2String(is);
 //        Type listType = new TypeToken<ArrayList<CrawlRule>>() {}.getType();
 //        crawlRuleList = gson.fromJson(json, listType);
@@ -31,12 +28,11 @@ public class TestParseJson2Obj {
 //            }
 //        };
 //        crawlAction.work();
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("title","a little love");
-        jsonObject.addProperty("author","mr chen");
-        jsonObject.addProperty("content", "i love you");
-        System.out.println(jsonObject.toString());
-
+//        JsonObject jsonObject = new JsonObject();
+//        jsonObject.addProperty("title","a little love");
+//        jsonObject.addProperty("author","mr chen");
+//        jsonObject.addProperty("content", "i love you");
+//        System.out.println(jsonObject.toString());
     }
 
 

@@ -1,6 +1,6 @@
 package com.water.crawl.db.service;
 
-import com.water.crawl.db.model.ITLib;
+import com.water.uubook.model.ITLib;
 
 import java.util.List;
 

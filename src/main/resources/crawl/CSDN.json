@@ -1,1 +1,36 @@
-[{"description":"CSDN","id":"CSDN","module":[{"mid":"Article","ruleList":[{"get":"text","id":"title","rule":["aa","bb"]},{"get":"text","id":"author","rule":["er"]},{"get":"html","id":"content","rule":["aa","bb"]}]}]}]
+[
+  {
+    "description": "CSDN",
+    "id": "CSDN",
+    "module": [
+      {
+        "mid": "Article",
+        "ruleList": [
+          {
+            "get": "text",
+            "id": "title",
+            "rule": [
+              "aa",
+              "bb"
+            ]
+          },
+          {
+            "get": "text",
+            "id": "author",
+            "rule": [
+              "er"
+            ]
+          },
+          {
+            "get": "html",
+            "id": "content",
+            "rule": [
+              "aa",
+              "bb"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

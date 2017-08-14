@@ -13,6 +13,7 @@ public class RedisCacheManagerImpl implements CacheManager {
     public RedisCacheManagerImpl() {
 
     }
+
     public RedisCacheManagerImpl(ShardedJedisPool shardedJedisPool) {
         this.pool = shardedJedisPool;
     }
@@ -93,6 +94,18 @@ public class RedisCacheManagerImpl implements CacheManager {
         String result = "";
         try {
             result = jedis.lpop(key);
+            this.pool.returnResource(jedis);
+        } catch (Exception e) {
+            this.pool.returnBrokenResource(jedis);
+        }
+        return result;
+    }
+
+    public boolean sismember(String key, String value) {
+        boolean result = false;
+        ShardedJedis jedis = this.pool.getResource();
+        try {
+            result = jedis.sismember(key, value);
             this.pool.returnResource(jedis);
         } catch (Exception e) {
             this.pool.returnBrokenResource(jedis);

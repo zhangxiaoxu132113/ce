@@ -2,7 +2,8 @@ package com.water.crawl.core.factory.impl;
 
 
 import com.water.crawl.core.factory.IArticleFactory;
-import com.water.crawl.db.model.ITArticle;
+import com.water.uubook.model.Article;
+import com.water.uubook.model.ITArticle;
 import org.jsoup.nodes.Document;
 
 import java.util.UUID;
@@ -19,8 +20,8 @@ public class IBMArticleFactory implements IArticleFactory {
     private static int methodFourExecuteFailureTimes;
 
     @Override
-    public ITArticle createArticle(Document doc, String decryptUrl) {
-        ITArticle article = null;
+    public Article createArticle(Document doc, String decryptUrl) {
+        Article article = null;
         article = createArticleMethodOne(doc, decryptUrl);
         if (article == null) {
             article = createArticleMethodTwo(doc, decryptUrl);
@@ -35,8 +36,8 @@ public class IBMArticleFactory implements IArticleFactory {
         return article;
     }
 
-    public ITArticle createArticleMethodOne(Document doc, String decryptUrl) {
-        ITArticle article = new ITArticle();
+    public Article createArticleMethodOne(Document doc, String decryptUrl) {
+        Article article = new Article();
         try {
             String title = doc.getElementsByTag("title").get(0).text();
             String description = doc.select("meta[name=description]").get(0).attr("content");
@@ -48,10 +49,9 @@ public class IBMArticleFactory implements IArticleFactory {
                 reference = doc.select(".ibm-bullet-list").get(0).html();
             }
 
-            article.setId(UUID.randomUUID().toString());
             article.setAuthor(author);
             article.setTitle(title);
-            article.setCategory("IBM");
+//            article.setCategory("IBM");
             article.setContent(content);
             article.setDescription(description);
             article.setReference(reference);
@@ -66,8 +66,8 @@ public class IBMArticleFactory implements IArticleFactory {
         return article;
     }
 
-    public ITArticle createArticleMethodTwo(Document doc, String decryptUrl) {
-        ITArticle article = new ITArticle();
+    public Article createArticleMethodTwo(Document doc, String decryptUrl) {
+        Article article = new Article();
         try {
             String title = doc.getElementsByTag("title").get(0).html();
             String description = doc.select("meta[name=description]").get(0).attr("content");
@@ -79,10 +79,9 @@ public class IBMArticleFactory implements IArticleFactory {
             String content = doc.select(".ibm-col-6-4").get(1).html();
             String createOn = doc.select("#dw-article-ps-date").get(0).html();
 
-            article.setId(UUID.randomUUID().toString());
             article.setAuthor(author);
             article.setTitle(title);
-            article.setCategory("IBM");
+//            article.setCategory("IBM");
             article.setContent(content);
             article.setDescription(description);
             article.setReference(reference);
@@ -97,8 +96,8 @@ public class IBMArticleFactory implements IArticleFactory {
         return article;
     }
 
-    public ITArticle createArticleMethodThree(Document doc, String decryptUrl) {
-        ITArticle article = new ITArticle();
+    public Article createArticleMethodThree(Document doc, String decryptUrl) {
+        Article article = new Article();
         try {
             String title = doc.getElementsByTag("title").get(0).html();
             String description = doc.select("meta[name=description]").get(0).attr("content");
@@ -111,10 +110,9 @@ public class IBMArticleFactory implements IArticleFactory {
             String content = doc.select(".ibm-col-6-4").get(0).html();
             String createOn = doc.select(".dw-article-pubdate").get(0).html().replace("发布", "");
 
-            article.setId(UUID.randomUUID().toString());
             article.setAuthor(author);
             article.setTitle(title);
-            article.setCategory("IBM");
+//            article.setCategory("IBM");
             article.setReleaseTime(createOn);
             article.setContent(content);
             article.setDescription(description);
@@ -129,8 +127,8 @@ public class IBMArticleFactory implements IArticleFactory {
         return article;
     }
 
-    public ITArticle createArticleMethodFour(Document doc, String decryptUrl) {
-        ITArticle article = new ITArticle();
+    public Article createArticleMethodFour(Document doc, String decryptUrl) {
+        Article article = new Article();
         try {
             String title = doc.getElementsByTag("title").get(0).html();
             String description = doc.select("meta[name=description]").get(0).attr("content");
@@ -143,10 +141,9 @@ public class IBMArticleFactory implements IArticleFactory {
             String content = doc.select(".ibm-col-6-4").get(0).html();
             String date = doc.select(".dw-summary-date").get(0).html();
 
-            article.setId(UUID.randomUUID().toString());
             article.setAuthor(author);
             article.setTitle(title);
-            article.setCategory("IBM");
+//            article.setCategory("IBM");
             article.setContent(content);
             article.setDescription(description);
             article.setReference(reference);

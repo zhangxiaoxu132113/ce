@@ -1,8 +1,9 @@
 package com.water.crawl.core.factory.impl;
 
 import com.water.crawl.core.factory.IArticleFactory;
-import com.water.crawl.db.model.ITArticle;
-import com.water.crawl.utils.HttpRequestTool;
+import com.water.crawl.utils.http.HttpRequestTool;
+import com.water.uubook.model.Article;
+import com.water.uubook.model.ITArticle;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -14,8 +15,8 @@ import java.util.UUID;
 public class OSCHINAArticleFactory implements IArticleFactory {
 
     @Override
-    public ITArticle createArticle(Document doc, String decryptUrl) {
-        ITArticle article = new ITArticle();
+    public Article createArticle(Document doc, String decryptUrl) {
+        Article article = new Article();
         String url = "https://my.oschina.net/alchemystar/blog/843832";
         String html = (String) HttpRequestTool.getRequest(url, false);
         Document document = Jsoup.parse(html);
@@ -25,10 +26,9 @@ public class OSCHINAArticleFactory implements IArticleFactory {
         String description = document.select("").get(0).ownText();
         String reference = document.select("").get(0).ownText();
 
-        article.setId(UUID.randomUUID().toString());
         article.setAuthor(author);
         article.setTitle(title);
-        article.setCategory("IBM");
+//        article.setCategory("IBM");
         article.setContent(content);
         article.setDescription(description);
         article.setReference(reference);
@@ -57,7 +57,7 @@ public class OSCHINAArticleFactory implements IArticleFactory {
         article.setId(UUID.randomUUID().toString());
         article.setAuthor(author);
         article.setTitle(title);
-        article.setCategory("IBM");
+//        article.setCategory("IBM");
         article.setContent(content);
 //        article.setDescription(description);
 //        article.setReference(reference);

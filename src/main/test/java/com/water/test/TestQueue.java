@@ -2,8 +2,8 @@ package com.water.test;
 
 import com.water.crawl.core.WaterHtmlParse;
 import com.water.crawl.core.cache.CacheManager;
-import com.water.crawl.utils.HttpRequestTool;
 import com.water.crawl.utils.RedisKey;
+import com.water.crawl.utils.http.HttpRequestTool;
 import org.apache.commons.lang3.StringUtils;
 import redis.clients.jedis.ShardedJedis;
 

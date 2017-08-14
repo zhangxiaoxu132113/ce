@@ -3,7 +3,7 @@ package com.water.test;
 import com.water.crawl.db.model.CrawlingTask;
 import com.water.crawl.db.model.dto.CrawlKeyword;
 import com.water.crawl.director.CrawlDirector;
-import com.water.crawl.utils.QueueClientHelper;
+import com.water.crawl.utils.queue.QueueClientHelper;
 import com.xpush.serialization.protobuf.ProtoEntity;
 
 import java.util.ArrayList;

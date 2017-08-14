@@ -23,4 +23,6 @@ public interface CacheManager {
 
     public String lpop(String key);
 
+    public boolean sismember(String key, String value);
+
 }
