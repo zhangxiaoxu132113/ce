@@ -1,6 +1,6 @@
 package com.water.crawl.work;
 
-import com.water.crawl.utils.HtmlUtil;
+import com.water.crawl.utils.HTMLUtil;
 import com.water.es.api.Service.IArticleService;
 import com.water.uubook.dao.ArticleMapper;
 import com.water.uubook.dao.TagArticleMapper;
@@ -126,7 +126,7 @@ public class TaskQuartz {
             List<Article> articleList = articleMapper.getArticle(queryMap);
             for (Article article : articleList) {
                 String description = article.getDescription();
-                String content = HtmlUtil.Html2Text(article.getContent());
+                String content = HTMLUtil.Html2Text(article.getContent());
                 if (StringUtils.isBlank(description)) {// 如果description内容为空，则设置description的内容
                     if (content.length() >= 255) {
                         description = content.substring(0, 255);
