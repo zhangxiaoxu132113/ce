@@ -26,14 +26,18 @@ public class FetchCsdnCrawler {
     private CacheManager cacheManager;
 
     public void execute() {
-        String htmlContent = "";
-        Document doc = null;
         boolean isEnd = false;
         int depth = 1;
         String rootUrl =  cacheManager.lpop(QUEUE_ROOT_URL);
         while (!isEnd) {
             depthCapture(rootUrl, depth);
-            Long queueLen = cacheManager.llen(QUEUE_ROOT_URL);
+            if (cacheManager.llen(QUEUE_ROOT_URL) >= 100000) isEnd = true;
+        }
+        isEnd = false;
+        while (!isEnd) {
+            if (cacheManager.llen(QUEUE_ROOT_URL) == 1) isEnd = true;
+            rootUrl = cacheManager.lpop(QUEUE_ROOT_URL);
+
         }
     }
 
