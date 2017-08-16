@@ -1,5 +1,7 @@
 #Crawl Enginer
 
+ce这个项目负责了爬虫的角色，为uubook这个项目提供了数据。但同时这个项目会有多个定时任务，完成一些数据的分析，清洗。
+
 
 **MW_CE爬虫规则的调整**
 之前每爬取不同的网站就需要重新写一个Factory工厂类，在创建文章类IArticle的方法里面根据具体的css样式规则创建。
@@ -9,6 +11,7 @@ CrawlBox是一个爬虫的盒子，里面存放了各个网站对应的内容爬
 
 **API实现方式**
 通过new一个CrawlAction对象来启动一个爬取文章内容的任务
+
 CrawlAction crawlAction = new CrawlAction("IBM","Article",link) {
                         @Override
                         public void action(JsonObject obj) {
