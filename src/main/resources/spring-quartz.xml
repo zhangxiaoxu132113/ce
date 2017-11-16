@@ -11,8 +11,8 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
 
     <!-- 定时任务01：文章抓取任务 -->
-    <bean id="quartzJob01" class="com.water.crawl.work.FetchArticleTask"></bean>
-    <bean id="quartzJob02" class="com.water.crawl.work.TaskQuartz"></bean>
+    <bean id="quartzJob01" class="com.water.ce.work.FetchArticleTask"></bean>
+    <bean id="quartzJob02" class="com.water.ce.work.TaskQuartz"></bean>
 
 
     <!-- 抓取IBM开发者社区的文章 -->
