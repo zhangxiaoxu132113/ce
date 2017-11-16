@@ -1,0 +1,32 @@
+{
+  "id": "OpenChina",
+  "description": "Article",
+  "module": [
+    {
+      "mid": "Article",
+      "ruleList": [
+        {
+          "id": "title",
+          "rule": [
+            ".news-content h1"
+          ],
+          "get": "ownText"
+        },
+        {
+          "id": "content",
+          "rule": [
+            ".editor-viewer"
+          ],
+          "get": "html"
+        },
+        {
+          "id":"reference",
+          "rule": [
+            ".link-list"
+          ],
+          "get":"html"
+        }
+      ]
+    }
+  ]
+},

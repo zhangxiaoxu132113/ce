@@ -1,1 +1,27 @@
-[{"description":"深度开源经验","id":"open-open","module":[{"mid":"Article","ruleList":[{"get":"text","id":"title","rule":["#articleTitle"]},{"get":"html","id":"content","rule":["#readercontainer"]}]}]}]
+[
+  {
+    "description": "深度开源经验",
+    "id": "open-open",
+    "module": [
+      {
+        "mid": "Article",
+        "ruleList": [
+          {
+            "get": "text",
+            "id": "title",
+            "rule": [
+              "#articleTitle"
+            ]
+          },
+          {
+            "get": "html",
+            "id": "content",
+            "rule": [
+              "#readercontainer"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
