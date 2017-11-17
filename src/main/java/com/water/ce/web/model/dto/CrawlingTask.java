@@ -1,4 +1,4 @@
-package com.water.ce.crawl;
+package com.water.ce.web.model.dto;
 
 import com.xpush.serialization.protobuf.ProtoEntity;
 import com.xpush.serialization.protobuf.ProtoMember;

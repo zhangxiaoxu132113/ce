@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan(basePackages = "com.water.crawl")
+@ComponentScan(basePackages = "com.water.ce")
 public class Bootstrap implements EmbeddedServletContainerCustomizer{
 
     public static void main(String[] args) {

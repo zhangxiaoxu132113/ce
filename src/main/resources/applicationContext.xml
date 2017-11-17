@@ -14,14 +14,16 @@
     <!--注解控测器-->
     <context:component-scan base-package="com.water"/>
 
-    <bean id="jedisPool" class="com.water.crawl.core.cache.ShardedJedisPoolFactory">
+    <bean id="jedisPool" class="com.water.ce.cache.ShardedJedisPoolFactory">
         <property name="hostAndPorts" value="@redis.address@:@redis.port@"/>
     </bean>
-
-    <bean id="crawlBox" class="com.water.crawl.core.CrawlBox" init-method="initialize">
+    <!--爬虫容器实例化-->
+    <bean id="crawlBox" class="com.water.ce.crawl.CrawlBox" init-method="initialize">
         <property name="filePath" value="crawl/" />
     </bean>
-
+    <!--爬虫任务回调-->
+    <bean id="taskCallBack" class="com.water.ce.web.quartz.TaskCallBack" init-method="init"/>
+    <!--依赖配置-->
     <import resource="spring-mybatis.xml"/>
     <import resource="spring-quartz.xml"/>
     <import resource="spring-dubbo-consumer.xml"/>

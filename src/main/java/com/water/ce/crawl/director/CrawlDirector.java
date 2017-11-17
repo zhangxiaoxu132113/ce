@@ -1,7 +1,7 @@
 package com.water.ce.crawl.director;
 
-import com.water.ce.crawl.CrawlingTask;
-import com.water.ce.crawl.director.handler.Handler;
+import com.water.ce.crawl.director.handler.ITaskCompleteHandler;
+import com.water.ce.web.model.dto.CrawlingTask;
 import com.xpush.queue.QueueClient;
 import com.xpush.queue.QueueManager;
 import com.xpush.serialization.protobuf.ProtoEntity;
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class CrawlDirector {
     public static List<String> watchList = null;
-    public static Handler handler;
+    public static ITaskCompleteHandler handler;
     public static QueueClient client;
     private static ScheduledExecutorService executor;
     private static InitialLock lock = new InitialLock();
@@ -37,7 +37,7 @@ public class CrawlDirector {
         });
     }
 
-    public static void registerHandler(Handler handler) {
+    public static void registerHandler(ITaskCompleteHandler handler) {
         CrawlDirector.handler = handler;
     }
 
