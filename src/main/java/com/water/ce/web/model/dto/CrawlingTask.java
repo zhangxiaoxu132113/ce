@@ -13,6 +13,12 @@ public class CrawlingTask extends ProtoEntity{
     @ProtoMember(1)
     private String taskId;
 
+    @ProtoMember(2)
+    private String webSite;
+
+    @ProtoMember(3)
+    private String module;
+
     private List<ProtoEntity> datas;
 
     private long taskLen;
@@ -41,5 +47,21 @@ public class CrawlingTask extends ProtoEntity{
 
     public void setTaskLen(long taskLen) {
         this.taskLen = taskLen;
+    }
+
+    public String getWebSite() {
+        return webSite;
+    }
+
+    public void setWebSite(String webSite) {
+        this.webSite = webSite;
+    }
+
+    public String getModule() {
+        return module;
+    }
+
+    public void setModule(String module) {
+        this.module = module;
     }
 }

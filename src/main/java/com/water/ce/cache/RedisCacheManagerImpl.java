@@ -3,6 +3,8 @@ package com.water.ce.cache;
 import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
 
+import java.util.List;
+
 /**
  * Created by zhangmiaojie on 2017/2/4.
  */
@@ -81,7 +83,7 @@ public class RedisCacheManagerImpl implements CacheManager {
     public void lpush(String key, String... value) {
         ShardedJedis jedis = this.pool.getResource();
         try {
-            jedis.lpush(key,value);
+            jedis.lpush(key, value);
             this.pool.returnResource(jedis);
         } catch (Exception e) {
             this.pool.returnBrokenResource(jedis);
@@ -101,6 +103,19 @@ public class RedisCacheManagerImpl implements CacheManager {
         return result;
     }
 
+    @Override
+    public byte[] lpop(byte[] key) {
+        ShardedJedis jedis = this.pool.getResource();
+        byte[] result = null;
+        try {
+            result = jedis.lpop(key);
+            this.pool.returnResource(jedis);
+        } catch (Exception e) {
+            this.pool.returnBrokenResource(jedis);
+        }
+        return result;
+    }
+
     public boolean sismember(String key, String value) {
         boolean result = false;
         ShardedJedis jedis = this.pool.getResource();
@@ -111,5 +126,18 @@ public class RedisCacheManagerImpl implements CacheManager {
             this.pool.returnBrokenResource(jedis);
         }
         return result;
+    }
+
+    @Override
+    public byte[] getqueueheader(byte[] bytes) {
+        List<byte[]> result = null;
+        ShardedJedis jedis = this.pool.getResource();
+        try {
+            result = jedis.lrange(bytes, -1L, -1L);
+            this.pool.returnResource(jedis);
+        } catch (Exception e) {
+            this.pool.returnBrokenResource(jedis);
+        }
+        return (result == null || result.size() == 0) ? null : result.get(0);
     }
 }

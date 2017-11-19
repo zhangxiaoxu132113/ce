@@ -32,7 +32,7 @@ public class CrawlDirector {
             public void run() {
                 CrawlDirector.client = QueueManager.getClient(hosts, "");
                 watchList = new ArrayList<>(30);  //默认只监听队列数量 20
-                executor = Executors.newScheduledThreadPool(20);
+                executor = Executors.newScheduledThreadPool(2);
             }
         });
     }
@@ -74,7 +74,7 @@ public class CrawlDirector {
                 len = client.queueLen(getTaskQueueName(queueName, crawlingTask.getTaskId()));
                 if (len == 0L) {
                     System.out.println("任务执行完成！");
-                    client.dequeueNoBlockX(queueName, getTaskQueueName(queueName, crawlingTask.getTaskId()));
+                    client.dequeueNoBlockX(queueName, getTaskListName(queueName));
                     if (handler != null) {
                         handler.onTaskCompleted(crawlingTask.getTaskId());
                     }

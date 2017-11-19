@@ -7,22 +7,25 @@ import redis.clients.jedis.ShardedJedisPool;
  * Created by zhangmiaojie on 2017/2/4.
  */
 public interface CacheManager {
-    public ShardedJedis getShardedJedis();
+    ShardedJedis getShardedJedis();
 
-    public ShardedJedisPool getShardedJedisPool();
+    ShardedJedisPool getShardedJedisPool();
 
-    public void set(String key, String value);
+    void set(String key, String value);
 
-    public Long sadd(String key, String... value);
+    Long sadd(String key, String... value);
 
-    public Long llen(String key);
+    Long llen(String key);
 
-    public void del(String key);
+    void del(String key);
 
-    public void lpush(String key, String... value);
+    void lpush(String key, String... value);
 
-    public String lpop(String key);
+    String lpop(String key);
+    
+    byte[] lpop(byte[] key);
 
-    public boolean sismember(String key, String value);
+    boolean sismember(String key, String value);
 
+    byte[] getqueueheader(byte[] bytes);
 }

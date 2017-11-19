@@ -24,7 +24,7 @@ public class TaskCallBack {
 
             @Override
             public void onTaskCompleted(String taskId) {
-
+                logger.info("任务【" + taskId + "】处理成功！");
             }
 
             @Override

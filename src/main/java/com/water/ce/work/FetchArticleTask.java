@@ -61,68 +61,68 @@ public class FetchArticleTask {
      * 抓取IBM开发者社区的文章
      */
     public void fetchIBMArticles() {
-//        System.out.println("抓取IBM开发者社区的文章--------------------------------------------------");
-//        List<Article> articles = new ArrayList<>();
-//        List<String> fetchFailurelinks = new ArrayList<String>();
-//        Set<String> articleCategoryUrls = new HashSet<String>();
-//
-//        articleCategoryUrls = ibmArticleService.getIBMArticleCategoryUrl();
-////        articleCategoryUrls.add("http://www.ibm.com/developerworks/cn/views/data/libraryview.jsp");
-////        articleCategoryUrls.add("http://www.ibm.com/developerworks/cn/views/java/libraryview.jsp");
-//        System.out.println("开始抓取IBM开发者社区各个模块的文章，" + articleCategoryUrls.size());
-//
-//        boolean isBreak = false;
-//        for (String url : articleCategoryUrls) {
-//            System.out.println("开始抓取 ： " + url);
-//
-//            Map<String, String> paramMap = new HashMap<String, String>();
-//            for (int i = 1; true; i++) {//循环获取所有模块下每个页面的文章
-//                paramMap.put("start", String.valueOf(i + (i - 1) * 100));
-//                paramMap.put("end", String.valueOf(i * 100));
-//                String result = (String) HttpRequestTool.postRequest(url, paramMap, true);
-//                if (StringUtils.isBlank(result)) break;
-//                List<String> linkList = ibmArticleService.getAllArticleLink(result);
-//                if (linkList == null || linkList.size() <= 0) {
-//                    isBreak = true;
-//                    break;
-//                }
-//                for (String link : linkList) {
-//                    log.info("开始抓取文章--" + link);
-//                    try {
-//                        Thread.sleep(100);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    CrawlAction crawlAction = new CrawlAction("IBM", "Article", link) {
-//                        @Override
-//                        public void action(JsonObject obj, Object data) {
-//                            String json = obj.toString();
-//                            Type type = new TypeToken<Article>() {
-//                            }.getType();
-//                            Article article = gson.fromJson(json, type);
-//                            if (article != null) {
-//                                article.setCategory(0);
-//                                article.setViewHits(0);
-//                                article.setContent(handleContent(article.getContent(), this.getUrl()));
-//                                article.setModule(Constant.ARTICLE_MODULE.BLOG.getIndex());
-//                                if (article.getCreateOn() == null) {
-//                                    article.setCreateOn(System.currentTimeMillis());
-//                                }
-//                                if (ibmArticleService.addArticle(article) > 0) {
-////                                    com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
-////                                    BeanUtils.copyProperties(article, esArticle);
-////                                    esArticleService.addArticle(esArticle);
-//                                }
-//                            }
-//                        }
-//
-//
-//                    };
-//                    crawlAction.work();
-//                }
-//            }
-//            if (isBreak) break;
-//        }
+        System.out.println("抓取IBM开发者社区的文章--------------------------------------------------");
+        List<Article> articles = new ArrayList<>();
+        List<String> fetchFailurelinks = new ArrayList<String>();
+        Set<String> articleCategoryUrls = new HashSet<String>();
+
+        articleCategoryUrls = ibmArticleService.getIBMArticleCategoryUrl();
+//        articleCategoryUrls.add("http://www.ibm.com/developerworks/cn/views/data/libraryview.jsp");
+//        articleCategoryUrls.add("http://www.ibm.com/developerworks/cn/views/java/libraryview.jsp");
+        System.out.println("开始抓取IBM开发者社区各个模块的文章，" + articleCategoryUrls.size());
+
+        boolean isBreak = false;
+        for (String url : articleCategoryUrls) {
+            System.out.println("开始抓取 ： " + url);
+
+            Map<String, String> paramMap = new HashMap<String, String>();
+            for (int i = 1; true; i++) {//循环获取所有模块下每个页面的文章
+                paramMap.put("start", String.valueOf(i + (i - 1) * 100));
+                paramMap.put("end", String.valueOf(i * 100));
+                String result = (String) HttpRequestTool.postRequest(url, paramMap, true);
+                if (StringUtils.isBlank(result)) break;
+                List<String> linkList = ibmArticleService.getAllArticleLink(result);
+                if (linkList == null || linkList.size() <= 0) {
+                    isBreak = true;
+                    break;
+                }
+                for (String link : linkList) {
+                    log.info("开始抓取文章--" + link);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    CrawlAction crawlAction = new CrawlAction("IBM", "Article", link) {
+                        @Override
+                        public void action(JsonObject obj, Object data) {
+                            String json = obj.toString();
+                            Type type = new TypeToken<Article>() {
+                            }.getType();
+                            Article article = gson.fromJson(json, type);
+                            if (article != null) {
+                                article.setCategory(0);
+                                article.setViewHits(0);
+                                article.setContent(handleContent(article.getContent(), this.getUrl()));
+                                article.setModule(Constant.ARTICLE_MODULE.BLOG.getIndex());
+                                if (article.getCreateOn() == null) {
+                                    article.setCreateOn(System.currentTimeMillis());
+                                }
+                                if (ibmArticleService.addArticle(article) > 0) {
+//                                    com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
+//                                    BeanUtils.copyProperties(article, esArticle);
+//                                    esArticleService.addArticle(esArticle);
+                                }
+                            }
+                        }
+
+
+                    };
+                    crawlAction.work();
+                }
+            }
+            if (isBreak) break;
+        }
     }
 
     private String handleContent(String content, String url) {
