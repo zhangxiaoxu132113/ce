@@ -22,5 +22,5 @@ public interface CrawlingArticleService {
 
     void handle();
 
-    void recordTask(String taskId, int urlNum);
+    void recordTask(String taskId, String taskName, int urlNum);
 }

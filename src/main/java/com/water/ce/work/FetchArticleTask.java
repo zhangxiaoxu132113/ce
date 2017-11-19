@@ -1,19 +1,8 @@
 package com.water.ce.work;
 
-import com.google.gson.Gson;
-import com.water.ce.crawl.director.CrawlDirector;
-import com.water.ce.utils.Constant;
-import com.water.ce.utils.QueueClientHelper;
 import com.water.ce.utils.http.HttpRequestTool;
-import com.water.ce.utils.lang.StringUtil;
-import com.water.ce.web.model.dto.CrawlerArticleUrl;
-import com.water.ce.web.model.dto.CrawlingTask;
 import com.water.ce.web.service.IBMCrawlingArticleService;
-import com.water.es.api.Service.IArticleService;
-import com.water.uubook.dao.*;
 import com.water.uubook.model.ITCourse;
-import com.water.uubook.model.TbCeFetchArticleTask;
-import com.xpush.serialization.protobuf.ProtoEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
@@ -23,7 +12,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.UUID;
 
 /**
  * 抓取文章的定时器类

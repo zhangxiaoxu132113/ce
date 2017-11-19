@@ -39,10 +39,11 @@ public class CrawlingArticleServiceImpl implements CrawlingArticleService {
     }
 
     @Override
-    public void recordTask(String taskId, int urlNum) {
+    public void recordTask(String taskId, String taskName, int urlNum) {
         Date currentTime = new Date();
         TbCeFetchArticleTask fetchArticleTask = new TbCeFetchArticleTask();
         fetchArticleTask.setId(taskId);
+        fetchArticleTask.setName(taskName);
         fetchArticleTask.setStatus(Constant.TaskStatus.READY_STATUS);
         fetchArticleTask.setUrlNum(urlNum);
         fetchArticleTask.setCreateTime(currentTime);

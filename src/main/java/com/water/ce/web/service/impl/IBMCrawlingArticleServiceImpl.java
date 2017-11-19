@@ -34,10 +34,11 @@ public class IBMCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl im
      * @return List<String>
      */
     private List<String> getAllArticleLinkWithPage(String url, int page) {
+        log.info("fetch article link ===>page is " + page + "url is" + url);
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("start", String.valueOf(page + (page - 1) * 100));
         paramMap.put("end", String.valueOf(page * 100));
-        String result = (String) com.water.ce.utils.http.HttpRequestTool.postRequest(url, paramMap, true);
+        String result = (String) com.water.ce.utils.http.HttpRequestTool.postRequest(url, paramMap, false);
         if (StringUtils.isBlank(result)) {
             return null;
         }
@@ -45,7 +46,11 @@ public class IBMCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl im
         Document doc;
         try {
             doc = Jsoup.parse(result);
-            Element articleListEle = doc.select("table.ibm-data-table tbody").get(0);
+            Elements eles = doc.select("table.ibm-data-table tbody");
+            if (eles == null || eles.size() <= 0) {
+                return null;
+            }
+            Element articleListEle = eles.get(0);
             if (articleListEle != null) {
                 Elements linkEles = articleListEle.getElementsByTag("a");
                 for (Element linkEle : linkEles) {
@@ -108,6 +113,7 @@ public class IBMCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl im
 
     @Override
     public void handle() {
+        long startTime = System.currentTimeMillis();
         log.info("【IBM开发者社区】爬虫任务====================>开始");
         Set<String> articleCategoryUrls = this.getIBMArticleCategoryUrl();
         log.info("开始抓取IBM开发者社区各个模块的文章，" + articleCategoryUrls.size());
@@ -124,7 +130,6 @@ public class IBMCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl im
                     break;
                 }
                 for (String link : linkList) {
-                    log.info(link);
                     crawlerArticleUrl = new CrawlerArticleUrl();
                     crawlerArticleUrl.setUrl(link);
                     crawlerArticleUrlList.add(crawlerArticleUrl);
@@ -132,8 +137,10 @@ public class IBMCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl im
             }
         }
 
+        long endTime = System.currentTimeMillis();
         //提交爬虫任务
-        recordTask(taskId, crawlerArticleUrlList.size());
+        recordTask(taskId, "IBM开发者社区爬虫任务", crawlerArticleUrlList.size());
         submitCrawlingTask(WEB_SITE, MODULE, taskId, crawlerArticleUrlList, QueueClientHelper.FETCH_ARTICLE_QUEUE);
+        log.info("【IBM开发者社区】爬虫任务执行结束，一共耗时为" + (endTime - startTime));
     }
 }
