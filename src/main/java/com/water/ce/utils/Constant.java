@@ -1,5 +1,8 @@
 package com.water.ce.utils;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by zhangmiaojie on 2016/12/2.
  */
@@ -108,6 +111,55 @@ public class Constant {
 
         public String getName() {
             return name;
+        }
+    }
+
+    /**
+     * 任务状态
+     */
+    public enum TaskStatus {
+        EREXCEPTION(-3, "异常"),
+        DEL(-2, "已取消"),
+        READY(0, "等待中"),
+        RUN(1, "爬取中"),
+        FINISH(2, "完成");
+
+        public int type;
+        private String desc;
+
+        public static final Integer EREXCEPTION_STATUS = -3;
+        public static final Integer DEL_STATUS = -2;
+        public static final Integer READY_STATUS = 0;
+        public static final Integer RUN_STATUS = 1;
+        public static final Integer FINISH_STATUS = 2;
+
+        public static final Set<Integer> ALL;
+
+        static {
+            ALL = new HashSet<Integer>();
+            ALL.add(EREXCEPTION_STATUS);
+            ALL.add(DEL_STATUS);
+            ALL.add(READY_STATUS);
+            ALL.add(RUN_STATUS);
+            ALL.add(FINISH_STATUS);
+        }
+
+        private TaskStatus(int value, String desc) {
+            this.type = value;
+            this.desc = desc;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public static String getDesc(int type) {
+            for (TaskStatus enumType : TaskStatus.values()) {
+                if (enumType.type == type) {
+                    return enumType.getDesc();
+                }
+            }
+            return null;
         }
     }
 

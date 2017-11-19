@@ -1,33 +1,32 @@
 package com.water.ce.work;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import com.water.ce.crawl.CrawlAction;
-import com.water.uubook.dao.*;
-import com.water.uubook.model.*;
-import com.water.ce.utils.*;
+import com.water.ce.crawl.director.CrawlDirector;
+import com.water.ce.utils.Constant;
+import com.water.ce.utils.QueueClientHelper;
 import com.water.ce.utils.http.HttpRequestTool;
 import com.water.ce.utils.lang.StringUtil;
+import com.water.ce.web.model.dto.CrawlerArticleUrl;
+import com.water.ce.web.model.dto.CrawlingTask;
+import com.water.ce.web.service.IBMCrawlingArticleService;
 import com.water.es.api.Service.IArticleService;
-import org.apache.commons.lang.StringUtils;
+import com.water.uubook.dao.*;
+import com.water.uubook.model.ITCourse;
+import com.water.uubook.model.TbCeFetchArticleTask;
+import com.xpush.serialization.protobuf.ProtoEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Type;
 import java.util.*;
 
 /**
  * 抓取文章的定时器类
- * <p>
- * <p>
  * Created by zhangmiaojie on 2017/2/28.
  */
 @Service("fetchArticleTask")
@@ -35,94 +34,13 @@ public class FetchArticleTask {
     private static Log log = LogFactory.getLog(FetchArticleTask.class);
 
     @Resource
-    private ArticleMapper articleMapper;
-
-    @Resource(name = "esArticleService")
-    private IArticleService esArticleService;
-
-    @Resource
-    private CategoryMapper categoryMapper;
-
-    @Resource
-    private TagMapper tagMapper;
-
-    @Resource
-    private CourseSubjectMapper courseSubjectMapper;
-
-    @Resource
-    private CourseMapper courseMapper;
-
-    @Resource
-    private TagRelationshipMapper tagRelationshipMapper;
-
-    private Gson gson = new Gson();
+    private IBMCrawlingArticleService ibmCrawlingArticleService;
 
     /**
      * 抓取IBM开发者社区的文章
      */
     public void fetchIBMArticles() {
-        System.out.println("抓取IBM开发者社区的文章--------------------------------------------------");
-        List<Article> articles = new ArrayList<>();
-        List<String> fetchFailurelinks = new ArrayList<String>();
-        Set<String> articleCategoryUrls = new HashSet<String>();
-
-        articleCategoryUrls = ibmArticleService.getIBMArticleCategoryUrl();
-//        articleCategoryUrls.add("http://www.ibm.com/developerworks/cn/views/data/libraryview.jsp");
-//        articleCategoryUrls.add("http://www.ibm.com/developerworks/cn/views/java/libraryview.jsp");
-        System.out.println("开始抓取IBM开发者社区各个模块的文章，" + articleCategoryUrls.size());
-
-        boolean isBreak = false;
-        for (String url : articleCategoryUrls) {
-            System.out.println("开始抓取 ： " + url);
-
-            Map<String, String> paramMap = new HashMap<String, String>();
-            for (int i = 1; true; i++) {//循环获取所有模块下每个页面的文章
-                paramMap.put("start", String.valueOf(i + (i - 1) * 100));
-                paramMap.put("end", String.valueOf(i * 100));
-                String result = (String) HttpRequestTool.postRequest(url, paramMap, true);
-                if (StringUtils.isBlank(result)) break;
-                List<String> linkList = ibmArticleService.getAllArticleLink(result);
-                if (linkList == null || linkList.size() <= 0) {
-                    isBreak = true;
-                    break;
-                }
-                for (String link : linkList) {
-                    log.info("开始抓取文章--" + link);
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    CrawlAction crawlAction = new CrawlAction("IBM", "Article", link) {
-                        @Override
-                        public void action(JsonObject obj, Object data) {
-                            String json = obj.toString();
-                            Type type = new TypeToken<Article>() {
-                            }.getType();
-                            Article article = gson.fromJson(json, type);
-                            if (article != null) {
-                                article.setCategory(0);
-                                article.setViewHits(0);
-                                article.setContent(handleContent(article.getContent(), this.getUrl()));
-                                article.setModule(Constant.ARTICLE_MODULE.BLOG.getIndex());
-                                if (article.getCreateOn() == null) {
-                                    article.setCreateOn(System.currentTimeMillis());
-                                }
-                                if (ibmArticleService.addArticle(article) > 0) {
-//                                    com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
-//                                    BeanUtils.copyProperties(article, esArticle);
-//                                    esArticleService.addArticle(esArticle);
-                                }
-                            }
-                        }
-
-
-                    };
-                    crawlAction.work();
-                }
-            }
-            if (isBreak) break;
-        }
+        ibmCrawlingArticleService.handle();
     }
 
     private String handleContent(String content, String url) {
@@ -130,7 +48,7 @@ public class FetchArticleTask {
         Elements eles = doc.select("img");
         for (Element ele : eles) {
             String imgSrc = ele.attr("src");
-            String newImgSrc = url.substring(0, url.lastIndexOf("/")+1) + imgSrc;
+            String newImgSrc = url.substring(0, url.lastIndexOf("/") + 1) + imgSrc;
             ele.attr("src", newImgSrc);
         }
 
@@ -474,7 +392,7 @@ public class FetchArticleTask {
 
         String url = "https://www.ibm.com/developerworks/cn/java/j-local-Cucumber-high-level/image001.png";
 
-        String newUrl = url.substring(0, url.lastIndexOf("/")+1);
+        String newUrl = url.substring(0, url.lastIndexOf("/") + 1);
         System.out.println(newUrl);
     }
 }

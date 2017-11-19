@@ -45,23 +45,26 @@ public class CrawlingTask extends ProtoEntity{
         return taskLen;
     }
 
-    public void setTaskLen(long taskLen) {
+    public CrawlingTask setTaskLen(long taskLen) {
         this.taskLen = taskLen;
+        return this;
     }
 
     public String getWebSite() {
         return webSite;
     }
 
-    public void setWebSite(String webSite) {
+    public CrawlingTask setWebSite(String webSite) {
         this.webSite = webSite;
+        return this;
     }
 
     public String getModule() {
         return module;
     }
 
-    public void setModule(String module) {
+    public CrawlingTask setModule(String module) {
         this.module = module;
+        return this;
     }
 }
