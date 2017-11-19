@@ -20,7 +20,7 @@ import java.util.*;
 /**
  * Created by mrwater on 2017/11/19.
  */
-@Service
+@Service("ibmCrawlingArticleService")
 public class IBMCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl implements IBMCrawlingArticleService {
     public static String TOPIC_CATEGORY_URL = "https://www.ibm.com/developerworks/cn/topics/";
     private static final String WEB_SITE = "IBM";

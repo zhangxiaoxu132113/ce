@@ -2,6 +2,7 @@ package com.water.ce.work;
 
 import com.water.ce.utils.http.HttpRequestTool;
 import com.water.ce.web.service.IBMCrawlingArticleService;
+import com.water.ce.web.service.Open2OpenCrawlingArticleService;
 import com.water.uubook.model.ITCourse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,14 +23,24 @@ import java.util.UUID;
 public class FetchArticleTask {
     private static Log log = LogFactory.getLog(FetchArticleTask.class);
 
-    @Resource
+    @Resource(name = "ibmCrawlingArticleService")
     private IBMCrawlingArticleService ibmCrawlingArticleService;
+
+    @Resource(name = "open2OpenCrawlingArticleService")
+    private Open2OpenCrawlingArticleService open2OpenCrawlingArticleService;
 
     /**
      * 抓取IBM开发者社区的文章
      */
     public void fetchIBMArticles() {
         ibmCrawlingArticleService.handle();
+    }
+
+    /**
+     * 抓取深度开源的文章
+     */
+    public void fetchopen2open() {
+        open2OpenCrawlingArticleService.handle();
     }
 
     private String handleContent(String content, String url) {
@@ -168,70 +179,6 @@ public class FetchArticleTask {
         }
     }
 
-    public void fetchopen2open() {
-//        int fetchTotal = 0;
-//        String domain = "http://www.open-open.com";
-//        String url = "http://www.open-open.com/lib/list/401?pn=1";
-//        Document doc;
-//        String htmlPage;
-//        log.info("开始抓取www.open-open.com... ...");
-//        htmlPage = (String) HttpRequestTool.getRequest(url, false);
-//        doc = Jsoup.parse(htmlPage);
-//        Element allList = doc.select(".all-sort-list").get(0);
-//        Elements categoryList = allList.select(".item");
-//        ITCategory category;
-//        String partnetId;
-//        for (Element cateogry : categoryList) {// 获取总的分类
-//            category = new ITCategory();
-//            String categoryStr = cateogry.select("h3 > a").text();
-//            category.setId(UUID.randomUUID().toString());
-//            category.setPartentId("");
-//            category.setLevel(1);
-//            category.setName(categoryStr);
-//            category.setCreateOn(System.currentTimeMillis());
-//            categoryMapper.insert(category);
-//            partnetId = category.getId();
-//            System.out.println(categoryStr);
-//            Elements sonCategories = cateogry.select(".item-list > .subitem > a");// 获取总的分类下的子分类
-//            for (Element sonCategory : sonCategories) {
-//                String sonCategoryStr = sonCategory.text();
-//                System.out.println("\t\t\t" + sonCategoryStr);
-//                category = new ITCategory();
-//                category.setId(UUID.randomUUID().toString());
-//                category.setPartentId(partnetId);
-//                category.setLevel(2);
-//                category.setName(sonCategoryStr);
-//                category.setCreateOn(System.currentTimeMillis());
-//                categoryMapper.insert(category);
-//
-//
-//                System.out.println("\t\t\t" + sonCategoryStr);
-//                String fetchUrl = domain + sonCategory.attr("href");
-//                String tmpFetchUrl = fetchUrl + "?pn=%s";
-//                String realRequestUrl = "";
-//                for (int i = 0; ; i++) {
-//                    if (i != 0) {
-//                        realRequestUrl = String.format(tmpFetchUrl, i);
-//                    } else {
-//                        realRequestUrl = fetchUrl;
-//                    }
-//                    htmlPage = (String) HttpRequestTool.getRequest(realRequestUrl);
-//                    doc = Jsoup.parse(htmlPage);
-//                    Elements topicList = doc.select(".container > .row > .col-md-8 > .list > li");
-//                    if (topicList == null || topicList.size() <= 0) {
-//                        log.info(sonCategoryStr + "模块解析完成！");
-//                        break;
-//                    }
-//                    for (Element topicEle : topicList) {
-//                        String articleLink = domain + topicEle.select(".cont > a").attr("href");
-//                        log.info("抓取文章链接 = " + articleLink);
-//                        //TODO 交给爬虫容器
-//                    }
-//                }
-//
-//            }
-//        }
-    }
 
     public void fetchCourse2() {
 //        CrawlAction crawlAction = new CrawlAction("YIBAI", "Article") {

@@ -7,6 +7,17 @@ import com.xpush.serialization.protobuf.ProtoMember;
  * Created by zhang miaojie on 2017/11/17.
  */
 public class CrawlerArticleUrl extends ProtoEntity {
+    public CrawlerArticleUrl(){
+    }
+
+    public CrawlerArticleUrl(String url, String category) {
+        this.url = url;
+        this.category = category;
+    }
+
+    public CrawlerArticleUrl(String url) {
+        this.url = url;
+    }
     /**
      * url主键
      */
@@ -23,7 +34,7 @@ public class CrawlerArticleUrl extends ProtoEntity {
      * 分类
      */
     @ProtoMember(3)
-    private Integer category;
+    private String category;
 
     public String getUrlId() {
         return urlId;
@@ -41,11 +52,11 @@ public class CrawlerArticleUrl extends ProtoEntity {
         this.url = url;
     }
 
-    public Integer getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Integer category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 }
