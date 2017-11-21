@@ -1,6 +1,7 @@
 package com.water.ce.work;
 
 import com.water.ce.utils.http.HttpRequestTool;
+import com.water.ce.web.service.CSDNCrawlingArticleService;
 import com.water.ce.web.service.IBMCrawlingArticleService;
 import com.water.ce.web.service.Open2OpenCrawlingArticleService;
 import com.water.uubook.model.ITCourse;
@@ -29,6 +30,8 @@ public class FetchArticleTask {
     @Resource(name = "open2OpenCrawlingArticleService")
     private Open2OpenCrawlingArticleService open2OpenCrawlingArticleService;
 
+    @Resource(name = "csdnCrawlingArticleService")
+    private CSDNCrawlingArticleService csdnCrawlingArticleService;
     /**
      * 抓取IBM开发者社区的文章
      */
@@ -59,66 +62,7 @@ public class FetchArticleTask {
      * 抓取CSDN知识库下所有的文章
      */
     public void fetchCSDNArticleLib() {
-//        Gson gson = new Gson();
-//        CrawlAction crawlAction = new CrawlAction("IBM", "Article", "https://www.ibm.com/developerworks/cn/web/wa-implement-a-single-page-application-with-angular2/index.html") {
-//            @Override
-//            public void action(JsonObject obj, Object data) {
-//                System.out.println();
-//            }
-//        };
-//        crawlAction.work();
-//
-//        int count = 1;
-//        Map<String, String> queryMap = new HashMap<String, String>();
-//        List<ITLib> itLibList = icsdnArticleService.getAllLibCategory();
-//        Set<String> linkSet = new HashSet<String>();
-//        IArticleFactory articleFactory = ArticleFactory.build(ArticleFactory.FactoryConfig.CSDN);
-//        for (ITLib itLib : itLibList) { //遍历每一个知识点
-//            String html = (String) HttpRequestTool.getRequest(itLib.getUrl(), false);
-//            Document doc = Jsoup.parse(html);
-//            Elements elements = doc.getElementsByTag("a");
-//            for (Element element : elements) { //获取每一个知识点下面的子知识点
-//                if (element.attr("href").contains("node/") || element.attr("href").contains("knowledge/")) {
-//                    String link = element.attr("href");
-//                    linkSet.add(link);
-//                }
-//            }
-//
-//            for (String link : linkSet) {
-//                String tmpLink = link;
-//                for (int i = 1; i <= count; i++) {
-//                    tmpLink += "?page=" + i;
-//                    queryMap.put("page", String.valueOf(i));
-//                    html = (String) HttpRequestTool.getRequest(tmpLink, false);
-//                    if (StringUtils.isNotBlank(html)) {
-//                        doc = Jsoup.parse(html);
-//                        Elements elements1 = doc.select(".dynamicollect .csdn-tracking-statistics a");
-//                        if (elements1 == null || elements1.size() == 0) break;
-//                        if (StringUtils.isNotBlank(doc.select("#totalPage").attr("value2"))) {
-//                            count = Integer.valueOf(doc.select("#totalPage").attr("value2"));
-//                        }
-//
-//                        for (Element ele : elements1) {
-//                            String articleLink = ele.attr("href");
-//                            html = (String) HttpRequestTool.getRequest(articleLink);
-//                            if (StringUtils.isNotBlank(html)) {
-//                                doc = Jsoup.parse(html);
-//                                Article article = articleFactory.createArticle(doc, articleLink);
-//                                if (article != null) {
-//                                    icsdnArticleService.addArticle(article);
-//                                    com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
-//                                    BeanUtils.copyProperties(article, esArticle);
-//                                    esArticleService.addArticle(esArticle);
-//                                } else {
-//                                    System.out.println(articleLink + "连接解析有问题！！！！-------------------------------");
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//                count = 1; //重置为第一页
-//            }
-//        }
+        csdnCrawlingArticleService.handle();
     }
 
     /**
@@ -276,59 +220,5 @@ public class FetchArticleTask {
     }
 
     public static void main(String[] args) {
-
-//        String rootUrl = "http://www.yiibai.com/";
-//        String page = null;
-//        Document doc = null;
-//        page = (String) HttpRequestTool.getRequest(rootUrl);
-//        doc = Jsoup.parse(page);
-//        Element items = doc.select(".article-content > .items").get(0);
-//        Elements itemList = items.select(".item");
-//        for (int i = 1; i < itemList.size(); i++) {
-//            CourseSubject courseSubject = new CourseSubject();
-//            Element item = itemList.get(i);
-//            String category = item.select("h2").text();
-//            if (StringUtils.isNotBlank(category) && category.equals("推荐教程")) continue;
-//            System.out.println(category);
-//            courseSubject.setId(StringUtil.uuid());
-//            courseSubject.setName(category);
-//            courseSubject.setCreateOn(System.currentTimeMillis());
-//            courseSubject.setUpdateTime(System.currentTimeMillis());
-//            String partentId = courseSubject.getId();
-//            Elements liEles = item.select(".blogroll").get(0).select("li > a");
-//            for (Element liEle : liEles) {
-//                courseSubject = new CourseSubject();
-//                String link = liEle.absUrl("href");
-//                String name = liEle.text();
-//                String desc = liEle.attr("title");
-//                System.out.println(name + ":" + link + desc);
-//
-//                courseSubject.setId(StringUtil.uuid());
-//                courseSubject.setName(name);
-//                courseSubject.setDescription(desc);
-//                courseSubject.setPartentId(partentId);
-//                courseSubject.setCreateOn(System.currentTimeMillis());
-//                courseSubject.setUpdateTime(System.currentTimeMillis());
-//
-//                log.info("开始抓取每一个专题的文章");
-//                page = (String) HttpRequestTool.getRequest(link);
-//                doc = Jsoup.parse(page);
-//                Elements titleElements = doc.select(".pagemenu > li > a");
-//                for (Element titleEle : titleElements) {
-//                    String title = titleEle.text();
-//                    String titleLink = titleEle.absUrl("href");
-//
-//
-//                }
-//
-//            }
-//        }
-//        System.out.println("运行结束！");
-
-
-        String url = "https://www.ibm.com/developerworks/cn/java/j-local-Cucumber-high-level/image001.png";
-
-        String newUrl = url.substring(0, url.lastIndexOf("/") + 1);
-        System.out.println(newUrl);
     }
 }
