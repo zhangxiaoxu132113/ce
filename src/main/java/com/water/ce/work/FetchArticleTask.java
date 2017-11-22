@@ -1,12 +1,10 @@
 package com.water.ce.work;
 
 import com.water.ce.utils.http.HttpRequestTool;
-import com.water.ce.web.model.dto.CrawlerArticleUrl;
 import com.water.ce.web.service.CSDNBaseCrawlingArticleService;
 import com.water.ce.web.service.IBMBaseCrawlingArticleService;
 import com.water.ce.web.service.Open2OpenBaseCrawlingArticleService;
 import com.water.uubook.model.ITCourse;
-import com.xpush.serialization.protobuf.ProtoEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
@@ -16,8 +14,6 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -70,37 +66,8 @@ public class FetchArticleTask {
         csdnCrawlingArticleService.handle();
     }
 
-    public static void fetchMQ() {
-        String d = "http://muxiulin.cn/archives/category/";
-        String categories[] = new String[]{"rabbitmq", "kafka", "zeromq", "redis", "share"};
-        String html;
-        Document doc;
 
-        CrawlerArticleUrl crawlerArticleUrl;
-        List<ProtoEntity> crawlerArticleUrlList = new ArrayList<>();
-        for (String category : categories) {
-            String fetchUrl = d + category;
-            for (int i = 1; ; i++) {
-                if (i != 1) {
-                    fetchUrl += "/page/" + i;
-                }
-                html = (String) HttpRequestTool.getRequest(fetchUrl, false);
-                doc = Jsoup.parse(html);
 
-                Element mainEle = doc.select("#main").get(0);
-                Elements articlesEle = mainEle.getElementsByTag("article");
-                if (articlesEle == null || articlesEle.size() == 0) {
-                    break;
-                }
-                for (Element ele : articlesEle) {
-                    Element hrefEle = ele.select(".entry-title > a").get(0);
-                    String articleLink = hrefEle.attr("href");
-                    crawlerArticleUrl = new CrawlerArticleUrl(articleLink, "");
-                    crawlerArticleUrlList.add(crawlerArticleUrl);
-                }
-            }
-        }
-    }
 
     /**
      * 抓取开源中国社区下的文章
