@@ -1,9 +1,9 @@
 package com.water.ce.web;
 
 import com.water.ce.cache.CacheManager;
-import com.water.ce.web.service.CSDNCrawlingArticleService;
-import com.water.ce.web.service.IBMCrawlingArticleService;
-import com.water.ce.web.service.Open2OpenCrawlingArticleService;
+import com.water.ce.web.service.CSDNBaseCrawlingArticleService;
+import com.water.ce.web.service.IBMBaseCrawlingArticleService;
+import com.water.ce.web.service.Open2OpenBaseCrawlingArticleService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,11 +18,11 @@ public class TestController {
     private CacheManager cacheManager;
 
     @Resource
-    private IBMCrawlingArticleService ibmCrawlingArticleService;
+    private IBMBaseCrawlingArticleService ibmCrawlingArticleService;
     @Resource
-    private Open2OpenCrawlingArticleService open2OpenCrawlingArticleService;
+    private Open2OpenBaseCrawlingArticleService open2OpenCrawlingArticleService;
     @Resource
-    private CSDNCrawlingArticleService csdnCrawlingArticleService;
+    private CSDNBaseCrawlingArticleService csdnCrawlingArticleService;
 
     @RequestMapping(value = "/test")
     public String test() {

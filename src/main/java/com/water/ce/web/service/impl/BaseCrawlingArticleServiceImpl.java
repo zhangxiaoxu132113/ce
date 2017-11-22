@@ -2,9 +2,8 @@ package com.water.ce.web.service.impl;
 
 import com.water.ce.crawl.director.CrawlDirector;
 import com.water.ce.utils.Constant;
-import com.water.ce.utils.QueueClientHelper;
 import com.water.ce.web.model.dto.CrawlingTask;
-import com.water.ce.web.service.CrawlingArticleService;
+import com.water.ce.web.service.BaseCrawlingArticleService;
 import com.water.uubook.dao.TbCeFetchArticleTaskMapper;
 import com.water.uubook.model.Article;
 import com.water.uubook.model.TbCeFetchArticleTask;
@@ -17,7 +16,7 @@ import java.util.List;
 /**
  * Created by mrwater on 2017/11/19.
  */
-public class CrawlingArticleServiceImpl implements CrawlingArticleService {
+public class BaseCrawlingArticleServiceImpl implements BaseCrawlingArticleService {
     @Resource
     private TbCeFetchArticleTaskMapper fetchArticleTaskMapper;
 

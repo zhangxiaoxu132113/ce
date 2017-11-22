@@ -4,7 +4,7 @@ import com.water.ce.http.HttpRequestTool;
 import com.water.ce.utils.QueueClientHelper;
 import com.water.ce.utils.lang.StringUtil;
 import com.water.ce.web.model.dto.CrawlerArticleUrl;
-import com.water.ce.web.service.IBMCrawlingArticleService;
+import com.water.ce.web.service.IBMBaseCrawlingArticleService;
 import com.xpush.serialization.protobuf.ProtoEntity;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -21,11 +21,11 @@ import java.util.*;
  * Created by mrwater on 2017/11/19.
  */
 @Service("ibmCrawlingArticleService")
-public class IBMCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl implements IBMCrawlingArticleService {
+public class IBMBaseCrawlingArticleServiceImpl extends BaseCrawlingArticleServiceImpl implements IBMBaseCrawlingArticleService {
     public static String TOPIC_CATEGORY_URL = "https://www.ibm.com/developerworks/cn/topics/";
     private static final String WEB_SITE = "IBM";
     private static final String MODULE = "Article";
-    private static Log log = LogFactory.getLog(IBMCrawlingArticleServiceImpl.class);
+    private static Log log = LogFactory.getLog(IBMBaseCrawlingArticleServiceImpl.class);
 
     /**
      * 获取当前页面的所有文章链接

@@ -6,10 +6,8 @@ import com.water.ce.utils.QueueClientHelper;
 import com.water.ce.utils.lang.StringUtil;
 import com.water.ce.web.model.BaseSubject;
 import com.water.ce.web.model.dto.CrawlerArticleUrl;
-import com.water.ce.web.model.dto.CrawlingTask;
-import com.water.ce.web.service.CSDNCrawlingArticleService;
+import com.water.ce.web.service.CSDNBaseCrawlingArticleService;
 import com.water.uubook.dao.TbUbBaseMapper;
-import com.water.uubook.dao.extend.TbUbBaseMapperExtend;
 import com.water.uubook.model.ITLib;
 import com.water.uubook.model.TbUbBase;
 import com.water.uubook.model.TbUbBaseCriteria;
@@ -25,16 +23,18 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by mrwater on 2017/11/19.
  */
 @Service("csdnCrawlingArticleService")
-public class CSDNCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl implements CSDNCrawlingArticleService {
+public class CSDNBaseCrawlingArticleServiceImpl extends BaseCrawlingArticleServiceImpl implements CSDNBaseCrawlingArticleService {
     private static String CSDN_LIB_URL = "http://lib.csdn.net/bases";
-    private static Log log = LogFactory.getLog(CSDNCrawlingArticleServiceImpl.class);
+    private static Log log = LogFactory.getLog(CSDNBaseCrawlingArticleServiceImpl.class);
 
     private static final String WEB_SITE = "csdn.net";
 

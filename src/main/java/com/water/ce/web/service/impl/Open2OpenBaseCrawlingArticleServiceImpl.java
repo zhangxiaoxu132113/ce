@@ -4,7 +4,7 @@ import com.water.ce.http.HttpRequestTool;
 import com.water.ce.utils.QueueClientHelper;
 import com.water.ce.utils.lang.StringUtil;
 import com.water.ce.web.model.dto.CrawlerArticleUrl;
-import com.water.ce.web.service.Open2OpenCrawlingArticleService;
+import com.water.ce.web.service.Open2OpenBaseCrawlingArticleService;
 import com.xpush.serialization.protobuf.ProtoEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,12 +22,12 @@ import java.util.List;
  * Created by mrwater on 2017/11/19.
  */
 @Service("open2OpenCrawlingArticleService")
-public class Open2OpenCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl implements Open2OpenCrawlingArticleService {
+public class Open2OpenBaseCrawlingArticleServiceImpl extends BaseCrawlingArticleServiceImpl implements Open2OpenBaseCrawlingArticleService {
     private static final String domain = "http://www.open-open.com";
     private static final String WEB_SITE = "open-open.com";
     private static final String MODULE = "article";
 
-    private static Log log = LogFactory.getLog(Open2OpenCrawlingArticleServiceImpl.class);
+    private static Log log = LogFactory.getLog(Open2OpenBaseCrawlingArticleServiceImpl.class);
 
     @Override
     public void handle() {
