@@ -6,9 +6,8 @@ import com.water.ce.utils.QueueClientHelper;
 import com.water.ce.utils.lang.StringUtil;
 import com.water.ce.web.model.BaseSubject;
 import com.water.ce.web.model.dto.CrawlerArticleUrl;
-import com.water.ce.web.service.CSDNBaseCrawlingArticleService;
+import com.water.ce.web.service.CSDNCrawlingArticleService;
 import com.water.uubook.dao.TbUbBaseMapper;
-import com.water.uubook.model.ITLib;
 import com.water.uubook.model.TbUbBase;
 import com.water.uubook.model.TbUbBaseCriteria;
 import com.water.uubook.model.dto.TbUbBaseDto;
@@ -23,18 +22,16 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.util.*;
 
 /**
  * Created by mrwater on 2017/11/19.
  */
 @Service("csdnCrawlingArticleService")
-public class CSDNBaseCrawlingArticleServiceImpl extends BaseCrawlingArticleServiceImpl implements CSDNBaseCrawlingArticleService {
+public class CSDNCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl implements CSDNCrawlingArticleService {
     private static String CSDN_LIB_URL = "http://lib.csdn.net/bases";
-    private static Log log = LogFactory.getLog(CSDNBaseCrawlingArticleServiceImpl.class);
+    private static Log log = LogFactory.getLog(CSDNCrawlingArticleServiceImpl.class);
 
     private static final String WEB_SITE = "csdn.net";
 
@@ -59,7 +56,7 @@ public class CSDNBaseCrawlingArticleServiceImpl extends BaseCrawlingArticleServi
         List<TbUbBaseDto> treeBaseList = this.getTreeBaseList(baseList);
         for (TbUbBaseDto base : treeBaseList) {
             if (base.getLevel() == 0) {
-                log.info("抓取："+base.getName());
+                log.info("抓取：" + base.getName());
             }
             if (base.getChildren() != null) {
                 continue;
@@ -85,7 +82,8 @@ public class CSDNBaseCrawlingArticleServiceImpl extends BaseCrawlingArticleServi
 
                 for (Element ele : elements1) {
                     String articleLink = ele.attr("href");
-                    crawlerArticleUrl = new CrawlerArticleUrl(articleLink, "");
+                    crawlerArticleUrl = new CrawlerArticleUrl();
+                    crawlerArticleUrl.setUrl(articleLink);
                     crawlerArticleUrlList.add(crawlerArticleUrl);
                 }
                 log.info("pageSize = " + count + " url = " + tmpLink);
@@ -148,7 +146,6 @@ public class CSDNBaseCrawlingArticleServiceImpl extends BaseCrawlingArticleServi
     }
 
     private Integer addAllLibCategory() {
-        ITLib itLib = null;
         int effectCount = 0;
         Map<String, String> params = new HashMap<>();
         Map<String, Object> queryParams = new HashMap<>();

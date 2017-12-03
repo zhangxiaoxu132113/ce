@@ -4,7 +4,7 @@
     "id": "open-open",
     "module": [
       {
-        "mid": "Article",
+        "mid": "TbUbArticle",
         "ruleList": [
           {
             "get": "text",

@@ -4,7 +4,12 @@ import com.water.ce.http.HttpRequestTool;
 import com.water.ce.utils.QueueClientHelper;
 import com.water.ce.utils.lang.StringUtil;
 import com.water.ce.web.model.dto.CrawlerArticleUrl;
-import com.water.ce.web.service.Open2OpenBaseCrawlingArticleService;
+import com.water.ce.web.service.Open2OpenCrawlingArticleService;
+import com.water.uubook.dao.TbCeFetchUrlMapper;
+import com.water.uubook.dao.TbUbArticleMapper;
+import com.water.uubook.model.TbCeFetchUrl;
+import com.water.uubook.model.TbUbArticle;
+import com.water.uubook.model.TbUbArticleCriteria;
 import com.xpush.serialization.protobuf.ProtoEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,7 +19,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,12 +29,18 @@ import java.util.List;
  * Created by mrwater on 2017/11/19.
  */
 @Service("open2OpenCrawlingArticleService")
-public class Open2OpenBaseCrawlingArticleServiceImpl extends BaseCrawlingArticleServiceImpl implements Open2OpenBaseCrawlingArticleService {
+public class Open2OpenCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl implements Open2OpenCrawlingArticleService {
     private static final String domain = "http://www.open-open.com";
     private static final String WEB_SITE = "open-open.com";
     private static final String MODULE = "article";
 
-    private static Log log = LogFactory.getLog(Open2OpenBaseCrawlingArticleServiceImpl.class);
+    private static Log log = LogFactory.getLog(Open2OpenCrawlingArticleServiceImpl.class);
+
+    @Resource
+    private TbCeFetchUrlMapper fetchUrlMapper;
+
+    @Resource
+    private TbUbArticleMapper articleMapper;
 
     @Override
     public void handle() {
@@ -35,13 +48,16 @@ public class Open2OpenBaseCrawlingArticleServiceImpl extends BaseCrawlingArticle
         log.info("【深度开源open2open.com】爬虫任务====================>开始");
 
         String taskId = StringUtil.uuid();
+        TbCeFetchUrl tbCeFetchUrl;
         CrawlerArticleUrl crawlerArticleUrl;
         List<ProtoEntity> crawlerArticleUrlList = new ArrayList<>();
+        List<TbCeFetchUrl> fetchUrlArrayList = new ArrayList<>();
 
         Document doc;
         String htmlPage;
         String realRequestUrl;
         Elements categoryList = this.getAllCategoryList();
+        Date currentTime = new Date();
         for (Element cateogry : categoryList) {// 获取总的分类
             Elements sonCategories = cateogry.select(".item-list > .subitem > a");// 获取总的分类下的子分类
             for (Element sonCategory : sonCategories) {
@@ -72,15 +88,29 @@ public class Open2OpenBaseCrawlingArticleServiceImpl extends BaseCrawlingArticle
                     tryCount = 0;
                     for (Element topicEle : topicList) {
                         String articleLink = domain + topicEle.select(".cont > a").attr("href");
-                        crawlerArticleUrl = new CrawlerArticleUrl(articleLink, category);
+                        crawlerArticleUrl = new CrawlerArticleUrl();
+                        crawlerArticleUrl.setUrl(articleLink);
+                        crawlerArticleUrl.setWebSite(WEB_SITE);
+                        crawlerArticleUrl.setWebSiteModule(MODULE);
+                        crawlerArticleUrl.setModule(1);
                         crawlerArticleUrlList.add(crawlerArticleUrl);
+
+                        tbCeFetchUrl = new TbCeFetchUrl();
+                        tbCeFetchUrl.setUrl(articleLink);
+                        tbCeFetchUrl.setOrigin(0);
+                        tbCeFetchUrl.setCreateOn(currentTime);
+                        fetchUrlArrayList.add(tbCeFetchUrl);
+                    }
+                    if (fetchUrlArrayList.size() > 1000) {
+                        fetchUrlMapper.insertBatch(fetchUrlArrayList);
+                        fetchUrlArrayList.clear();
                     }
                     size++;
                 }
                 log.info("抓取分类 = " + category + ", 链接" + fetchUrl + ", pagesize = " + size);
             }
         }
-
+        fetchUrlMapper.insertBatch(fetchUrlArrayList);
         long endTime = System.currentTimeMillis();
         //提交爬虫任务
         recordTask(taskId, "【深度开源open2open.com】爬虫任务", crawlerArticleUrlList.size());

@@ -1,9 +1,11 @@
 package com.water.ce.web;
 
 import com.water.ce.cache.CacheManager;
-import com.water.ce.web.service.CSDNBaseCrawlingArticleService;
-import com.water.ce.web.service.IBMBaseCrawlingArticleService;
-import com.water.ce.web.service.Open2OpenBaseCrawlingArticleService;
+import com.water.ce.web.service.CSDNCrawlingArticleService;
+import com.water.ce.web.service.IBMCrawlingArticleService;
+import com.water.ce.web.service.OSChinaService;
+import com.water.ce.web.service.Open2OpenCrawlingArticleService;
+import com.water.ce.work.fetchTag.FetchTagTask;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,15 +20,21 @@ public class TestController {
     private CacheManager cacheManager;
 
     @Resource
-    private IBMBaseCrawlingArticleService ibmCrawlingArticleService;
+    private IBMCrawlingArticleService ibmCrawlingArticleService;
     @Resource
-    private Open2OpenBaseCrawlingArticleService open2OpenCrawlingArticleService;
+    private Open2OpenCrawlingArticleService open2OpenCrawlingArticleService;
     @Resource
-    private CSDNBaseCrawlingArticleService csdnCrawlingArticleService;
-
+    private CSDNCrawlingArticleService csdnCrawlingArticleService;
+    @Resource
+    private OSChinaService osChinaService;
+    @Resource
+    private FetchTagTask fetchTagTask;
     @RequestMapping(value = "/test")
     public String test() {
-        csdnCrawlingArticleService.handle();
+        ibmCrawlingArticleService.fetchAllUrl("open-open.com", "article", "深度开源");
+//        open2OpenCrawlingArticleService.handle();
+//        osChinaService.handle();
+//        csdnCrawlingArticleService.handle();
         return "dd";
     }
 }

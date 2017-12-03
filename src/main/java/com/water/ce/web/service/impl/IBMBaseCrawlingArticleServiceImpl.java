@@ -1,10 +1,13 @@
 package com.water.ce.web.service.impl;
 
 import com.water.ce.http.HttpRequestTool;
+import com.water.ce.utils.Constant;
 import com.water.ce.utils.QueueClientHelper;
 import com.water.ce.utils.lang.StringUtil;
 import com.water.ce.web.model.dto.CrawlerArticleUrl;
-import com.water.ce.web.service.IBMBaseCrawlingArticleService;
+import com.water.ce.web.service.IBMCrawlingArticleService;
+import com.water.uubook.dao.TbCeFetchUrlMapper;
+import com.water.uubook.model.TbCeFetchUrl;
 import com.xpush.serialization.protobuf.ProtoEntity;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -15,17 +18,21 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
  * Created by mrwater on 2017/11/19.
  */
 @Service("ibmCrawlingArticleService")
-public class IBMBaseCrawlingArticleServiceImpl extends BaseCrawlingArticleServiceImpl implements IBMBaseCrawlingArticleService {
+public class IBMCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl implements IBMCrawlingArticleService {
     public static String TOPIC_CATEGORY_URL = "https://www.ibm.com/developerworks/cn/topics/";
-    private static final String WEB_SITE = "IBM";
-    private static final String MODULE = "Article";
-    private static Log log = LogFactory.getLog(IBMBaseCrawlingArticleServiceImpl.class);
+    private static final String WEB_SITE = "www.ibm.com";
+    private static final String MODULE = "article";
+    private static Log log = LogFactory.getLog(IBMCrawlingArticleServiceImpl.class);
+
+    @Resource
+    private TbCeFetchUrlMapper fetchUrlMapper;
 
     /**
      * 获取当前页面的所有文章链接
@@ -119,7 +126,10 @@ public class IBMBaseCrawlingArticleServiceImpl extends BaseCrawlingArticleServic
         log.info("开始抓取IBM开发者社区各个模块的文章，" + articleCategoryUrls.size());
 
         String taskId = StringUtil.uuid();
+        Date currentTime = new Date();
+        TbCeFetchUrl fetchUrl;
         CrawlerArticleUrl crawlerArticleUrl;
+        List<TbCeFetchUrl> fetchUrlList = new ArrayList<>();
         List<ProtoEntity> crawlerArticleUrlList = new ArrayList<>();
         for (String url : articleCategoryUrls) {
             log.info("开始抓取版块====================>" + url);
@@ -132,11 +142,27 @@ public class IBMBaseCrawlingArticleServiceImpl extends BaseCrawlingArticleServic
                 for (String link : linkList) {
                     crawlerArticleUrl = new CrawlerArticleUrl();
                     crawlerArticleUrl.setUrl(link);
+                    crawlerArticleUrl.setWebSite(WEB_SITE);
+                    crawlerArticleUrl.setWebSiteModule(MODULE);
+                    crawlerArticleUrl.setCategory(Constant.ARTICLE_CATEGORY.BLOG.getIndex());
+                    crawlerArticleUrl.setModule(0);
+                    crawlerArticleUrl.setOrigin(1);
                     crawlerArticleUrlList.add(crawlerArticleUrl);
+
+                    fetchUrl = new TbCeFetchUrl();
+                    fetchUrl.setUrl(link);
+                    fetchUrl.setOrigin(1);
+                    fetchUrl.setCreateOn(currentTime);
+                    fetchUrlList.add(fetchUrl);
+                }
+                if (fetchUrlList.size() > 1000) {
+                    fetchUrlMapper.insertBatch(fetchUrlList);
+                    fetchUrlList.clear();
                 }
             }
         }
 
+        fetchUrlMapper.insertBatch(fetchUrlList);
         long endTime = System.currentTimeMillis();
         //提交爬虫任务
         recordTask(taskId, "IBM开发者社区爬虫任务", crawlerArticleUrlList.size());

@@ -1,12 +1,12 @@
 package com.water.ce.work;
 
 import com.water.es.api.Service.IArticleService;
-import com.water.uubook.dao.ArticleMapper;
-import com.water.uubook.dao.TagArticleMapper;
-import com.water.uubook.dao.TagMapper;
-import com.water.uubook.model.Article;
-import com.water.uubook.model.Tag;
-import com.water.uubook.model.TagArticle;
+import com.water.uubook.dao.TbUbArticleMapper;
+import com.water.uubook.dao.TbUbTagArticleMapper;
+import com.water.uubook.dao.TbUbTagMapper;
+import com.water.uubook.model.TbUbArticle;
+import com.water.uubook.model.TbUbTag;
+import com.water.uubook.model.TbUbTagArticle;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,13 +26,13 @@ public class TaskQuartz {
     private static Log LOG = LogFactory.getLog(TaskQuartz.class);
 
     @Resource
-    private ArticleMapper articleMapper;
+    private TbUbArticleMapper articleMapper;
 
     @Resource
-    private TagMapper tagMapper;
+    private TbUbTagMapper tagMapper;
 
     @Resource
-    private TagArticleMapper tagArticleMapper;
+    private TbUbTagArticleMapper tagArticleMapper;
 
     @Resource(name = "esArticleService")
     private IArticleService esArticleService;
@@ -120,8 +120,8 @@ public class TaskQuartz {
         LOG.info("开始处理任务，数据总量为" + allValue);
         while (true) {
             queryMap.put("id", id);
-            List<Article> articleList = articleMapper.getArticle(queryMap);
-            for (Article article : articleList) {
+            List<TbUbArticle> articleList = articleMapper.getArticle(queryMap);
+            for (TbUbArticle article : articleList) {
                 String description = article.getDescription();
                 String content = HtmlUtil.Html2Text(article.getContent());
                 if (StringUtils.isBlank(description)) {// 如果description内容为空，则设置description的内容
@@ -155,27 +155,27 @@ public class TaskQuartz {
         LOG.info("开始处理任务，数据总量为" + allValue);
         while (true) {
             queryMap.put("id", id);
-            List<Article> articleList = articleMapper.getArticle(queryMap);
-            List<Tag> tagList = tagMapper.selectByExample(null);
-            for (Article article : articleList) {
+            List<TbUbArticle> articleList = articleMapper.getArticle(queryMap);
+            List<TbUbTag> tagList = tagMapper.selectByExample(null);
+            for (TbUbArticle article : articleList) {
                 int tagSize = 0; //获取当前文章一共有多少个标签
                 long start = System.currentTimeMillis();
                 if (tagSize < 5) {
-                    Map<Tag, Integer> result = new HashMap();
-                    for (Tag tag : tagList) {
+                    Map<TbUbTag, Integer> result = new HashMap();
+                    for (TbUbTag tag : tagList) {
                         int count = calcOfWordOccurrences(tag.getName(), article.getContent());
                         result.put(tag, count);
                     }
 
-                    List<Map.Entry<Tag, Integer>> list = this.sortOfWordOccurrences(result);
+                    List<Map.Entry<TbUbTag, Integer>> list = this.sortOfWordOccurrences(result);
                     StringBuilder sb = new StringBuilder();
                     String tags = "";
                     List<Integer> tagIdList = new ArrayList<>();
                     for (int i = 0; i < list.size(); i++) { // 关联5个标签
                         if ((tagSize - 5) == 0) break;
-                        Map.Entry<Tag, Integer> tagMap = list.get(i);
+                        Map.Entry<TbUbTag, Integer> tagMap = list.get(i);
                         int tagId = tagMap.getKey().getId();
-                        TagArticle tagArticle = new TagArticle();
+                        TbUbTagArticle tagArticle = new TbUbTagArticle();
                         tagArticle.setArticleId(article.getId());
                         tagArticle.setTagId(tagId);
                         tagArticleMapper.insert(tagArticle);
@@ -206,12 +206,12 @@ public class TaskQuartz {
 
 
     }
-    public List<Map.Entry<Tag, Integer>> sortOfWordOccurrences(Map oldMap) {
-        List<Map.Entry<Tag, Integer>> list = new ArrayList<>(oldMap.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<Tag, Integer>>() {
+    public List<Map.Entry<TbUbTag, Integer>> sortOfWordOccurrences(Map oldMap) {
+        List<Map.Entry<TbUbTag, Integer>> list = new ArrayList<>(oldMap.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<TbUbTag, Integer>>() {
             @Override
-            public int compare(Map.Entry<Tag, Integer> arg0,
-                               Map.Entry<Tag, Integer> arg1) {
+            public int compare(Map.Entry<TbUbTag, Integer> arg0,
+                               Map.Entry<TbUbTag, Integer> arg1) {
                 return arg1.getValue() - arg0.getValue() ;
             }
         });

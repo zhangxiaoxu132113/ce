@@ -1,1 +1,1 @@
-[{"description":"一百教程","id":"YIBAI","module":[{"mid":"Article","ruleList":[{"get":"text","id":"title","rule":[".article-title"]},{"get":"html","id":"content","rule":[".article-content"]}]}]}]
+[{"description":"一百教程","id":"YIBAI","module":[{"mid":"TbUbArticle","ruleList":[{"get":"text","id":"title","rule":[".article-title"]},{"get":"html","id":"content","rule":[".article-content"]}]}]}]

@@ -1,10 +1,11 @@
 package com.water.ce.work;
 
 import com.water.ce.utils.http.HttpRequestTool;
-import com.water.ce.web.service.CSDNBaseCrawlingArticleService;
-import com.water.ce.web.service.IBMBaseCrawlingArticleService;
-import com.water.ce.web.service.Open2OpenBaseCrawlingArticleService;
-import com.water.uubook.model.ITCourse;
+import com.water.ce.web.service.CSDNCrawlingArticleService;
+import com.water.ce.web.service.IBMCrawlingArticleService;
+import com.water.ce.web.service.OSChinaService;
+import com.water.ce.web.service.Open2OpenCrawlingArticleService;
+import com.water.uubook.model.TbUbCourse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
@@ -25,14 +26,16 @@ public class FetchArticleTask {
     private static Log log = LogFactory.getLog(FetchArticleTask.class);
 
     @Resource(name = "ibmCrawlingArticleService")
-    private IBMBaseCrawlingArticleService ibmCrawlingArticleService;
+    private IBMCrawlingArticleService ibmCrawlingArticleService;
 
     @Resource(name = "open2OpenCrawlingArticleService")
-    private Open2OpenBaseCrawlingArticleService open2OpenCrawlingArticleService;
+    private Open2OpenCrawlingArticleService open2OpenCrawlingArticleService;
 
     @Resource(name = "csdnCrawlingArticleService")
-    private CSDNBaseCrawlingArticleService csdnCrawlingArticleService;
+    private CSDNCrawlingArticleService csdnCrawlingArticleService;
 
+    @Resource(name = "osChinaService")
+    private OSChinaService osChinaService;
     /**
      * 抓取IBM开发者社区的文章
      */
@@ -47,18 +50,6 @@ public class FetchArticleTask {
         open2OpenCrawlingArticleService.handle();
     }
 
-    private String handleContent(String content, String url) {
-        Document doc = Jsoup.parse(content);
-        Elements eles = doc.select("img");
-        for (Element ele : eles) {
-            String imgSrc = ele.attr("src");
-            String newImgSrc = url.substring(0, url.lastIndexOf("/") + 1) + imgSrc;
-            ele.attr("src", newImgSrc);
-        }
-
-        return doc.toString();
-    }
-
     /**
      * 抓取CSDN知识库下所有的文章
      */
@@ -66,76 +57,49 @@ public class FetchArticleTask {
         csdnCrawlingArticleService.handle();
     }
 
-
-
-
     /**
      * 抓取开源中国社区下的文章
      */
     public void fetchOSCHINAArticle() {
-//        String base_url = "https://www.oschina.net/blog";                                   //第一次进来不是ajax请求
-//        String ajax_url = "https://www.oschina.net/action/ajax/get_more_recommend_blog";    //第二次进来是ajax请求
-//        Set<String> linkSet = ioschinaArticleService.getAllCategory();
-//        for (String link : linkSet) {
-//            Map<String, String> queryParams = StringUtil.getParamWithUrl(link);
-//            String html = "";
-//            for (int i = 1; ; i++) {
-//                if (i == 1) {
-//                    html = (String) HttpRequestTool.postRequest(base_url, queryParams, false);
-//                } else {
-//                    queryParams.put("q", String.valueOf(i));
-//                    html = (String) HttpRequestTool.postRequest(ajax_url, queryParams, false);
-//                }
+        osChinaService.handle();
+    }
+
+    public void fetchCourse() {
+//        String root_url = "http://ifeve.com/java-7-concurrency-cookbook/";
+//        String pageHtml = (String) HttpRequestTool.getRequest(root_url, false);
+//        Document doc = Jsoup.parse(pageHtml);
 //
-//                Document doc = Jsoup.parse(html);
-//                Elements articleLinks = doc.select(".blog-title-link");
-//                for (Element articleLinkEle : articleLinks) {
-//                    String articleLink = articleLinkEle.attr("href");
-//                    System.out.println(articleLink);
-//                    html = (String) HttpRequestTool.getRequest(articleLink, false);
-//                    doc = Jsoup.parse(html);
-//                    //创建文章
-//                }
+//        Elements baseEle = doc.select(".post_content ");
+//        Elements titleEles = baseEle.select("h3");
+//        Elements secondTitleEles = baseEle.select("ol");
+//        TbUbCourse course = new TbUbCourse();
+//        int total = 8;
+//        for (int i = 0; i < total; i++) {
+//            Element titleEle = titleEles.get(i + 1);
+//            Element secondTitleEle = secondTitleEles.get(i);
+//            String title = titleEle.text();
+//            String partentId = UUID.randomUUID().toString();
+//            course.setId(partentId);
+//            course.setName(title);
+//            course.setParentId(null);
+//            course.setCreateOn(System.currentTimeMillis());
+////            courseMapper.insert(course);
+//            Elements linkEles = secondTitleEle.select("li > a");
+//            for (Element linkEle : linkEles) {
+//                System.out.println(linkEle.text() + "\t\t" + linkEle.absUrl("href"));
 //            }
 //        }
     }
 
-    public void fetchCourse() {
-        String root_url = "http://ifeve.com/java-7-concurrency-cookbook/";
-        String pageHtml = (String) HttpRequestTool.getRequest(root_url, false);
-        Document doc = Jsoup.parse(pageHtml);
-
-        Elements baseEle = doc.select(".post_content ");
-        Elements titleEles = baseEle.select("h3");
-        Elements secondTitleEles = baseEle.select("ol");
-        ITCourse course = new ITCourse();
-        int total = 8;
-        for (int i = 0; i < total; i++) {
-            Element titleEle = titleEles.get(i + 1);
-            Element secondTitleEle = secondTitleEles.get(i);
-            String title = titleEle.text();
-            String partentId = UUID.randomUUID().toString();
-            course.setId(partentId);
-            course.setName(title);
-            course.setParentId(null);
-            course.setCreateOn(System.currentTimeMillis());
-//            courseMapper.insert(course);
-            Elements linkEles = secondTitleEle.select("li > a");
-            for (Element linkEle : linkEles) {
-                System.out.println(linkEle.text() + "\t\t" + linkEle.absUrl("href"));
-            }
-        }
-    }
-
 
     public void fetchCourse2() {
-//        CrawlAction crawlAction = new CrawlAction("YIBAI", "Article") {
+//        CrawlAction crawlAction = new CrawlAction("YIBAI", "TbUbArticle") {
 //            @Override
 //            public void action(JsonObject obj, Object data) {
 //                Course course = (Course) data;
-//                Type type = new TypeToken<Article>() {
+//                Type type = new TypeToken<TbUbArticle>() {
 //                }.getType();
-//                Article article = gson.fromJson(obj.toString(), type);
+//                TbUbArticle article = gson.fromJson(obj.toString(), type);
 //                if (article != null) {
 //                    article.setModule(Constant.ARTICLE_MODULE.JIAO_CHENG.getIndex());
 //                    ibmArticleService.addArticle(article);
@@ -224,6 +188,5 @@ public class FetchArticleTask {
     }
 
     public static void main(String[] args) {
-        fetchMQ();
     }
 }

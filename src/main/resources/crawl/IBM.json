@@ -4,7 +4,7 @@
     "description": "ibm开发者社区",
     "module": [
       {
-        "mid": "Article",
+        "mid": "TbUbArticle",
         "ruleList": [
           {
             "id": "title",

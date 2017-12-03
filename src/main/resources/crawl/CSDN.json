@@ -4,7 +4,7 @@
     "id": "CSDN",
     "module": [
       {
-        "mid": "Article",
+        "mid": "TbUbArticle",
         "ruleList": [
           {
             "get": "text",

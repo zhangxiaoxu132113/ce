@@ -7,7 +7,7 @@ import com.water.ce.crawl.CrawlAction;
 import com.water.ce.http.HttpRequestTool;
 import com.water.ce.utils.Constant;
 import com.water.ce.utils.lang.StringUtil;
-import com.water.uubook.model.Article;
+import com.water.uubook.model.TbUbArticle;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,13 +25,13 @@ public class FetchSoftwareUpdateNewsTask {
     private Gson gson = new Gson();
 
     public void fetchArticle() {
-        CrawlAction crawlAction = new CrawlAction("IBM", "Article") {
+        CrawlAction crawlAction = new CrawlAction("IBM", "TbUbArticle") {
             @Override
             public void action(JsonObject obj, Object data) {
                 String json = obj.toString();
-                Type type = new TypeToken<Article>() {
+                Type type = new TypeToken<TbUbArticle>() {
                 }.getType();
-                Article article = gson.fromJson(json, type);
+                TbUbArticle article = gson.fromJson(json, type);
                 if (article != null) {
                     article.setCategory(0);
                     article.setViewHits(0);

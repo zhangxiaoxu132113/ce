@@ -12,7 +12,7 @@ CrawlBox是一个爬虫的盒子，里面存放了各个网站对应的内容爬
 **API实现方式**
 通过new一个CrawlAction对象来启动一个爬取文章内容的任务
 
-CrawlAction crawlAction = new CrawlAction("IBM","Article",link) {
+CrawlAction crawlAction = new CrawlAction("IBM","TbUbArticle",link) {
                         @Override
                         public void action(JsonObject obj) {
 

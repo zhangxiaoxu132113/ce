@@ -10,14 +10,19 @@ public class CrawlerArticleUrl extends ProtoEntity {
     public CrawlerArticleUrl(){
     }
 
-    public CrawlerArticleUrl(String url, String category) {
-        this.url = url;
-        this.category = category;
-    }
-
     public CrawlerArticleUrl(String url) {
         this.url = url;
     }
+
+    public CrawlerArticleUrl(String url, Integer category, Integer module, String webSite, String webSiteModule, Integer origin) {
+        this.url = url;
+        this.category = category;
+        this.module = module;
+        this.webSite = webSite;
+        this.webSiteModule = webSiteModule;
+        this.origin = origin;
+    }
+
     /**
      * url主键
      */
@@ -34,7 +39,22 @@ public class CrawlerArticleUrl extends ProtoEntity {
      * 分类
      */
     @ProtoMember(3)
-    private String category;
+    private Integer category;
+
+    /**
+     * 所属模块
+     */
+    @ProtoMember(4)
+    private Integer module;
+
+    @ProtoMember(5)
+    private String webSite;
+
+    @ProtoMember(6)
+    private String webSiteModule;
+
+    @ProtoMember(7)
+    private Integer origin;
 
     public String getUrlId() {
         return urlId;
@@ -52,11 +72,43 @@ public class CrawlerArticleUrl extends ProtoEntity {
         this.url = url;
     }
 
-    public String getCategory() {
+    public Integer getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Integer category) {
         this.category = category;
+    }
+
+    public Integer getModule() {
+        return module;
+    }
+
+    public void setModule(Integer module) {
+        this.module = module;
+    }
+
+    public String getWebSite() {
+        return webSite;
+    }
+
+    public void setWebSite(String webSite) {
+        this.webSite = webSite;
+    }
+
+    public String getWebSiteModule() {
+        return webSiteModule;
+    }
+
+    public void setWebSiteModule(String webSiteModule) {
+        this.webSiteModule = webSiteModule;
+    }
+
+    public Integer getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(Integer origin) {
+        this.origin = origin;
     }
 }

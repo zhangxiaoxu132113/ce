@@ -1,7 +1,7 @@
 package com.water.ce.web.service;
 
 
-import com.water.uubook.model.Article;
+import com.water.uubook.model.TbUbArticle;
 import com.xpush.serialization.protobuf.ProtoEntity;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public interface BaseCrawlingArticleService {
      * @param  article 文章对象
      * @return Integer
      */
-    Integer addArticle(Article article);
+    Integer addArticle(TbUbArticle article);
 
     /**
      * 处理爬虫定时任务
@@ -23,4 +23,8 @@ public interface BaseCrawlingArticleService {
     void handle();
 
     void recordTask(String taskId, String taskName, int urlNum);
+
+    void fetchAllUrl(String webSite, String module, String taskName);
+
+    void retryFetchUrl(String webSite, String module, String taskName);
 }

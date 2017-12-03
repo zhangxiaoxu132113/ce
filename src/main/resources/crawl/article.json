@@ -88,7 +88,7 @@
     "description": "深度开源经验",
     "module": [
       {
-        "mid": "Article",
+        "mid": "TbUbArticle",
         "ruleList": [
           {
             "id": "title",

@@ -1,10 +1,10 @@
 [
   {
     "id": "OpenChina",
-    "description": "Article",
+    "description": "TbUbArticle",
     "module": [
       {
-        "mid": "Article",
+        "mid": "TbUbArticle",
         "ruleList": [
           {
             "id": "title",

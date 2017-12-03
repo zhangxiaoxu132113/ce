@@ -82,8 +82,8 @@ public class HttpRequestTool {
                 }
                 post.setHeaders(headers); //设置请求头信息
             } else {
-//                Header header = new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
-//                post.setHeader(header);
+                Header header = new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+                post.setHeader(header);
             }
             HttpContext localContext = new BasicHttpContext();
             CloseableHttpResponse response = client.execute(post, localContext);
