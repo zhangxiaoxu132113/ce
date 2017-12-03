@@ -31,8 +31,8 @@ public class TestController {
     private FetchTagTask fetchTagTask;
     @RequestMapping(value = "/test")
     public String test() {
-        ibmCrawlingArticleService.fetchAllUrl("open-open.com", "article", "深度开源");
-//        open2OpenCrawlingArticleService.handle();
+//        ibmCrawlingArticleService.fetchAllUrl("open-open.com", "article", "深度开源");
+        ibmCrawlingArticleService.handle();
 //        osChinaService.handle();
 //        csdnCrawlingArticleService.handle();
         return "dd";

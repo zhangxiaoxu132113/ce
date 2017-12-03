@@ -140,20 +140,20 @@ public class IBMCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl im
                     break;
                 }
                 for (String link : linkList) {
-                    crawlerArticleUrl = new CrawlerArticleUrl();
-                    crawlerArticleUrl.setUrl(link);
-                    crawlerArticleUrl.setWebSite(WEB_SITE);
-                    crawlerArticleUrl.setWebSiteModule(MODULE);
-                    crawlerArticleUrl.setCategory(Constant.ARTICLE_CATEGORY.BLOG.getIndex());
-                    crawlerArticleUrl.setModule(0);
-                    crawlerArticleUrl.setOrigin(1);
-                    crawlerArticleUrlList.add(crawlerArticleUrl);
+//                    crawlerArticleUrl = new CrawlerArticleUrl();
+//                    crawlerArticleUrl.setUrl(link);
+//                    crawlerArticleUrl.setWebSite(WEB_SITE);
+//                    crawlerArticleUrl.setWebSiteModule(MODULE);
+//                    crawlerArticleUrl.setCategory(Constant.ARTICLE_CATEGORY.BLOG.getIndex());
+//                    crawlerArticleUrl.setModule(1);
+//                    crawlerArticleUrlList.add(crawlerArticleUrl);
 
                     fetchUrl = new TbCeFetchUrl();
                     fetchUrl.setUrl(link);
                     fetchUrl.setOrigin(1);
                     fetchUrl.setCreateOn(currentTime);
                     fetchUrlList.add(fetchUrl);
+                    System.out.println(fetchUrl);
                 }
                 if (fetchUrlList.size() > 1000) {
                     fetchUrlMapper.insertBatch(fetchUrlList);
@@ -166,7 +166,7 @@ public class IBMCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl im
         long endTime = System.currentTimeMillis();
         //提交爬虫任务
         recordTask(taskId, "IBM开发者社区爬虫任务", crawlerArticleUrlList.size());
-        submitCrawlingTask(WEB_SITE, MODULE, taskId, crawlerArticleUrlList, QueueClientHelper.FETCH_ARTICLE_QUEUE);
+//        submitCrawlingTask(WEB_SITE, MODULE, taskId, crawlerArticleUrlList, QueueClientHelper.FETCH_ARTICLE_QUEUE);
         log.info("【IBM开发者社区】爬虫任务执行结束，一共耗时为" + (endTime - startTime));
     }
 }
