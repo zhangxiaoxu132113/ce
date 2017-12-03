@@ -6,7 +6,7 @@ import com.xpush.serialization.protobuf.ProtoEntity;
 
 import java.util.List;
 
-public interface BaseCrawlingArticleService {
+public interface CrawlingArticleService {
 
     /**
      * 添加文章
