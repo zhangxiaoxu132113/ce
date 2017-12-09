@@ -80,7 +80,8 @@ public class CrawlingArticleServiceImpl implements CrawlingArticleService {
             crawlerArticleUrl.setUrl(fetchUrl.getUrl());
             crawlerArticleUrl.setWebSite(webSite);
             crawlerArticleUrl.setWebSiteModule(module);
-            crawlerArticleUrl.setModule(1);
+            crawlerArticleUrl.setModule(0);
+            crawlerArticleUrl.setOrigin(origin);
             crawlerArticleUrlList.add(crawlerArticleUrl);
         }
         recordTask(taskId, taskName, crawlerArticleUrlList.size());

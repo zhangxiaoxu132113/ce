@@ -7,7 +7,9 @@ import com.water.ce.utils.lang.StringUtil;
 import com.water.ce.web.model.BaseSubject;
 import com.water.ce.web.model.dto.CrawlerArticleUrl;
 import com.water.ce.web.service.CSDNCrawlingArticleService;
+import com.water.uubook.dao.TbCeFetchUrlMapper;
 import com.water.uubook.dao.TbUbBaseMapper;
+import com.water.uubook.model.TbCeFetchUrl;
 import com.water.uubook.model.TbUbBase;
 import com.water.uubook.model.TbUbBaseCriteria;
 import com.water.uubook.model.dto.TbUbBaseDto;
@@ -40,6 +42,9 @@ public class CSDNCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl i
     @Autowired
     private TbUbBaseMapper baseMapper;
 
+    @Resource
+    private TbCeFetchUrlMapper fetchUrlMapper;
+
     @Override
     public void handle() {
         long startTime = System.currentTimeMillis();
@@ -48,9 +53,12 @@ public class CSDNCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl i
         String taskId = StringUtil.uuid();
         CrawlerArticleUrl crawlerArticleUrl;
         List<ProtoEntity> crawlerArticleUrlList = new ArrayList<>();
+        TbCeFetchUrl fetchUrl;
+        List<TbCeFetchUrl> fetchUrlList = new ArrayList<>();
 
         String html;
         Document doc;
+        Date currentTime = new Date();
         Map<String, Object> queryMap = new HashMap<>();
         List<TbUbBaseDto> baseList = this.getAllBaseCategory();
         List<TbUbBaseDto> treeBaseList = this.getTreeBaseList(baseList);
@@ -82,17 +90,28 @@ public class CSDNCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl i
 
                 for (Element ele : elements1) {
                     String articleLink = ele.attr("href");
-                    crawlerArticleUrl = new CrawlerArticleUrl();
-                    crawlerArticleUrl.setUrl(articleLink);
-                    crawlerArticleUrlList.add(crawlerArticleUrl);
+//                    crawlerArticleUrl = new CrawlerArticleUrl();
+//                    crawlerArticleUrl.setUrl(articleLink);
+//                    crawlerArticleUrlList.add(crawlerArticleUrl);
+
+                    fetchUrl = new TbCeFetchUrl();
+                    fetchUrl.setUrl(articleLink);
+                    fetchUrl.setOrigin(2);
+                    fetchUrl.setCreateOn(currentTime);
+                    fetchUrlList.add(fetchUrl);
+                }
+                if (fetchUrlList.size() > 1000) {
+                    fetchUrlMapper.insertBatch(fetchUrlList);
+                    fetchUrlList.clear();
                 }
                 log.info("pageSize = " + count + " url = " + tmpLink);
             }
         }
+        fetchUrlMapper.insertBatch(fetchUrlList);
         long endTime = System.currentTimeMillis();
         //提交爬虫任务
         recordTask(taskId, "【CSDB知识库】爬虫任务", crawlerArticleUrlList.size());
-        submitCrawlingTask(WEB_SITE, MODULE, taskId, crawlerArticleUrlList, QueueClientHelper.FETCH_ARTICLE_QUEUE);
+//        submitCrawlingTask(WEB_SITE, MODULE, taskId, crawlerArticleUrlList, QueueClientHelper.FETCH_ARTICLE_QUEUE);
         log.info("【CSDB知识库】爬虫任务执行结束，一共耗时为" + (endTime - startTime));
     }
 

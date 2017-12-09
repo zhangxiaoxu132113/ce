@@ -1,8 +1,6 @@
 package com.water.ce.web.service.impl;
 
 import com.water.ce.http.HttpRequestTool;
-import com.water.ce.utils.Constant;
-import com.water.ce.utils.QueueClientHelper;
 import com.water.ce.utils.lang.StringUtil;
 import com.water.ce.web.model.dto.CrawlerArticleUrl;
 import com.water.ce.web.service.IBMCrawlingArticleService;

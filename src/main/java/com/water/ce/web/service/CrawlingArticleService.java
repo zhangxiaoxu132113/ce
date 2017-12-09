@@ -26,5 +26,7 @@ public interface CrawlingArticleService {
 
     void fetchAllUrl(String webSite, String module, String taskName);
 
+    void fetchAllUrl(String webSite, String module, Integer origin, String taskName);
+
     void retryFetchUrl(String webSite, String module, String taskName);
 }
