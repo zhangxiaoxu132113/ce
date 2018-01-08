@@ -116,9 +116,4 @@ public class CrawlBox {
         return crawlRuleList;
     }
 
-    public static void main(String[] args) {
-        CrawlBox crawlBox = new CrawlBox();
-        crawlBox.initialize();
-    }
-
 }

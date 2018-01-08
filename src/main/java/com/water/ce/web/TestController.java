@@ -1,15 +1,19 @@
 package com.water.ce.web;
 
 import com.water.ce.cache.CacheManager;
-import com.water.ce.web.service.CSDNCrawlingArticleService;
-import com.water.ce.web.service.IBMCrawlingArticleService;
-import com.water.ce.web.service.OSChinaService;
-import com.water.ce.web.service.Open2OpenCrawlingArticleService;
+import com.water.ce.web.service.*;
 import com.water.ce.work.fetchTag.FetchTagTask;
+import com.water.uubook.dao.TbCeFetchUrlMapper;
+import com.water.uubook.dao.TbUbArticleMapper;
+import com.water.uubook.model.TbCeFetchUrl;
+import com.water.uubook.model.TbCeFetchUrlCriteria;
+import com.water.uubook.model.TbUbArticle;
+import com.water.uubook.model.TbUbArticleCriteria;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by admin on 2017/11/17.
@@ -29,12 +33,20 @@ public class TestController {
     private OSChinaService osChinaService;
     @Resource
     private FetchTagTask fetchTagTask;
+    @Resource
+    private InfoQService infoQService;
+    @Resource
+    private TbCeFetchUrlMapper fetchUrlMapper;
+
     @RequestMapping(value = "/test")
     public String test() {
-        ibmCrawlingArticleService.fetchAllUrl("csdn.net", "knowledge_base", 2, "CSDN知识库");
+//        osChinaService.fetchSoftwareUpdateNews();
 //        csdnCrawlingArticleService.handle();
 //        osChinaService.handle();
 //        csdnCrawlingArticleService.handle();
+
+//        infoQService.fetchToutiao();
+        infoQService.importArticle2Es();
         return "dd";
     }
 }

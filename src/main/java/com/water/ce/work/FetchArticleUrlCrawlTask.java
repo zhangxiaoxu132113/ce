@@ -149,11 +149,4 @@ public class FetchArticleUrlCrawlTask implements Runnable {
         }
         return "";
     }
-
-    public static void main(String[] args) {
-        String url = "http://blog.csdn.net/blogdevteam/article/details/60961185";
-        if (url.contains("blog.csdn.net") && url.contains("article")) {
-            System.out.println("yes!");
-        }
-    }
 }

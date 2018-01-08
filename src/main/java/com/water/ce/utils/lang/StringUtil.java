@@ -90,26 +90,6 @@ public class StringUtil {
         return sb.toString();
     }
 
-
-    public static void main(String[] args) throws UnsupportedEncodingException {
-//        String url = "https://www.oschina.net/blog?classification=428602";
-//        Map<String, String> getParams = new HashMap<String, String>();
-//        String[] strs = url.split("[?]");
-//        if (strs.length == 2) {
-//            String str = strs[1];
-//            strs = str.split("&");
-//            if (strs.length > 0) {
-//                for (int i = 0; i < strs.length; i++) {
-//                    String[] queryArr = strs[i].split("=");
-//                    if (queryArr.length == 2){
-//                        getParams.put(queryArr[0],queryArr[1]);
-//                    }
-//                }
-//            }
-//        }
-        decode();
-    }
-
     /**
      * 获取url的参数
      */

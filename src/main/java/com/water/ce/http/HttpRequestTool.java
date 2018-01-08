@@ -149,9 +149,9 @@ public class HttpRequestTool {
                     .build();
             HttpContext localContext = new BasicHttpContext();
             RequestConfig config = RequestConfig.custom()
-                    .setConnectionRequestTimeout(60000)
-                    .setConnectTimeout(60000)
-                    .setSocketTimeout(60000)
+                    .setConnectionRequestTimeout(60000 * 10)
+                    .setConnectTimeout(60000 * 10)
+                    .setSocketTimeout(60000 * 10)
                     .build();
             get.setConfig(config);// 设置请求超时时间
             if (headerMap != null && headerMap.entrySet().size() > 0) {
@@ -320,10 +320,6 @@ public class HttpRequestTool {
             }
             System.out.println("---------------------- end ----------------------");
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        getJavaThreadBook();
     }
 
     public static void getJavaThreadBook() {

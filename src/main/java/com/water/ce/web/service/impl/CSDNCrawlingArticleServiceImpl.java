@@ -188,9 +188,9 @@ public class CSDNCrawlingArticleServiceImpl extends CrawlingArticleServiceImpl i
                 String bgPic = element.select(".bannerimg img").get(0).attr("src");
 
                 queryParams.put("name", name);
-//                List<ITLib> itLibList = this.queryBaseByCondition(queryParams);
+//                List<TbUbLib> itLibList = this.queryBaseByCondition(queryParams);
 //                if (itLibList.size() == 0) {
-//                    itLib = new ITLib();
+//                    itLib = new TbUbLib();
 //                    itLib.setId(UUID.randomUUID().toString());
 //                    itLib.setName(name);
 //                    itLib.setUrl(link);

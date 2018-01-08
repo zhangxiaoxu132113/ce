@@ -2,8 +2,6 @@ package com.water.ce.web.model;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.water.ce.utils.lang.StringUtil;
-import com.water.uubook.model.ITLib;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -94,53 +92,53 @@ public class BaseSubject {
         }
     }
 
-    public static void main(String[] args) {
-        String json = "[\n" +
-                "{\n" +
-                "\"course\": \"0\",\n" +
-                "\"fixed\": true,\n" +
-                "\"href\": \"http://lib.csdn.net/base/openstack\",\n" +
-                "\"id\": 33,\n" +
-                "\"index\": 1,\n" +
-                "\"prop\": {\n" +
-                "\"course\": \"0\",\n" +
-                "\"name\": \"OpenStack\",\n" +
-                "\"subject\": \"OpenStack\"\n" +
-                "},\n" +
-                "\"x\": 560,\n" +
-                "\"y\": 480\n" +
-                "},\n" +
-                "{\n" +
-                "\"course\": \"484\",\n" +
-                "\"href\": \"http://lib.csdn.net/openstack/node/484\",\n" +
-                "\"id\": \"484\",\n" +
-                "\"index\": 2,\n" +
-                "\"prop\": {\n" +
-                "\"course\": \"484\",\n" +
-                "\"name\": \"OpenStack入门\",\n" +
-                "\"subject\": \"\"\n" +
-                "}\n" +
-                "}]\n";
-
-        String rootId = "sdf";
-        String levelArr[] = new String[10];
-        ITLib lib;
-        List<ITLib> libList = new ArrayList<>();
-        List<BaseSubject> baseSubjects = BaseSubject.BaseSubejctFactory.getBaseSubjectList(json);
-        for (BaseSubject baseSubject : baseSubjects) {
-            if (baseSubject.getIndex() == 0) {
-                continue;
-            }
-            lib = new ITLib();
-            String libId = StringUtil.uuid();
-            lib.setId(libId);
-            lib.setName(baseSubject.getProp().getName());
-            lib.setUrl(baseSubject.getHref());
-            //lib.setParentId(levelArr[baseSubject.getIndex()-1])
-            levelArr[baseSubject.getIndex()] = libId;
-            libList.add(lib);
-        }
-
-        System.out.println(libList.size());
-    }
+//    public static void main(String[] args) {
+//        String json = "[\n" +
+//                "{\n" +
+//                "\"course\": \"0\",\n" +
+//                "\"fixed\": true,\n" +
+//                "\"href\": \"http://lib.csdn.net/base/openstack\",\n" +
+//                "\"id\": 33,\n" +
+//                "\"index\": 1,\n" +
+//                "\"prop\": {\n" +
+//                "\"course\": \"0\",\n" +
+//                "\"name\": \"OpenStack\",\n" +
+//                "\"subject\": \"OpenStack\"\n" +
+//                "},\n" +
+//                "\"x\": 560,\n" +
+//                "\"y\": 480\n" +
+//                "},\n" +
+//                "{\n" +
+//                "\"course\": \"484\",\n" +
+//                "\"href\": \"http://lib.csdn.net/openstack/node/484\",\n" +
+//                "\"id\": \"484\",\n" +
+//                "\"index\": 2,\n" +
+//                "\"prop\": {\n" +
+//                "\"course\": \"484\",\n" +
+//                "\"name\": \"OpenStack入门\",\n" +
+//                "\"subject\": \"\"\n" +
+//                "}\n" +
+//                "}]\n";
+//
+//        String rootId = "sdf";
+//        String levelArr[] = new String[10];
+//        TbUbLib lib;
+//        List<TbUbLib> libList = new ArrayList<>();
+//        List<BaseSubject> baseSubjects = BaseSubject.BaseSubejctFactory.getBaseSubjectList(json);
+//        for (BaseSubject baseSubject : baseSubjects) {
+//            if (baseSubject.getIndex() == 0) {
+//                continue;
+//            }
+//            lib = new TbUbLib();
+//            String libId = StringUtil.uuid();
+//            lib.setId(libId);
+//            lib.setName(baseSubject.getProp().getName());
+//            lib.setUrl(baseSubject.getHref());
+//            //lib.setParentId(levelArr[baseSubject.getIndex()-1])
+//            levelArr[baseSubject.getIndex()] = libId;
+//            libList.add(lib);
+//        }
+//
+//        System.out.println(libList.size());
+//    }
 }

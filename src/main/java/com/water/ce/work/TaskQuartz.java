@@ -1,5 +1,7 @@
 package com.water.ce.work;
 
+import com.hankcs.hanlp.HanLP;
+import com.water.ce.utils.HtmlUtil;
 import com.water.es.api.Service.IArticleService;
 import com.water.uubook.dao.TbUbArticleMapper;
 import com.water.uubook.dao.TbUbTagArticleMapper;
@@ -7,6 +9,7 @@ import com.water.uubook.dao.TbUbTagMapper;
 import com.water.uubook.model.TbUbArticle;
 import com.water.uubook.model.TbUbTag;
 import com.water.uubook.model.TbUbTagArticle;
+import com.water.uubook.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,12 +39,6 @@ public class TaskQuartz {
 
     @Resource(name = "esArticleService")
     private IArticleService esArticleService;
-
-    public static void main(String[] args) {
-        double processValue = 150.0;
-        int allValue = 2000;
-        System.out.println("已处理:" + processValue + ",当前进度=" + (int) ((processValue / allValue) * 100) + "%");
-    }
 
     /**
      * 统计前一天的服务器访问日志
@@ -107,13 +104,51 @@ public class TaskQuartz {
 //        }
     }
 
-
     /**
      * 全量的把数据的文章导入到es中
      */
     public void importArticle2Es() {
+        handleAllArticle(article -> {
+            String description = article.getDescription();
+            String content = HtmlUtil.Html2Text(article.getContent());
+            if (StringUtils.isBlank(description)) {// 如果description内容为空，则设置description的内容
+                if (content.length() >= 255) {
+                    description = content.substring(0, 255);
+                } else {
+                    description = content;
+                }
+                article.setDescription(description);
+                articleMapper.updateByPrimaryKeySelective(article);
+            }
+
+            article.setContent(content);
+            com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
+            BeanUtils.copyProperties(article, esArticle);
+            esArticleService.addArticle(esArticle);
+        });
+    }
+
+    public void extractArticleSeoDescription() {
+        handleAllArticle((article -> {
+            String content = HtmlUtil.Html2Text(article.getContent());
+            StringBuilder sb = new StringBuilder();
+            List<String> sentenceList = HanLP.extractSummary(content, 7);
+            if (sentenceList != null) {
+                for (String sentence : sentenceList) {
+                    sb.append(sentence + ",");
+                }
+            }
+
+            String seoDescription = sb.toString().substring(0, sb.length() - 1);
+            article.setSeoDescription(seoDescription);
+            articleMapper.updateByPrimaryKeySelective(article);
+        }));
+    }
+
+
+    public void handleAllArticle(ArticleHandle func) {
         Map<String, Object> queryMap = new HashMap<>();
-        Integer id = 0;
+        int id = 0;
         queryMap.put("count", 100);
         double processValue = 0.0;
         int allValue = articleMapper.countByExample(null);
@@ -121,26 +156,12 @@ public class TaskQuartz {
         while (true) {
             queryMap.put("id", id);
             List<TbUbArticle> articleList = articleMapper.getArticle(queryMap);
+            if (articleList == null || articleList.size() == 0) break;
             for (TbUbArticle article : articleList) {
-                String description = article.getDescription();
-                String content = HtmlUtil.Html2Text(article.getContent());
-                if (StringUtils.isBlank(description)) {// 如果description内容为空，则设置description的内容
-                    if (content.length() >= 255) {
-                        description = content.substring(0, 255);
-                    } else {
-                        description = content;
-                    }
-                    article.setDescription(description);
-                    articleMapper.updateByPrimaryKeySelective(article);
-                }
-
-                article.setContent(content);
-                com.water.es.entry.ITArticle esArticle = new com.water.es.entry.ITArticle();
-                BeanUtils.copyProperties(article, esArticle);
-                esArticleService.addArticle(esArticle);
-                id = article.getId();
+                func.handle(article);
             }
-
+            //获取最后一个文章的id
+            id = articleList.get(articleList.size() - 1).getId();
             processValue += 100.0;
             LOG.info("已处理:" + processValue + ",当前进度=" + ((processValue / allValue) * 100) + "%");
         }
@@ -186,7 +207,7 @@ public class TaskQuartz {
                     }
                     int categroyId = calcMaxCountNum(tagIdList);
                     if (sb.length() > 1) {
-                        tags = sb.substring(0, sb.length()-1);
+                        tags = sb.substring(0, sb.length() - 1);
                     } else {
                         tags = sb.toString();
                     }
@@ -204,15 +225,15 @@ public class TaskQuartz {
         }
 
 
-
     }
+
     public List<Map.Entry<TbUbTag, Integer>> sortOfWordOccurrences(Map oldMap) {
         List<Map.Entry<TbUbTag, Integer>> list = new ArrayList<>(oldMap.entrySet());
         Collections.sort(list, new Comparator<Map.Entry<TbUbTag, Integer>>() {
             @Override
             public int compare(Map.Entry<TbUbTag, Integer> arg0,
                                Map.Entry<TbUbTag, Integer> arg1) {
-                return arg1.getValue() - arg0.getValue() ;
+                return arg1.getValue() - arg0.getValue();
             }
         });
 
@@ -240,7 +261,7 @@ public class TaskQuartz {
         int tmp = 0;
         for (int i : tags) {
             for (int j : tags) {
-                if (i == j) tmp ++;
+                if (i == j) tmp++;
             }
             if (tmp > max) {
                 max = tmp;
@@ -252,4 +273,11 @@ public class TaskQuartz {
         System.out.println("最大值为" + maxNum);
         return maxNum;
     }
+
+    @FunctionalInterface
+    interface ArticleHandle {
+        void handle(TbUbArticle article);
+    }
+
+
 }

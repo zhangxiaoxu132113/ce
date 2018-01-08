@@ -5,6 +5,8 @@ import com.water.ce.utils.QueueClientHelper;
 import com.water.ce.utils.lang.StringUtil;
 import com.water.ce.web.model.dto.CrawlerArticleUrl;
 import com.water.ce.web.service.OSChinaService;
+import com.water.uubook.dao.TbCeFetchUrlMapper;
+import com.water.uubook.model.TbCeFetchUrl;
 import com.water.uubook.utils.Constants;
 import com.xpush.serialization.protobuf.ProtoEntity;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +18,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -32,6 +35,10 @@ public class OSChinaServiceImpl extends CrawlingArticleServiceImpl implements OS
 
     private static final String WEB_SITE = "www.oschina.net";
     private static final String MODULE = "article";
+    private static final String SOFTWARE_UPDATE = "software_update";
+
+    @Resource
+    private TbCeFetchUrlMapper fetchUrlMapper;
 
     private static final Set<String> fetchUrls = new HashSet<>();
     static  {
@@ -47,9 +54,12 @@ public class OSChinaServiceImpl extends CrawlingArticleServiceImpl implements OS
 
         CrawlerArticleUrl crawlerArticleUrl;
         List<ProtoEntity> crawlerArticleUrlList = new ArrayList<>();
+        TbCeFetchUrl fetchUrl;
+        List<TbCeFetchUrl> fetchUrlList = new ArrayList<>();
 
         Document doc = null;
         Elements articleLinks = null;
+        Date currentTime = new Date();
         Set<String> linkSet = this.getAllCategory();
         for (String link : linkSet) {
             log.info("fetch --> " + link);
@@ -68,14 +78,24 @@ public class OSChinaServiceImpl extends CrawlingArticleServiceImpl implements OS
                     }
                     for (Element articleLinkEle : articleLinks) {
                         String articleLink = articleLinkEle.attr("href");
-                        crawlerArticleUrl = new CrawlerArticleUrl(articleLink);
+                        crawlerArticleUrl = new CrawlerArticleUrl();
                         crawlerArticleUrl.setUrl(articleLink);
                         crawlerArticleUrl.setModule(Constants.ARTICLE_MODULE.BLOG);
                         crawlerArticleUrlList.add(crawlerArticleUrl);
+
+                        fetchUrl = new TbCeFetchUrl();
+                        fetchUrl.setUrl(articleLink);
+                        fetchUrl.setOrigin(2);
+                        fetchUrl.setCreateOn(currentTime);
+                        fetchUrlList.add(fetchUrl);
+                    }
+                    if (fetchUrlList.size() > 1000) {
+//                        fetchUrlMapper.insertBatch(fetchUrlList);
+                        fetchUrlList.clear();
                     }
                 }
             }
-
+//            fetchUrlMapper.insertBatch(fetchUrlList);
             //提交爬虫任务
             String taskId = StringUtil.uuid();
             recordTask(taskId, "【开源中国】爬虫任务", crawlerArticleUrlList.size());
@@ -85,6 +105,40 @@ public class OSChinaServiceImpl extends CrawlingArticleServiceImpl implements OS
         }
         long endTime = System.currentTimeMillis();
         log.info("【开源中国】爬虫任务执行结束，一共耗时为" + (endTime - startTime));
+    }
+
+    public void fetchSoftwareUpdateNews(){
+        String url = "http://www.oschina.net/action/ajax/get_more_news_list?newsType=project&p=%s";
+        long startTime = System.currentTimeMillis();
+        log.info("【开源中国-软件更新资讯】爬虫任务====================>开始");
+
+        CrawlerArticleUrl crawlerArticleUrl;
+        List<ProtoEntity> crawlerArticleUrlList = new ArrayList<>();
+        String html;
+        Document doc;
+        for (int i=1; i<= 50; i++){
+            String fetchUrl = String.format(url, i);
+            html = (String) HttpRequestTool.getRequest(fetchUrl);
+            doc = Jsoup.parse(html);
+
+            Elements boxEles = doc.select(".item > .main-info > a");
+            for (Element box : boxEles) {
+                String articleUrl = "http://www.oschina.net" + box.attr("href");
+                crawlerArticleUrl = new CrawlerArticleUrl();
+                crawlerArticleUrl.setUrl(articleUrl);
+                crawlerArticleUrl.setWebSite(WEB_SITE);
+                crawlerArticleUrl.setWebSiteModule(SOFTWARE_UPDATE);
+                crawlerArticleUrl.setModule(Constants.ARTICLE_MODULE.RUANJIAN_GENGXIN);
+                crawlerArticleUrlList.add(crawlerArticleUrl);
+            }
+        }
+        //提交爬虫任务
+        String taskId = StringUtil.uuid();
+        recordTask(taskId, "【开源中国-软件更新资讯】爬虫任务", crawlerArticleUrlList.size());
+        submitCrawlingTask(WEB_SITE, SOFTWARE_UPDATE, taskId, crawlerArticleUrlList, QueueClientHelper.FETCH_ARTICLE_QUEUE);
+        log.info("爬虫任务" + taskId + "已经提交到爬虫队列");
+        long endTime = System.currentTimeMillis();
+        log.info("【开源中国-软件更新资讯】爬虫任务执行结束，一共耗时为" + (endTime - startTime));
     }
 
     private Set<String> getAllCategory() {

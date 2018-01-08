@@ -16,6 +16,7 @@ public class Constant {
         CSDN(2, "www.csdn.net"),
         OS_CHINA(3, "www.oschina.net"),
         OPEN_OPEN(4,"www.open-open.com"),
+        OPENSKILL(5,"www.openskill.cn"),
         OTHER(10001,"other"),
         MY_WEBSITE(0, "www.uubook.net");
 
@@ -27,6 +28,8 @@ public class Constant {
             }
             return null;
         }
+
+
 
         private Article_ORIGIN(int index, String name) {
             this.index = index;

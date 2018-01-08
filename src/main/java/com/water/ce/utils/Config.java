@@ -27,8 +27,4 @@ public class Config {
         craw_img_path = configuration.getString("crawl.img.path");
     }
 
-    /**test*/
-    public static void main(String[] args) {
-        System.out.println(Config.craw_img_path);
-    }
 }

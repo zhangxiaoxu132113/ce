@@ -187,6 +187,4 @@ public class FetchArticleTask {
 //        System.out.println("运行结束！");
     }
 
-    public static void main(String[] args) {
-    }
 }

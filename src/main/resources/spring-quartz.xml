@@ -67,6 +67,16 @@
         </property>
     </bean>
 
+    <!-- 处理服务器访问日志 -->
+    <bean id="jobTask14" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="quartzJob02"/>
+        </property>
+        <property name="targetMethod">
+            <value>extractArticleSeoDescription</value>
+        </property>
+    </bean>
+
     <!-- 时间分配 -->
     <!-- 每分钟扫描待处理的单次任务 -->
     <bean id="jobRunTime01" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
@@ -117,6 +127,15 @@
         </property>
     </bean>
 
+    <bean id="jobRunTime14" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobTask14" />
+        </property>
+        <property name="cronExpression">
+            <value>0 29 22 8 1 ?</value>
+        </property>
+    </bean>
+
     <!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
     <bean id="startQuertz" lazy-init="true" autowire="default"
           class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -124,9 +143,9 @@
             <list>
                 <ref bean="jobRunTime01"/>
                 <ref bean="jobRunTime02"/>
-                <!--<ref bean="jobRunTime11"/>-->
                 <ref bean="jobRunTime12"/>
                 <ref bean="jobRunTime13"/>
+                <ref bean="jobRunTime14"/>
             </list>
         </property>
     </bean>
