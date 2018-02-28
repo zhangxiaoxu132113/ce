@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
+ *
  * Created by admin on 2017/11/17.
  */
 @RestController
@@ -36,7 +37,9 @@ public class TestController {
     @Resource
     private InfoQService infoQService;
     @Resource
-    private TbCeFetchUrlMapper fetchUrlMapper;
+    private FanyiService fanyiService;
+    @Resource
+    private ChengxuyuanArticleService chengxuyuanArticleService;
 
     @RequestMapping(value = "/test")
     public String test() {
@@ -46,7 +49,9 @@ public class TestController {
 //        csdnCrawlingArticleService.handle();
 
 //        infoQService.fetchToutiao();
-        infoQService.importArticle2Es();
+//        csdnCrawlingArticleService.fetchAllUrl("CSDN", "article", 2, "抓取csdn知识库");
+
+        chengxuyuanArticleService.handle();
         return "dd";
     }
 }

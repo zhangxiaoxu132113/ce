@@ -153,4 +153,13 @@ public class CrawlingArticleServiceImpl implements CrawlingArticleService {
             logger.info("已处理:" + processValue + ",当前进度=" + ((processValue / allValue) * 100) + "%");
         }
     }
+
+    @Override
+    public void addFetchUrlList(List<TbCeFetchUrl> fetchUrlList, String articleLink, int origin, Date currentTime) {
+        TbCeFetchUrl fetchUrl = new TbCeFetchUrl();
+        fetchUrl.setUrl(articleLink);
+        fetchUrl.setOrigin(origin);
+        fetchUrl.setCreateOn(currentTime);
+        fetchUrlList.add(fetchUrl);
+    }
 }

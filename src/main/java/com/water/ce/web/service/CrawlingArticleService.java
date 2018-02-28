@@ -1,9 +1,11 @@
 package com.water.ce.web.service;
 
 
+import com.water.uubook.model.TbCeFetchUrl;
 import com.water.uubook.model.TbUbArticle;
 import com.xpush.serialization.protobuf.ProtoEntity;
 
+import java.util.Date;
 import java.util.List;
 
 public interface CrawlingArticleService {
@@ -31,4 +33,6 @@ public interface CrawlingArticleService {
     void retryFetchUrl(String webSite, String module, String taskName);
 
     void importArticle2Es();
+
+    void addFetchUrlList(List<TbCeFetchUrl> fetchUrlList, String articleLink, int origin, Date currentTime);
 }
