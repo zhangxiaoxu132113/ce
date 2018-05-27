@@ -1,7 +1,6 @@
 
 /.idea/
 /target/
-/README.md
 *.iml
 
 *target/

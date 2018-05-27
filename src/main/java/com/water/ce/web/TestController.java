@@ -49,9 +49,9 @@ public class TestController {
 //        csdnCrawlingArticleService.handle();
 
 //        infoQService.fetchToutiao();
-//        csdnCrawlingArticleService.fetchAllUrl("CSDN", "article", 2, "抓取csdn知识库");
+        csdnCrawlingArticleService.fetchAllUrl("www.voidcn.com", "tag", 22, "抓取程序园文章");
 
-        chengxuyuanArticleService.handle();
+//        chengxuyuanArticleService.handle();
         return "dd";
     }
 }
