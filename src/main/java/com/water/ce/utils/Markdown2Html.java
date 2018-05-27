@@ -19,9 +19,14 @@ import java.util.stream.Collectors;
  */
 public class Markdown2Html {
 
-    public static String markdown2html(String markdownContent) throws UnsupportedEncodingException {
+    public static String markdown2html(String markdownContent) {
         InputStream stream = new ByteArrayInputStream(markdownContent.getBytes());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "utf-8"));
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(stream, "utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         List<String> list = reader.lines().collect(Collectors.toList());
         String content = Joiner.on("\n").join(list);

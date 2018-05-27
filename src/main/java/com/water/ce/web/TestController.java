@@ -2,6 +2,7 @@ package com.water.ce.web;
 
 import com.water.ce.cache.CacheManager;
 import com.water.ce.web.service.*;
+import com.water.ce.work.FetchBook;
 import com.water.ce.work.fetchTag.FetchTagTask;
 import com.water.uubook.dao.TbCeFetchUrlMapper;
 import com.water.uubook.dao.TbUbArticleMapper;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -40,18 +42,22 @@ public class TestController {
     private FanyiService fanyiService;
     @Resource
     private ChengxuyuanArticleService chengxuyuanArticleService;
+    @Resource
+    private FetchBook fetchBook;
 
     @RequestMapping(value = "/test")
-    public String test() {
+    public String test() throws UnsupportedEncodingException {
 //        osChinaService.fetchSoftwareUpdateNews();
 //        csdnCrawlingArticleService.handle();
 //        osChinaService.handle();
 //        csdnCrawlingArticleService.handle();
 
 //        infoQService.fetchToutiao();
-        csdnCrawlingArticleService.fetchAllUrl("www.voidcn.com", "tag", 22, "抓取程序园文章");
+//        csdnCrawlingArticleService.fetchAllUrl("www.voidcn.com", "tag", 22, "抓取程序园文章");
 
 //        chengxuyuanArticleService.handle();
+
+        fetchBook.fetchBookTask();
         return "dd";
     }
 }
